@@ -7,9 +7,11 @@ import {
   getGigs,
 } from "../controllers/gigControllers.js";
 
-router.post("/", isAuthenticated, createGig);
+const router = express.Router();
+
+router.post("/new", isAuthenticated, createGig);
 router.delete("/:id", isAuthenticated, deleteGig);
-router.post("/single/:id", isAuthenticated, getGig);
-router.post("/", isAuthenticated, getGigs);
+router.get("/single/:id", getGig);
+router.get("/", getGigs);
 
 export default router;

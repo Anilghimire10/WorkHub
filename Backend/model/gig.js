@@ -7,6 +7,10 @@ const gigSchema = new Schema(
       type: String,
       required: true,
     },
+    title: {
+      type: String,
+      required: true,
+    },
     desc: {
       type: String,
       required: true,
@@ -16,7 +20,7 @@ const gigSchema = new Schema(
       default: 0,
     },
     starNumber: {
-      type: String,
+      type: Number,
       default: 0,
     },
     category: {
@@ -29,7 +33,7 @@ const gigSchema = new Schema(
     },
     cover: {
       type: String,
-      required: true,
+      // required: true,
     },
     images: {
       type: [String],
@@ -55,7 +59,6 @@ const gigSchema = new Schema(
       type: String,
       required: true,
     },
-
     features: {
       type: [String],
       required: true,
@@ -69,4 +72,5 @@ const gigSchema = new Schema(
     timestamps: true,
   }
 );
+
 export default mongoose.model("Gig", gigSchema);

@@ -2,6 +2,9 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoutes from "./routes/userRoutes.js";
+import gigRoutes from "./routes/gigRoutes.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { errorMiddleware } from "./middlewares/error.js";
@@ -30,6 +33,9 @@ app.use(
 );
 //routes
 app.use("/api/user", userRoutes);
+app.use("/api/gig", gigRoutes);
+app.use("/api/review", reviewRoutes);
+app.use("/api/order", orderRoutes);
 
 app.listen(process.env.PORT, () => {
   connect();

@@ -12,7 +12,7 @@ const OrderSchema = new Schema(
       required: false,
     },
     title: {
-      type: Number,
+      type: String,
       required: true,
     },
     price: {
@@ -20,11 +20,11 @@ const OrderSchema = new Schema(
       required: true,
     },
     sellerID: {
-      type: Number,
+      type: String,
       required: true,
     },
     buyerID: {
-      type: Number,
+      type: String,
       required: true,
     },
     isCompleted: {
