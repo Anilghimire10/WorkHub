@@ -5,8 +5,6 @@ export const createGig = async (req, res, next) => {
   if (!req.isSeller)
     return next(new ErrorHandler("Only sellers can create a gig", 403));
 
-  //   console.log("User ID:", req.userId);
-
   const newGig = new Gig({
     userId: req.userId,
     ...req.body,
@@ -21,6 +19,7 @@ export const createGig = async (req, res, next) => {
     next(error);
   }
 };
+
 export const deleteGig = async (req, res, next) => {
   try {
     const gig = await Gig.findById(req.params.id);
@@ -38,6 +37,7 @@ export const deleteGig = async (req, res, next) => {
     next(error);
   }
 };
+
 export const getGig = async (req, res) => {
   try {
     const gig = await Gig.findById(req.params.id);
@@ -50,6 +50,7 @@ export const getGig = async (req, res) => {
     next(error);
   }
 };
+
 export const getGigs = async (req, res) => {
   const q = req.query;
   const filters = {
@@ -57,13 +58,15 @@ export const getGigs = async (req, res) => {
     ...(q.category && { category: q.category }),
     ...((q.min || q.max) && {
       price: {
-        ...(q.min && { $gt: q.min }),
-        ...(q.max && { $lt: q.max }),
+        ...(q.min && { $gte: q.min }),
+        ...(q.max && { $lte: q.max }),
       },
-      ...(q.search && { title: { $regex: q.search, $options: "i" } }),
     }),
+    ...(q.search && { title: { $regex: q.search, $options: "i" } }),
   };
+  console.log("Filters applied:", filters);
   try {
+    console.log(filters);
     const gigs = await Gig.find(filters);
     if (!gigs) return next(new ErrorHandler("Gigs not found", 404));
     res.status(200).json({
