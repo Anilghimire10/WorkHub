@@ -7,10 +7,11 @@ import {
 } from "../controllers/userControllers.js";
 import { isAuthenticated } from "../middlewares/auth.js";
 import passport from "passport";
+import upload from "../utils/multer.js";
 
 const router = express.Router();
 
-router.post("/register", register);
+router.post("/register", upload.single("image"), register);
 router.post("/login", login);
 router.get("/logout", logout);
 router.delete("/:id", isAuthenticated, deleteUser);

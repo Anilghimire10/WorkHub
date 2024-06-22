@@ -34,6 +34,7 @@ app.use(
     credentials: true,
   })
 );
+
 //routes
 app.use("/api/user", userRoutes);
 app.use("/api/gig", gigRoutes);
@@ -41,6 +42,7 @@ app.use("/api/review", reviewRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/conversation", conversationRoutes);
 app.use("/api/message", messageRoutes);
+
 app.listen(process.env.PORT, () => {
   connect();
   console.log(`Server is working on port ${process.env.PORT}`);
