@@ -1,10 +1,14 @@
 import React, { useState } from "react";
-import upload from "../../utils/upload";
-import "./Register.scss";
+import upload from "../../utils/newRequest";
+import "./register.scss";
 import newRequest from "../../utils/newRequest";
 import { useNavigate } from "react-router-dom";
+// import {useHistory} from 'react-router-dom'
 
-function Register() {
+
+function Register()
+ {
+  
   const [file, setFile] = useState(null);
   const [user, setUser] = useState({
     username: "",
@@ -17,6 +21,10 @@ function Register() {
   });
 
   const navigate = useNavigate();
+
+
+
+
 
   const handleChange = (e) => {
     setUser((prev) => {
@@ -32,16 +40,22 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const url = await upload(file);
+     
     try {
-      await newRequest.post("/auth/register", {
+      await newRequest.post("/user/register", {
         ...user,
-        img: url,
+        
       });
       navigate("/");
     } catch (err) {
       console.log(err);
     }
+
+
+    
+
+
+
   };
   return (
     <div className="register">
@@ -106,4 +120,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default Register

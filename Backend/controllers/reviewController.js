@@ -35,11 +35,23 @@ export const createReview = async (req, res, next) => {
 
 export const deleteReview = async (req, res, next) => {
   try {
+    // Ensure req.userId is available before proceeding
+    if (!req.userId) {
+      return next(new ErrorHandler("User ID is missing in the request", 401));
+    }
+
     const review = await Review.findById(req.params.id);
 
-    if (review.userId !== req.userId)
+    if (!review) {
+      return next(new ErrorHandler("Review not found", 404));
+    }
+
+    if (review.userId !== req.userId) {
       return next(new ErrorHandler("You can only delete your review", 403));
+    }
+
     await Review.findByIdAndDelete(req.params.id);
+
     res.status(200).json({
       success: true,
       message: "Your review has been deleted",

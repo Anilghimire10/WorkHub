@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import "./navbar.scss";
+import newRequest from "../../utils/newRequest";
 
 function Navbar() {
   const [active, setActive] = useState(false);
@@ -18,11 +19,20 @@ function Navbar() {
       window.removeEventListener("scroll", isActive);
     };
   }, []);
-  const currentUser = {
-    id: 1,
-    username: "Rajiv",
-    isSeller: true,
-  };
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+ const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await newRequest.get("/user/logout");
+      localStorage.setItem("currentUser", null);
+      navigate("/")
+
+      
+    } catch (err) {
+      
+      console.log(err)
+    }
+  }
 
   return (
     <div className={active || pathname !== "/" ? "navbar active" : "navbar"}>
@@ -40,8 +50,8 @@ function Navbar() {
           {!currentUser?.isSeller && <span>Become a Seller</span>}
           {currentUser ? (
             <div className="user" onClick={() => setOpen(!open)}>
-              <img src="/img/userprof.avif" alt="" />
-              <span>{currentUser?.username}</span>
+              <img src={currentUser.img || "/img/userprof.avif"} alt="" />
+              <span>{currentUser?.email}</span>
               {open && (
                 <div className="options">
                   {currentUser.isSeller && (
@@ -60,7 +70,7 @@ function Navbar() {
                   <Link className="link" to="/messages">
                     Messages
                   </Link>
-                  <Link className="link" to="/">
+                  <Link className="link" onClick={handleLogout}>
                     Logout
                   </Link>
                 </div>
@@ -68,7 +78,7 @@ function Navbar() {
             </div>
           ) : (
             <>
-              <span>Sign in</span>
+              <Link to="/login" className="link">Sign in</Link>
               <Link className="link" to="/register">
                 <button>Join</button>
               </Link>

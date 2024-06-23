@@ -23,12 +23,22 @@ export const createOrder = async (req, res, next) => {
     next(error);
   }
 };
+
 export const getOrder = async (req, res, next) => {
   try {
-    const orders = await Order.find({
+    console.log("User ID:", req.userId);
+    console.log("Is Seller:", req.isSeller);
+
+    const queryCondition = {
       ...(req.isSeller ? { sellerID: req.userId } : { buyerID: req.userId }),
       isCompleted: true,
-    });
+    };
+
+    console.log("Query Condition:", queryCondition);
+
+    const orders = await Order.find(queryCondition);
+
+    console.log("Orders found:", orders);
 
     res.status(200).json({
       success: true,

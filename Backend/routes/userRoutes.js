@@ -1,6 +1,7 @@
 import express from "express";
 import {
   deleteUser,
+  getUser,
   login,
   logout,
   register,
@@ -15,7 +16,7 @@ router.post("/register", upload.single("image"), register);
 router.post("/login", login);
 router.get("/logout", logout);
 router.delete("/:id", isAuthenticated, deleteUser);
-
+router.get("/:userId", getUser);
 //passport js routes
 router.get(
   "/google",
