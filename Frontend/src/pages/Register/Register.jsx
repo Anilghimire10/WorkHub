@@ -1,30 +1,21 @@
 import React, { useState } from "react";
-import upload from "../../utils/newRequest";
-import "./register.scss";
 import newRequest from "../../utils/newRequest";
 import { useNavigate } from "react-router-dom";
-// import {useHistory} from 'react-router-dom'
+import "./register.scss";
 
-
-function Register()
- {
-  
+function Register() {
   const [file, setFile] = useState(null);
   const [user, setUser] = useState({
     username: "",
     email: "",
     password: "",
-    img: "",
     country: "",
     isSeller: false,
     desc: "",
+    phone: "",
   });
 
   const navigate = useNavigate();
-
-
-
-
 
   const handleChange = (e) => {
     setUser((prev) => {
@@ -37,26 +28,30 @@ function Register()
       return { ...prev, isSeller: e.target.checked };
     });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-     
+    const formData = new FormData();
+    for (const key in user) {
+      formData.append(key, user[key]);
+    }
+    if (file) {
+      formData.append("image", file);
+    }
+
     try {
-      await newRequest.post("/user/register", {
-        ...user,
-        
+      await newRequest.post("user/register", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
       navigate("/");
     } catch (err) {
       console.log(err);
     }
-
-
-    
-
-
-
   };
+
   return (
     <div className="register">
       <form onSubmit={handleSubmit}>
@@ -120,4 +115,4 @@ function Register()
   );
 }
 
-export default Register
+export default Register;

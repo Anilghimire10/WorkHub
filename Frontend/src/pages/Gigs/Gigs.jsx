@@ -29,8 +29,6 @@ function Gigs() {
     queryFn: () => newRequest.get(buildUrl()).then((res) => res.data),
   });
 
-  console.log("Data from API:", data);
-
   const reSort = (type) => {
     setSort(type);
     setOpen(false);
@@ -43,7 +41,9 @@ function Gigs() {
   const apply = () => {
     refetch();
   };
-
+  useEffect(() => {
+    console.log("Data from API:", data);
+  }, [data]);
   return (
     <div className="gigs">
       <div className="container">

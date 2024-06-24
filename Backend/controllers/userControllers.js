@@ -7,11 +7,13 @@ export const register = async (req, res, next) => {
   try {
     let user = await User.findOne({ email: req.body.email });
     if (user) return next(new ErrorHandler("User Already Exist", 404));
+    const img = req.file ? req.file.filename : null;
 
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     user = new User({
       ...req.body,
       password: hashedPassword,
+      img,
     });
     await user.save();
 
@@ -23,18 +25,30 @@ export const register = async (req, res, next) => {
 
 export const login = async (req, res, next) => {
   try {
-    const user = await User.findOne({ email: req.body.email }).select(
-      "+password"
-    );
+    const { email, password } = req.body;
 
-    if (!user) return next(new ErrorHandler("Invalid Email or Password", 400));
+    const user = await User.findOne({ email }).select("+password");
 
-    const isMatch = await bcrypt.compare(req.body.password, user.password);
-
-    if (!isMatch)
+    if (!user) {
       return next(new ErrorHandler("Invalid Email or Password", 400));
+    }
 
-    sendCookie(user, res, `Welcome back, ${user.username}`, 200);
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return next(new ErrorHandler("Invalid Email or Password", 400));
+    }
+
+    // If login successful, send back user information to the client
+    const userData = {
+      userId: user._id,
+      username: user.username,
+      email: user.email,
+      // Add more fields as needed
+    };
+
+    sendCookie(user, res, `Welcome back, ${user.username}`, 200); // Send cookie as per your implementation
+    res.status(200).json({ success: true, ...userData }); // Send user data back to client
   } catch (error) {
     next(error);
   }

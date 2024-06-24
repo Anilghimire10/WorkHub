@@ -5,9 +5,18 @@ export const createGig = async (req, res, next) => {
   if (!req.isSeller)
     return next(new ErrorHandler("Only sellers can create a gig", 403));
 
+  const cover = req.file ? req.file.filename : null;
+  const images =
+    req.files && req.files.length > 0
+      ? req.files.map((file) => file.filename)
+      : [];
+  console.log("Cover:", cover);
+  console.log("Images:", images);
   const newGig = new Gig({
     userId: req.userId,
     ...req.body,
+    cover,
+    images,
   });
   try {
     const savedGig = await newGig.save();
@@ -38,8 +47,9 @@ export const deleteGig = async (req, res, next) => {
   }
 };
 
-export const getGig = async (req, res) => {
+export const getGig = async (req, res, next) => {
   try {
+    console.log("Received Gig ID:", req.params.id); // Log the received ID
     const gig = await Gig.findById(req.params.id);
     if (!gig) return next(new ErrorHandler("Gig not found", 404));
     res.status(200).json({
@@ -64,7 +74,7 @@ export const getGigs = async (req, res) => {
     }),
     ...(q.search && { title: { $regex: q.search, $options: "i" } }),
   };
-  console.log("Filters applied:", filters);
+  // console.log("Filters applied:", filters);
   try {
     console.log(filters);
     const gigs = await Gig.find(filters);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./navbar.scss";
 import newRequest from "../../utils/newRequest";
 
@@ -20,19 +20,17 @@ function Navbar() {
     };
   }, []);
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
- const navigate = useNavigate();
+  console.log(currentUser);
+  const navigate = useNavigate();
   const handleLogout = async () => {
     try {
-      await newRequest.get("/user/logout");
+      await newRequest.get("user/logout");
       localStorage.setItem("currentUser", null);
-      navigate("/")
-
-      
+      navigate("/");
     } catch (err) {
-      
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   return (
     <div className={active || pathname !== "/" ? "navbar active" : "navbar"}>
@@ -78,7 +76,9 @@ function Navbar() {
             </div>
           ) : (
             <>
-              <Link to="/login" className="link">Sign in</Link>
+              <Link to="/login" className="link">
+                Log in
+              </Link>
               <Link className="link" to="/register">
                 <button>Join</button>
               </Link>
