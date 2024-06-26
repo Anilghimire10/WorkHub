@@ -43,8 +43,6 @@ function Navbar() {
           <span className="dot">|</span>
         </div>
         <div className="links">
-          <span>Explore</span>
-          <span>English</span>
           {!currentUser?.isSeller && <span>Become a Seller</span>}
           {currentUser ? (
             <div className="user" onClick={() => setOpen(!open)}>
@@ -68,6 +66,9 @@ function Navbar() {
                   <Link className="link" to="/messages">
                     Messages
                   </Link>
+                  <Link className="link" to="/payment">
+                    Billing & Payments
+                  </Link>
                   <Link className="link" onClick={handleLogout}>
                     Logout
                   </Link>
@@ -89,7 +90,7 @@ function Navbar() {
       {(active || pathname !== "/") && (
         <>
           <hr />
-          <div className="menu">
+          {/* <div className="menu">
             <Link className="link menuLink" to="/">
               Graphics & Design
             </Link>
@@ -117,7 +118,7 @@ function Navbar() {
             <Link className="link menuLink" to="/">
               Lifestyle
             </Link>
-          </div>
+          </div> */}
           <hr />
         </>
       )}

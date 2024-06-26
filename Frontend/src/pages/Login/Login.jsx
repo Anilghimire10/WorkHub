@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import "./login.css";
+import "./login.scss";
 import newRequest from "../../utils/newRequest";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -32,7 +32,7 @@ const Login = () => {
           name="email"
           type="email"
           value={email}
-          placeholder="johndoe@gmail.com"
+          placeholder="rajivprz@gmail.com"
           autoComplete="current-email"
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -50,6 +50,15 @@ const Login = () => {
         />
         <button type="submit">Login</button>
         {error && <div className="error-message">{error}</div>}
+        <p className="registerone">
+          Don't have an account? <Link to="/register">Join here</Link>
+        </p>
+        <p className="terms">
+          By joining, you agree to the Workhub Terms of Service and to
+          occasionally receive emails from us. Please read our{" "}
+          <Link to="/privacy-policy">Privacy Policy</Link> to learn how we use
+          your personal data.
+        </p>
       </form>
     </div>
   );
