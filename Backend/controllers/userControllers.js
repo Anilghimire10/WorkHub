@@ -245,3 +245,13 @@ export const getAllUser = async (req, res, next) => {
     next(error);
   }
 };
+
+// export const getPreferences = async (req, res, next) => {
+//   const { userId, jobCategories } = req.body;
+
+//   try {
+//     const user=await
+//   } catch (error) {
+//     next(error);
+//   }
+// };
