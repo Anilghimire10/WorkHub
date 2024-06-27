@@ -45,37 +45,74 @@ const App = () => {
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <div className="profile-box">
-          <div className="profilepic">
+    <div className="profile-App">
+      <header className="profile-App-header">
+        <div className="profile-App-profile-box">
+          <div className="profile-App-profilepic">
             <img
-              className="profile-picture"
+              className="profile-App-profile-picture"
               src={profile.profilePicture}
               alt="Profile"
             />
           </div>
           <h2>{profile.name}</h2>
-          <div className="details">
+          <div className="profile-App-details">
             <p>Email : {profile.email}</p>
             <p>Joined on: {profile.dateJoined}</p>
           </div>
-          <button className="edit-button" onClick={openModal}>
+          <button className="profile-App-edit-button" onClick={openModal}>
             Edit Profile
           </button>
+        </div>
+        <div className="profile-App-editable-details">
+          <div className="profile-App-edit-icon" onClick={openModal}>
+            <i className="fas fa-pen"></i>
+          </div>
+          <div className="profile-App-details-box">
+            <h3>Description</h3>
+            <p>Description text goes here...</p>
+          </div>
+          <div className="profile-App-details-box">
+            <h3>Languages</h3>
+            <ul className="profile-App-details-content-list">
+              <li>English</li>
+              <li>Spanish</li>
+              <li>French</li>
+            </ul>
+          </div>
+          <div className="profile-App-details-box">
+            <h3>Skills</h3>
+            <ul className="profile-App-details-content-list">
+              <li>JavaScript</li>
+              <li>React</li>
+              <li>Node.js</li>
+            </ul>
+          </div>
+          <div className="profile-App-details-box">
+            <h3>Education</h3>
+            <p>Education details go here...</p>
+          </div>
+          <div className="profile-App-details-box">
+            <h3>Certificates</h3>
+            <ul className="profile-App-details-content-list">
+              <li>Certificate 1</li>
+              <li>Certificate 2</li>
+              <li>Certificate 3</li>
+            </ul>
+          </div>
         </div>
       </header>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        className="Modal"
-        overlayClassName="Overlay"
+        className="profile-Modal"
+        overlayClassName="profile-Overlay"
       >
         <h2>Edit Profile</h2>
-        <div className="form-group">
+        <div className="profile-Modal-form-group">
           <label htmlFor="profilePictureInput">
             <img
-              className="modal-profile-picture"
+              className="profile-Modal-modal-profile-picture"
               src={newProfilePicture || profile.profilePicture}
               alt="Profile"
             />
@@ -88,7 +125,7 @@ const App = () => {
           />
         </div>
         <form>
-          <div className="form-group">
+          <div className="profile-Modal-form-group">
             <label>Full Name</label>
             <input
               type="text"
@@ -97,7 +134,7 @@ const App = () => {
               onChange={handleChange}
             />
           </div>
-          <div className="form-group">
+          <div className="profile-Modal-form-group">
             <label>Email</label>
             <input
               type="email"
@@ -106,7 +143,7 @@ const App = () => {
               onChange={handleChange}
             />
           </div>
-          <div className="form-group">
+          <div className="profile-Modal-form-group">
             <label>Password</label>
             <input
               type="password"
@@ -115,7 +152,7 @@ const App = () => {
               placeholder="Enter new password"
             />
           </div>
-          <div className="form-group">
+          <div className="profile-Modal-form-group">
             <label>Confirm Password</label>
             <input
               type="password"
@@ -126,7 +163,7 @@ const App = () => {
           </div>
           <button
             type="button"
-            className="update-button"
+            className="profile-Modal-update-button"
             onClick={handleUpdate}
           >
             Update

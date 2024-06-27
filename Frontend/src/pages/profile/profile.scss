@@ -1,194 +1,156 @@
-body {
-  font-family: 'Montserrat', sans-serif;
-  background-color: #f5f5f5;
+.profile-App {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative; /* Ensure relative positioning for overlay */
+}
+
+.profile-App-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative; /* Ensure header stays above the overlay */
+  z-index: 1; /* Ensure header is above the overlay */
+}
+
+.profile-App-profile-box {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  position: relative; /* Ensure profile box stays above the overlay */
+  z-index: 2; /* Ensure profile box is above the overlay */
+}
+
+.profile-App-profilepic {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.profile-App-profile-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
+
+.profile-App-details {
+  text-align: left;
+}
+
+.profile-App-edit-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.profile-App-edit-button:hover {
+  background-color: #0056b3;
+}
+
+.profile-App-editable-details {
+  flex-grow: 1;
+  margin-left: 20px;
+}
+
+.profile-App-edit-icon {
+  cursor: pointer;
+  text-align: right;
+  margin-bottom: 10px;
+}
+
+.profile-App-edit-icon i {
+  color: #007bff;
+  font-size: 18px;
+}
+
+.profile-App-details-box {
+  background-color: #fff;
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-App-details-box h3 {
+  color: #007bff;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.profile-App-details-box p {
   margin: 0;
+  color: #333;
+}
+
+.profile-App-details-content-list {
+  list-style-type: none;
   padding: 0;
 }
 
-.App {
-  max-width: 900px;
-  margin: 50px auto;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
-
-  &-header {
-    padding: 20px;
-    border-bottom: 1px solid #eee;
-    text-align: left; /* Align text left */
-  }
-
-  .profile-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-
-    .profilepic {
-      .profile-picture {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        border: 5px solid #e46b67;
-        object-fit: cover;
-        margin-bottom: 10px;
-      }
-    }
-
-    h2 {
-      margin: 10px 0;
-      font-size: 24px;
-      color: #333;
-    }
-
-    .details {
-      text-align: left; /* Align text left */
-      p {
-        margin: 5px 0;
-        font-size: 16px;
-        color: #555;
-      }
-    }
-
-    .edit-button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      background-color: #e46b67;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-
-      &:hover {
-        background-color: #c35656;
-      }
-    }
-  }
+.profile-App-details-content-list li {
+  margin-bottom: 5px;
+  color: #555;
 }
 
-.Modal {
-  position: relative;
-  width: 700px;
-  margin: 50px auto;
+.profile-Modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   padding: 30px;
+  border-radius: 8px;
   background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  outline: none;
-
-  h2 {
-    margin-bottom: 20px;
-    color: #333;
-    font-size: 24px;
-  }
-
-  .form-group {
-    margin-bottom: 20px;
-
-    label {
-      display: block;
-      margin-bottom: 10px;
-      font-size: 16px;
-      color: #555;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 16px;
-      transition: border-color 0.3s;
-
-      &:focus {
-        border-color: #e46b67;
-        outline: none;
-      }
-    }
-
-    .modal-profile-picture {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      border: 5px solid #e46b67;
-      object-fit: cover;
-      cursor: pointer;
-      transition: border-color 0.3s;
-
-      &:hover {
-        border-color: #c35656;
-      }
-    }
-  }
-
-  .update-button {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 5px;
-    background-color: #e46b67;
-    color: white;
-    font-size: 18px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-
-    &:hover {
-      background-color: #c35656;
-    }
-  }
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  width: 600px; /* Adjust width as needed */
+  max-height: 90%;
+  overflow: auto;
+  z-index: 1000; /* Ensure it's on top of other content */
 }
 
-.Overlay {
+.profile-Modal-form-group {
+  margin-bottom: 20px;
+}
+
+.profile-Modal-form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.profile-Modal-form-group input {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.profile-Modal-update-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.profile-Modal-update-button:hover {
+  background-color: #0056b3;
+}
+
+.profile-Overlay {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.75);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-@media only screen and (max-width: 600px) {
-  .App {
-    padding: 10px;
-  }
-
-  .Modal {
-    padding: 20px;
-  }
-
-  .profile-box {
-    .profilepic {
-      .profile-picture {
-        width: 120px;
-        height: 120px;
-        margin-bottom: 5px;
-      }
-    }
-
-    h2 {
-      font-size: 20px;
-    }
-
-    .details {
-      p {
-        font-size: 14px;
-      }
-    }
-
-    .edit-button {
-      font-size: 14px;
-    }
-  }
-
-  .Modal {
-    max-width: 90%;
-  }
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  z-index: 999; /* Ensure overlay is behind modal but above other content */
 }
