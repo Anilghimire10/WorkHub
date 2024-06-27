@@ -1,9 +1,24 @@
-// src/pages/payment/Payment.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./payment.css";
 
 const Payment = () => {
   const [selectedSection, setSelectedSection] = useState("BillingHistory");
+  const navRef = useRef(null);
+  const [underlineStyle, setUnderlineStyle] = useState({});
+
+  useEffect(() => {
+    const activeButton = navRef.current.querySelector(".active");
+    if (activeButton) {
+      setUnderlineStyle({
+        width: `${activeButton.offsetWidth}px`,
+        transform: `translateX(${activeButton.offsetLeft}px)`,
+      });
+    }
+  }, [selectedSection]);
+
+  const handleClick = (section) => {
+    setSelectedSection(section);
+  };
 
   const renderSection = () => {
     switch (selectedSection) {
@@ -22,19 +37,32 @@ const Payment = () => {
 
   return (
     <div className="App">
-      <nav>
-        <button onClick={() => setSelectedSection("BillingHistory")}>
+      <nav ref={navRef}>
+        <button
+          className={selectedSection === "BillingHistory" ? "active" : ""}
+          onClick={() => handleClick("BillingHistory")}
+        >
           Billing History
         </button>
-        <button onClick={() => setSelectedSection("BillingInformation")}>
+        <button
+          className={selectedSection === "BillingInformation" ? "active" : ""}
+          onClick={() => handleClick("BillingInformation")}
+        >
           Billing Information
         </button>
-        <button onClick={() => setSelectedSection("AvailableBalances")}>
+        <button
+          className={selectedSection === "AvailableBalances" ? "active" : ""}
+          onClick={() => handleClick("AvailableBalances")}
+        >
           Available Balances
         </button>
-        <button onClick={() => setSelectedSection("PaymentMethods")}>
+        <button
+          className={selectedSection === "PaymentMethods" ? "active" : ""}
+          onClick={() => handleClick("PaymentMethods")}
+        >
           Payment Methods
         </button>
+        <div className="nav-underline" style={underlineStyle}></div>
       </nav>
       <div className="content">{renderSection()}</div>
     </div>
@@ -60,8 +88,8 @@ const BillingHistory = () => (
           <td>2023-06-20</td>
           <td>Invoice #1234</td>
           <td>Design Service</td>
-          <td>USD</td>
-          <td>$500</td>
+          <td>NPR</td>
+          <td>Rs 5000</td>
         </tr>
         {/* Add more rows as needed */}
       </tbody>
@@ -103,11 +131,11 @@ const AvailableBalances = () => (
     <h2>Available Balances</h2>
     <div className="balance-box">
       <h3>Cancelled Balances</h3>
-      <p>$100</p>
+      <p>Rs 1000</p>
     </div>
     <div className="balance-box">
       <h3>Credits</h3>
-      <p>$50</p>
+      <p>Rs 5000</p>
     </div>
   </div>
 );
@@ -115,7 +143,7 @@ const AvailableBalances = () => (
 const PaymentMethods = () => (
   <div>
     <h2>Payment Methods</h2>
-    <button>Pay with PayPal</button>
+    <button>Pay with Khalti</button>
   </div>
 );
 
