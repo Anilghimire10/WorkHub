@@ -42,14 +42,6 @@ function Navbar() {
           <span className="dot">|</span>
         </div>
         <div className="links">
-          {!currentUser?.isSeller && (
-            <span>
-              <Link className="link" to="/Seller">
-                Become a Seller
-              </Link>
-            </span>
-          )}
-      
           {!currentUser?.isSeller && <span>Become a Seller</span>}
           {currentUser ? (
             <div className="user" onClick={() => setOpen(!open)}>
@@ -67,9 +59,6 @@ function Navbar() {
                       </Link>
                     </>
                   )}
-                  <Link className="link" to="/profile">
-                    Profile
-                  </Link>
                   <Link className="link" to="/orders">
                     Orders
                   </Link>
