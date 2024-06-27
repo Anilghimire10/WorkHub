@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import "./navbar.scss";
 import newRequest from "../../utils/newRequest";
 
@@ -20,11 +20,10 @@ function Navbar() {
     };
   }, []);
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  console.log(currentUser);
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
-      await newRequest.get("user/logout");
+      await newRequest.get("/user/logout");
       localStorage.setItem("currentUser", null);
       navigate("/");
     } catch (err) {
@@ -50,6 +49,8 @@ function Navbar() {
               </Link>
             </span>
           )}
+      
+          {!currentUser?.isSeller && <span>Become a Seller</span>}
           {currentUser ? (
             <div className="user" onClick={() => setOpen(!open)}>
               <img src={currentUser.img || "/img/userprof.avif"} alt="" />
@@ -75,9 +76,6 @@ function Navbar() {
                   <Link className="link" to="/messages">
                     Messages
                   </Link>
-                  <Link className="link" to="/payment">
-                    Billing & Payments
-                  </Link>
                   <Link className="link" onClick={handleLogout}>
                     Logout
                   </Link>
@@ -87,7 +85,7 @@ function Navbar() {
           ) : (
             <>
               <Link to="/login" className="link">
-                Log in
+                Sign in
               </Link>
               <Link className="link" to="/register">
                 <button>Join</button>
@@ -99,7 +97,7 @@ function Navbar() {
       {(active || pathname !== "/") && (
         <>
           <hr />
-          {/* <div className="menu">
+          <div className="menu">
             <Link className="link menuLink" to="/">
               Graphics & Design
             </Link>
@@ -127,7 +125,7 @@ function Navbar() {
             <Link className="link menuLink" to="/">
               Lifestyle
             </Link>
-          </div> */}
+          </div>
           <hr />
         </>
       )}

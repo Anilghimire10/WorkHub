@@ -10,8 +10,8 @@ export const createGig = async (req, res, next) => {
     req.files && req.files.length > 0
       ? req.files.map((file) => file.filename)
       : [];
-  console.log("Cover:", cover);
-  console.log("Images:", images);
+  // console.log("Cover:", cover);
+  // console.log("Images:", images);
   const newGig = new Gig({
     userId: req.userId,
     ...req.body,
@@ -47,14 +47,26 @@ export const deleteGig = async (req, res, next) => {
   }
 };
 
-export const getGig = async (req, res, next) => {
+export const getSingleGig = async (req, res, next) => {
   try {
-    console.log("Received Gig ID:", req.params.id); // Log the received ID
     const gig = await Gig.findById(req.params.id);
     if (!gig) return next(new ErrorHandler("Gig not found", 404));
     res.status(200).json({
       success: true,
       gig,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+export const getGigsByUser = async (req, res, next) => {
+  try {
+    const gigs = await Gig.find({ userId: req.params.id });
+    if (!gigs || gigs.length === 0)
+      return next(new ErrorHandler("Gigs not found", 404));
+    res.status(200).json({
+      success: true,
+      gigs,
     });
   } catch (error) {
     next(error);
@@ -76,7 +88,7 @@ export const getGigs = async (req, res) => {
   };
   // console.log("Filters applied:", filters);
   try {
-    console.log(filters);
+    // console.log(filters);
     const gigs = await Gig.find(filters);
     if (!gigs) return next(new ErrorHandler("Gigs not found", 404));
     res.status(200).json({

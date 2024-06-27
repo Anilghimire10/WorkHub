@@ -73,3 +73,16 @@ export const getReviews = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getAllReview = async (req, res, next) => {
+  try {
+    const review = await Review.find();
+    if (!review) return next(new ErrorHandler("No reviews Found", 404));
+    res.status(200).json({
+      success: true,
+      review,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

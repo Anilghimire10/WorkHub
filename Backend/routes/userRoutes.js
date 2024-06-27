@@ -1,10 +1,12 @@
 import express from "express";
 import {
   deleteUser,
+  getAllUser,
   getUser,
   login,
   logout,
   register,
+  requestSignupToken,
 } from "../controllers/userControllers.js";
 import { isAuthenticated } from "../middlewares/auth.js";
 import passport from "passport";
@@ -12,11 +14,13 @@ import upload from "../utils/multer.js";
 
 const router = express.Router();
 
+router.post("/signup", requestSignupToken);
 router.post("/register", upload.single("image"), register);
 router.post("/login", login);
 router.get("/logout", logout);
 router.delete("/:id", isAuthenticated, deleteUser);
 router.get("/:userId", getUser);
+router.get("/", getAllUser);
 //passport js routes
 router.get(
   "/google",
