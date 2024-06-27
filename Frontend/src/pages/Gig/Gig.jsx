@@ -22,11 +22,15 @@ function Gig() {
     queryFn: () => newRequest.get(`gig/single/${id}`).then((res) => res.data),
   });
 
+  // Log gig data
   useEffect(() => {
+    if (dataGig) {
+      console.log("Gig Data:", dataGig);
+    }
     if (errorGig) {
       console.error("Error loading gig data:", errorGig);
     }
-  }, [errorGig]);
+  }, [dataGig, errorGig]);
 
   // Fetch user data if gig data is available
   const userId = dataGig?.gig?.userId;
@@ -41,11 +45,15 @@ function Gig() {
     enabled: !!userId,
   });
 
+  // Log user data
   useEffect(() => {
+    if (dataUser) {
+      console.log("User Data:", dataUser);
+    }
     if (errorUser) {
       console.error("Error loading user data:", errorUser);
     }
-  }, [errorUser]);
+  }, [dataUser, errorUser]);
 
   // Handle default image loading
   const handleDefaultImageLoad = () => {
@@ -140,18 +148,6 @@ function Gig() {
                     <span className="title">Member since</span>
                     <span className="desc">Apr 2023</span>
                   </div>
-                  {/* <div className="item">
-                    <span className="title">Avg. response time</span>
-                    <span className="desc">6 hours</span>
-                  </div>
-                  <div className="item">
-                    <span className="title">Last delivery</span>
-                    <span className="desc">5 days</span>
-                  </div>
-                  <div className="item">
-                    <span className="title">Languages</span>
-                    <span className="desc">English, Nepali</span>
-                  </div> */}
                 </div>
                 <hr />
                 <p>{dataUser?.user?.desc}</p>
