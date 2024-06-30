@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./login.scss";
 import newRequest from "../../utils/newRequest";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -46,6 +46,19 @@ const Login = () => {
         />
         <button type="submit">Login</button>
         {error && <div className="error-message">{error}</div>}
+        <p className="registerone">
+          Don't have an account?{" "}
+          <Link style={{ textDecoration: "none" }} to="/register">
+            Join here
+          </Link>
+        </p>
+        <p className="terms">
+          By joining, you agree to the Workhub Terms of Service. Please read our{" "}
+          <Link style={{ textDecoration: "none" }} to="/privacy-policy">
+            Privacy Policy
+          </Link>{" "}
+          to learn how we use your personal data.
+        </p>
       </form>
     </div>
   );
