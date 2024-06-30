@@ -7,32 +7,28 @@ import newRequest from "../../utils/newRequest";
 
 function MyGigs() {
   const currentUser = getCurrentUser();
-
   const queryClient = useQueryClient();
+  console.log("Current user:", currentUser);
 
-  // Log the currentUser and its ID to check if it's correctly retrieved
-  console.log("Current User:", currentUser);
-  console.log("Current User ID:", currentUser.id);
+  // Log user ID after fetching
+  React.useEffect(() => {
+    console.log(
+      "Current User ID:",
+      currentUser && currentUser.userId ? currentUser.userId : "Not logged in"
+    );
+  }, [currentUser]);
 
   const { isLoading, data } = useQuery({
-    queryKey: ["myGigs"],
-    queryFn: () => {
-      if (currentUser && currentUser.id) {
-        return newRequest.get(`gig/user/${currentUser.id}`).then((res) => {
-          console.log("API Response:", res.data);
-          return res.data;
-        });
-      } else {
-        return Promise.reject("User ID not found");
-      }
-    },
-    enabled: !!currentUser,
+    queryKey: ["myGigs", currentUser?.userId], // Use currentUser?.userId as part of the query key
+    queryFn: () =>
+      newRequest
+        .get(`gig/user/${currentUser?.userId}`)
+        .then((res) => res.data.gigs), // Ensure currentUser?.userId is used safely
+    enabled: !!currentUser?.userId, // Ensure currentUser?.userId is truthy before enabling the query
   });
 
   const mutation = useMutation({
-    mutationFn: (id) => {
-      return newRequest.delete(`gig/user/${id}`);
-    },
+    mutationFn: (id) => newRequest.delete(`gig/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries(["myGigs"]);
     },
@@ -42,67 +38,62 @@ function MyGigs() {
     mutation.mutate(id);
   };
 
-  if (!data) {
-    return <h1>Data not found</h1>;
+  if (!currentUser || !currentUser.userId) {
+    return <h1>User not logged in</h1>;
+  }
+
+  if (isLoading) {
+    return <h1>Loading...</h1>;
   }
 
   return (
     <div className="myGigs">
-      {isLoading ? (
-        "Loading..."
-      ) : (
-        <div className="container">
-          <div className="title">
-            <h1>Gigs</h1>
-            {currentUser.isSeller && (
-              <Link to="/add">
-                <button>Add New Gig</button>
-              </Link>
-            )}
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Image</th>
-                <th>Title</th>
-                <th>Price</th>
-                <th>Sales</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {data.gig ? (
-                <tr>
-                  <td>
-                    <img
-                      src={"https://i.ibb.co/qF53C6g/tiger-jpg.jpg"}
-                      width={70}
-                      height={50}
-                      alt=""
-                    />
-                  </td>
-                  <td>{data.gig.title}</td>
-                  <td>{data.gig.sales}</td>
-                  <td>{data.gig.price}</td>
-                  <td>
-                    <img
-                      className="delete"
-                      src="./img/delete.png"
-                      alt=""
-                      onClick={() => handleDelete(data.gig._id)}
-                    />
-                  </td>
-                </tr>
-              ) : (
-                <tr>
-                  <td>Not Found</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+      <div className="container">
+        <div className="title">
+          <h1>Gigs</h1>
+          {currentUser.isSeller && (
+            <Link to="/add">
+              <button>Add New Gig</button>
+            </Link>
+          )}
         </div>
-      )}
+        <table>
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Title</th>
+              <th>Price</th>
+              <th>Sales</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((gig) => (
+              <tr key={gig._id}>
+                <td>
+                  <img
+                    src={"https://i.ibb.co/qF53C6g/tiger-jpg.jpg"}
+                    width={70}
+                    height={50}
+                    alt=""
+                  />
+                </td>
+                <td>{gig.title}</td>
+                <td>{gig.price}</td>
+                <td>{gig.sales}</td>
+                <td>
+                  <img
+                    className="delete"
+                    src="./img/delete.png"
+                    alt=""
+                    onClick={() => handleDelete(gig._id)}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
