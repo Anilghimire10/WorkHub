@@ -2,7 +2,7 @@ import express from "express";
 import {
   deleteUser,
   getAllUser,
-  // getPreferences,
+  getPreferences,
   getUser,
   login,
   logout,
@@ -22,7 +22,7 @@ router.get("/logout", logout);
 router.delete("/:id", isAuthenticated, deleteUser);
 router.get("/:userId", getUser);
 router.get("/", getAllUser);
-// router.post("/preferences", getPreferences);
+router.post("/preferences", getPreferences);
 //passport js routes
 router.get(
   "/google",

@@ -2,30 +2,36 @@ import Gig from "../model/gig.js";
 import ErrorHandler from "../middlewares/error.js";
 
 export const createGig = async (req, res, next) => {
-  if (!req.isSeller)
+  if (!req.isSeller) {
     return next(new ErrorHandler("Only sellers can create a gig", 403));
+  }
 
-  const cover = req.file ? req.file.filename : null;
-  const images =
-    req.files && req.files.length > 0
-      ? req.files.map((file) => file.filename)
-      : [];
-  // console.log("Cover:", cover);
-  // console.log("Images:", images);
+  console.log("Request Body:", req.body); // Log the entire request body
+  console.log("Request Files:", req.files); // Log the uploaded files (cover and images)
+
+  const cover = req.files["cover"] ? req.files["cover"][0].filename : null; // Check req.files for cover image
+  const images = req.files["images"]
+    ? req.files["images"].map((file) => file.filename)
+    : []; // Map filenames for images
+
+  console.log("Cover:", cover); // Log the filename of the cover image
+  console.log("Images:", images); // Log the filenames of the images array
+
   const newGig = new Gig({
     userId: req.userId,
-    ...req.body,
+    ...req.body, // Include other fields from req.body
     cover,
     images,
   });
+
   try {
-    const savedGig = await newGig.save();
+    const savedGig = await newGig.save(); // Save the new gig to the database
     res.status(201).json({
       success: true,
       savedGig,
     });
   } catch (error) {
-    next(error);
+    next(error); // Pass any error to the error handler middleware
   }
 };
 

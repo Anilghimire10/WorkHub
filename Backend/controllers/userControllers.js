@@ -11,6 +11,7 @@ import { sendCookie } from "../utils/feature.js";
 // Get __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 export const requestSignupToken = async (req, res, next) => {
   try {
     let user = await User.findOne({ email: req.body.email });
@@ -246,12 +247,28 @@ export const getAllUser = async (req, res, next) => {
   }
 };
 
-// export const getPreferences = async (req, res, next) => {
-//   const { userId, jobCategories } = req.body;
+export const getPreferences = async (req, res, next) => {
+  const { userId, jobCategories } = req.body;
 
-//   try {
-//     const user=await
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Update user preferences with jobCategories
+    user.preferences.jobCategories = jobCategories;
+
+    // Save updated user document
+    await user.save();
+
+    return res
+      .status(200)
+      .json({ message: "User preferences updated successfully" });
+  } catch (error) {
+    console.error("Error updating user preferences:", error);
+    return res
+      .status(500)
+      .json({ error: "Server error, failed to update preferences" });
+  }
+};

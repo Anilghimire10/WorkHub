@@ -23,7 +23,7 @@ const OtpSchema = new Schema(
       phonenumber: { type: String, required: false },
       country: { type: String, required: true },
       desc: { type: String, required: false },
-      isSeller: { type: Boolean, required: true },
+      isSeller: { type: Boolean },
     },
     type: {
       type: String,

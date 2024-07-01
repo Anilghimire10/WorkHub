@@ -11,13 +11,13 @@ import upload from "../utils/multer.js";
 
 const router = express.Router();
 
-router.post(
-  "/new",
-  isAuthenticated,
-  upload.single("cover"),
-  upload.array("images", 5),
-  createGig
-);
+const uploadFields = upload.fields([
+  { name: "cover", maxCount: 1 },
+  { name: "images", maxCount: 5 },
+]);
+
+router.post("/new", isAuthenticated, uploadFields, createGig);
+
 router.delete("/:id", isAuthenticated, deleteGig);
 router.get("/single/:id", getSingleGig);
 router.get("/user/:id", getGigsByUser);
