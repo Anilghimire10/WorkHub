@@ -61,11 +61,17 @@ function Navbar() {
                       </Link>
                     </>
                   )}
+                  <Link className="link" to="/profile">
+                    Profile
+                  </Link>
                   <Link className="link" to="/orders">
                     Orders
                   </Link>
                   <Link className="link" to="/messages">
                     Messages
+                  </Link>
+                  <Link className="link" to="/payment">
+                    Billing & Payments
                   </Link>
                   <Link className="link" onClick={handleLogout}>
                     Logout
@@ -88,7 +94,7 @@ function Navbar() {
       {(active || pathname !== "/") && (
         <>
           <hr />
-          <div className="menu">
+          {/* <div className="menu">
             <Link className="link menuLink" to="/">
               Graphics & Design
             </Link>
@@ -116,7 +122,7 @@ function Navbar() {
             <Link className="link menuLink" to="/">
               Lifestyle
             </Link>
-          </div>
+          </div> */}
           <hr />
         </>
       )}
