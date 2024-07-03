@@ -1,0 +1,81 @@
+
+.verify-user {
+    text-align: center;
+    background: #fff;
+    padding: 30px 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    width: 320px;
+    margin: auto; /* Center the component horizontally */
+  }
+  
+  .verify-user h2 {
+    margin-bottom: 10px;
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .verify-user p {
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #666;
+  }
+  
+  .otp-input-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .otp-input {
+    width: 40px; /* Adjust the width to match the height for square shape */
+    height: 40px; /* Square shape */
+    margin: 0 5px; /* Space between each input box */
+    font-size: 20px;
+    text-align: center;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+  }
+  
+  .otp-input:focus,
+  .otp-input:hover {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .verify-button,
+  .cancel-button {
+    width: 45%;
+    padding: 10px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .verify-button {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .verify-button:hover {
+    background-color: #218838;
+  }
+  
+  .cancel-button {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .cancel-button:hover {
+    background-color: #c82333;
+  }
+  
