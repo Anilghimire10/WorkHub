@@ -48,7 +48,7 @@ function Register() {
       });
 
       console.log("Form data submitted successfully");
-      navigate("/");
+      navigate("/otp");
     } catch (err) {
       console.error("Error submitting form data:", err);
     }
@@ -87,9 +87,9 @@ function Register() {
           <button type="submit">Register</button>
         </div>
         <div className="right">
-          <h1>I want to become a seller</h1>
+          <h1>I want to become a Seller</h1>
           <div className="toggle">
-            <label htmlFor="">Activate the seller account</label>
+            <label htmlFor="">Activate the Seller account</label>
             <label className="switch">
               <input type="checkbox" onChange={handleSeller} />
               <span className="slider round"></span>

@@ -49,9 +49,7 @@ function Gigs() {
       <div className="container">
         <span className="breadcrumbs">Liverr Graphics & Design </span>
         <h1>AI Artists</h1>
-        <p>
-          Explore the boundaries of art and technology with Liverr's AI artists
-        </p>
+        <p>Explore the boundaries of art and technology with Workhub</p>
         <div className="menu">
           <div className="left">
             <span>Budget</span>

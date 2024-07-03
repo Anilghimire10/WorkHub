@@ -5,9 +5,12 @@ import Gigs from "./pages/Gigs/Gigs";
 import Gig from "./pages/Gig/Gig";
 import Add from "./pages/Add/Add";
 import Orders from "./pages/Orders/Orders";
+import Profile from "./pages/profile/Profile";
 import Messages from "./pages/Messages/Messages";
 import Message from "./pages/Message/Message";
 import MyGigs from "./pages/MyGigs/MyGigs";
+import Otp from "./pages/otp/Otp";
+import { Payment } from "./pages/payment/Payment";
 import React from "react";
 import "./App.css";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
@@ -53,6 +56,18 @@ function App() {
         {
           path: "/orders",
           element: <Orders />,
+        },
+        {
+          path: "/Otp",
+          element: <Otp />,
+        },
+        {
+          path: "/profile",
+          element: <Profile />,
+        },
+        {
+          path: "/payment",
+          element: <Payment />,
         },
         {
           path: "/mygigs",
