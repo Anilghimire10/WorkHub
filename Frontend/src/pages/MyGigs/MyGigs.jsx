@@ -26,7 +26,7 @@ function MyGigs() {
         .then((res) => res.data.gigs),
     enabled: !!currentUser?.userId,
   });
-
+  console.log("Fetched gigs:", data);
   const mutation = useMutation({
     mutationFn: (id) => newRequest.delete(`gig/${id}`),
     onSuccess: () => {
@@ -61,7 +61,7 @@ function MyGigs() {
           <table>
             <thead>
               <tr>
-                <th>Image</th>
+                <th>Images</th>
                 <th>Title</th>
                 <th>Price</th>
                 <th>Sales</th>
@@ -71,16 +71,19 @@ function MyGigs() {
             <tbody>
               {data.map((gig) => (
                 <tr key={gig._id}>
-                  <td>
-                    <img
-                      src={"https://i.ibb.co/qF53C6g/tiger-jpg.jpg"}
-                      width={70}
-                      height={50}
-                      alt=""
-                    />
+                  <td className="image-cell">
+                    {gig.images.map((image, index) => (
+                      <img
+                        key={index}
+                        src={image} // Replace with your API URL and image path
+                        width={70}
+                        height={50}
+                        alt=""
+                      />
+                    ))}
                   </td>
                   <td>{gig.title}</td>
-                  <td>{gig.price}</td>
+                  <td>${gig.price}</td>
                   <td>{gig.sales}</td>
                   <td>
                     <img

@@ -41,14 +41,16 @@ function Register() {
     }
 
     try {
-      await newRequest.post("user/register", formData, {
+      await newRequest.post("user/signup", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
+
+      console.log("Form data submitted successfully");
       navigate("/");
     } catch (err) {
-      console.log(err);
+      console.error("Error submitting form data:", err);
     }
   };
 

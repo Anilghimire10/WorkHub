@@ -6,20 +6,20 @@ export const createGig = async (req, res, next) => {
     return next(new ErrorHandler("Only sellers can create a gig", 403));
   }
 
-  console.log("Request Body:", req.body); // Log the entire request body
-  console.log("Request Files:", req.files); // Log the uploaded files (cover and images)
+  console.log("Request Body:", req.body);
+  console.log("Request Files:", req.files);
 
   const cover = req.files["cover"] ? req.files["cover"][0].filename : null; // Check req.files for cover image
   const images = req.files["images"]
     ? req.files["images"].map((file) => file.filename)
     : []; // Map filenames for images
 
-  console.log("Cover:", cover); // Log the filename of the cover image
-  console.log("Images:", images); // Log the filenames of the images array
+  console.log("Cover:", cover);
+  console.log("Images:", images);
 
   const newGig = new Gig({
     userId: req.userId,
-    ...req.body, // Include other fields from req.body
+    ...req.body,
     cover,
     images,
   });

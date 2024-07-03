@@ -15,8 +15,8 @@ import upload from "../utils/multer.js";
 
 const router = express.Router();
 
-router.post("/signup", requestSignupToken);
-router.post("/register", upload.single("image"), register);
+router.post("/signup", upload.single("image"), requestSignupToken);
+router.post("/register", register);
 router.post("/login", login);
 router.get("/logout", logout);
 router.delete("/:id", isAuthenticated, deleteUser);

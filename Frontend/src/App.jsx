@@ -8,7 +8,6 @@ import Orders from "./pages/Orders/Orders";
 import Messages from "./pages/Messages/Messages";
 import Message from "./pages/Message/Message";
 import MyGigs from "./pages/MyGigs/MyGigs";
-
 import React from "react";
 import "./App.css";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
@@ -79,6 +78,10 @@ function App() {
           path: "/register",
           element: <Register />,
         },
+        // {
+        //   path: "/pay",
+        //   element: <Pay />,
+        // },
       ],
     },
   ]);

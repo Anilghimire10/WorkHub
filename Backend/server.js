@@ -7,6 +7,7 @@ import reviewRoutes from "./routes/reviewRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import conversationRoutes from "./routes/conversationRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { errorMiddleware } from "./middlewares/error.js";
@@ -26,6 +27,7 @@ const connect = async () => {
 
 //using middlewares
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
   cors({
@@ -42,7 +44,7 @@ app.use("/api/review", reviewRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/conversation", conversationRoutes);
 app.use("/api/message", messageRoutes);
-
+app.use("/api/payment", paymentRoutes);
 app.listen(process.env.PORT, () => {
   connect();
   console.log(`Server is working on port ${process.env.PORT}`);
