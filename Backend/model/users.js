@@ -44,4 +44,14 @@ const userSchema = new Schema(
     timestamps: true,
   }
 );
+
+userSchema.pre("remove", async function (next) {
+  try {
+    await this.model("Gig").deleteMany({ userId: this._id });
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default mongoose.model("User", userSchema);

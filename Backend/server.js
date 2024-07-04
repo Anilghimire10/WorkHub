@@ -11,7 +11,7 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { errorMiddleware } from "./middlewares/error.js";
-
+import searchHistoryRoutes from "./routes/searchHistoryRoutes.js";
 const app = express();
 dotenv.config();
 mongoose.set("strictQuery", true);
@@ -45,6 +45,7 @@ app.use("/api/order", orderRoutes);
 app.use("/api/conversation", conversationRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/search", searchHistoryRoutes);
 app.listen(process.env.PORT, () => {
   connect();
   console.log(`Server is working on port ${process.env.PORT}`);

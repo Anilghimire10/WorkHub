@@ -23,7 +23,7 @@ function Navbar() {
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
-      await newRequest.get("/user/logout");
+      await newRequest.get("user/logout");
       localStorage.setItem("currentUser", null);
       navigate("/");
     } catch (err) {

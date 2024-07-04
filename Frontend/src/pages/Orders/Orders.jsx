@@ -21,7 +21,7 @@ const Orders = () => {
     },
   });
 
-  console.log(data, "hehe");
+  // console.log(data, "hehe");
 
   const handleContact = async (order) => {
     const sellerId = order.sellerId;

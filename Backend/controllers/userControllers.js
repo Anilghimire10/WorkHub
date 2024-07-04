@@ -6,6 +6,7 @@ import { sendEmail } from "../utils/mailHandler.js";
 import ErrorHandler from "../middlewares/error.js";
 import OTP from "../model/Otp.js";
 import User from "../model/users.js";
+import Gig from "../model/gig.js";
 import { sendCookie } from "../utils/feature.js";
 
 // Get __dirname in ES modules
@@ -184,18 +185,21 @@ export const logout = (req, res) => {
 export const deleteUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
-    if (!user) return next(new ErrorHandler("User isnot found", 404));
-
-    await User.findByIdAndDelete(req.params.id);
-    res
-      .status(200)
-      .cookie("token", "", {
-        expires: new Date(Date.now()),
-      })
-      .json({
-        success: true,
-        message: "User has been deleted Successfully",
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
       });
+    }
+
+    // Delete associated gigs
+    await Gig.deleteMany({ userId: user._id });
+    // Remove user and associated gigs
+    await User.deleteOne({ _id: req.params.id });
+    res.status(200).clearCookie("token").json({
+      success: true,
+      message: "User and associated gigs have been deleted successfully",
+    });
   } catch (error) {
     next(error);
   }
