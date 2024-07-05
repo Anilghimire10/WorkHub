@@ -28,21 +28,28 @@ const PaymentDo = () => {
     setShowPaymentPopup(false);
   };
 
-  const { title, amount, details, serviceFee, total, deliveryTime } = gig;
+  const {
+    title,
+    amount,
+    details,
+    serviceFee,
+    total,
+    deliveryTime,
+    coverImage,
+  } = gig;
 
   return (
     <div className="payment-do">
-      <h1>Payment Details</h1>
+      <h1>PAYMENT DETAILS</h1>
       <div className="payment-info">
-        <div className="gig-title">
-          <span>Title: </span>
-          {title}
-        </div>
-        <div className="gig-amount">
-          <span>Amount: </span>Rs {amount}
+        <div className="gig-header">
+          <div className="gig-cover-image">
+            <img src={coverImage} alt="Gig Cover" />
+          </div>
+          <div className="gig-title">{title}</div>
         </div>
         <div className="gig-details">
-          <span>Details: </span>
+          <span>Short Description: </span>
           {details}
         </div>
         <div className="service-fee">

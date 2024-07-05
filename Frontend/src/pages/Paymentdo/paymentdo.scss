@@ -1,139 +1,150 @@
 .payment-do {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background: #f9f9f9;
-    padding: 2rem;
-    font-family: 'Arial', sans-serif;
+  font-family: 'Roboto', sans-serif;
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  background: #fff7f2;
+  border-radius: 16px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+  h1 {
+    text-align: center;
+    color: #e6793b;
+    margin-bottom: 20px;
+    font-size: 28px;
+    font-weight: 700;
   }
-  
+
   .payment-info {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    width: 100%;
-    text-align: left;
-  }
-  
-  .payment-info > div {
-    margin-bottom: 1.5rem;
-  }
-  
-  .gig-title,
-  .gig-amount,
-  .gig-details,
-  .service-fee,
-  .total,
-  .delivery-time {
-    margin-bottom: 1rem;
-  }
-  
-  .gig-title span,
-  .gig-amount span,
-  .gig-details span,
-  .service-fee span,
-  .total span,
-  .delivery-time span {
-    font-weight: bold;
-  }
-  
-  .gig-title span {
-    color: #333;
-  }
-  
-  .gig-amount span,
-  .service-fee span,
-  .total span {
-    color: #555;
-  }
-  
-  .delivery-time span {
-    color: #777;
-  }
-  
-  .continue-to-pay {
-    width: 100%;
-    padding: 0.75rem;
-    background-color: #4CAF50;
-    border: none;
-    border-radius: 4px;
-    color: #fff;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  
-    &:hover {
-      background-color: #45a049;
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+    .gig-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+
+      .gig-cover-image {
+        flex-shrink: 0;
+        margin-right: 20px;
+
+        img {
+          border-radius: 8px;
+          width: 100px;
+          height: 100px;
+          object-fit: cover;
+        }
+      }
+
+      .gig-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #333;
+      }
+    }
+
+    .gig-details,
+    .service-fee,
+    .total,
+    .delivery-time {
+      margin-bottom: 10px;
+      font-size: 18px;
+      color: #555;
+
+      span {
+        font-weight: 700;
+        color: #333;
+      }
+    }
+
+    .continue-to-pay {
+      display: block;
+      width: 100%;
+      background: #e6793b;
+      color: white;
+      border: none;
+      padding: 12px;
+      cursor: pointer;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 500;
+      transition: background 0.3s, transform 0.3s;
+      text-align: center;
+    }
+
+    .continue-to-pay:hover {
+      background: #bf5f29;
+      transform: scale(1.05);
     }
   }
-  
+
   .payment-popup {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    right: 0;
+    bottom: 0;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-  }
-  
-  .popup-content {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 8px;
-    text-align: center;
-    position: relative;
-    width: 400px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  }
-  
-  .popup-content .close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #999;
-  }
-  
-  .popup-content h2 {
-    margin-bottom: 1.5rem;
-    font-size: 1.8rem;
-    color: #333;
-  }
-  
-  .popup-content p {
-    margin: 1rem 0;
-    font-size: 1.2rem;
-    color: #666;
-    line-height: 1.6;
-    
-  }
-  
-  .khalti-payment {
-    width: 100%;
-    padding: 0.75rem;
-    background-color: #563d7c;
-    border: none;
-    border-radius: 4px;
-    color: #fff;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  
-    &:hover {
-      background-color: #452f65;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .popup-content {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+      position: relative;
+
+      .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 24px;
+        cursor: pointer;
+      }
+
+      h2 {
+        text-align: center;
+        color: #e6793b;
+        margin-bottom: 20px;
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      p {
+        font-size: 18px;
+        color: #555;
+        margin-bottom: 10px;
+
+        strong {
+          color: #333;
+        }
+      }
+
+      .khalti-payment {
+        display: block;
+        width: 100%;
+        background: #ffc439;
+        color: #111;
+        border: none;
+        padding: 12px;
+        cursor: pointer;
+        border-radius: 50px;
+        font-size: 16px;
+        font-weight: 500;
+        transition: background 0.3s, transform 0.3s;
+        text-align: center;
+      }
+
+      .khalti-payment:hover {
+        background: #ffb019;
+        transform: scale(1.05);
+      }
     }
   }
-  
+}

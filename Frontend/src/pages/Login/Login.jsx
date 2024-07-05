@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./login.scss";
 import newRequest from "../../utils/newRequest";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,15 +8,36 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-
+  const [isSeller, setIsSeller] = useState(false); // State to store seller status
   const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   // Simulated check for seller status from database
+  //   const checkSellerStatus = async () => {
+  //     try {
+  //       const res = await newRequest.get("user/seller-status"); // Replace with actual endpoint
+  //       setIsSeller(res.data.isSeller); // Assuming the response has an 'isSeller' property
+  //     } catch (err) {
+  //       console.log("Error checking seller status:", err);
+  //     }
+  //   };
+
+  //   checkSellerStatus();
+  // }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await newRequest.post("user/login", { email, password });
       localStorage.setItem("currentUser", JSON.stringify(res.data));
-      navigate("/");
+      console.log("Logged in user:", res.data); // Log user details
+
+      // Redirect based on seller status
+      if (res.data.isSeller) {
+        navigate("/freelancerprofile"); // Redirect to freelancer profile
+      } else {
+        navigate("/"); // Redirect to home page
+      }
     } catch (err) {
       const errorMessage = err.response?.data?.message || "An error occurred";
       setError(errorMessage);
@@ -30,7 +51,14 @@ const Login = () => {
         token: response.credential,
       });
       localStorage.setItem("currentUser", JSON.stringify(res.data));
-      navigate("/");
+      console.log("Logged in user:", res.data); // Log user details
+
+      // Redirect based on seller status
+      if (res.data.isSeller) {
+        navigate("/freelancerprofile"); // Redirect to freelancer profile
+      } else {
+        navigate("/"); // Redirect to home page
+      }
     } catch (err) {
       const errorMessage = err.response?.data?.message || "An error occurred";
       setError(errorMessage);
@@ -65,7 +93,18 @@ const Login = () => {
             autoComplete="current-password"
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button type="submit">Login</button>
+          <button type="submit">
+            {isSeller ? (
+              <Link
+                style={{ textDecoration: "none", color: "inherit" }}
+                to="/freelancerprofile"
+              >
+                Login
+              </Link>
+            ) : (
+              "Login"
+            )}
+          </button>
           {error && <div className="error-message">{error}</div>}
           <GoogleLogin
             onSuccess={handleGoogleLoginSuccess}

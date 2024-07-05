@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-import "./profile.scss";
+import "./freelancerprofile.scss";
 
 const App = () => {
   const [profile, setProfile] = useState({
