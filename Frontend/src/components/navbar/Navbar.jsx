@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./navbar.scss";
 import newRequest from "../../utils/newRequest";
 
@@ -19,13 +19,25 @@ function Navbar() {
       window.removeEventListener("scroll", isActive);
     };
   }, []);
+
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const navigate = useNavigate();
+
   const handleLogout = async () => {
     try {
       await newRequest.get("/user/logout");
       localStorage.setItem("currentUser", null);
       navigate("/");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleBecomeSeller = async () => {
+    try {
+      await newRequest.get("/user/logout");
+      localStorage.setItem("currentUser", null);
+      navigate("/register");
     } catch (err) {
       console.log(err);
     }
@@ -42,38 +54,51 @@ function Navbar() {
           <span className="dot">|</span>
         </div>
         <div className="links">
-          {!currentUser?.isSeller && <span>Become a Seller</span>}
+          {currentUser && !currentUser.isSeller && (
+            <Link to="/register" className="link" onClick={handleBecomeSeller}>
+              Become a Seller
+            </Link>
+          )}
           {currentUser ? (
             <div className="user" onClick={() => setOpen(!open)}>
               <img src={currentUser.img || "/img/userprof.avif"} alt="" />
-              <span>{currentUser?.email}</span>
+              <span>{currentUser.email}</span>
               {open && (
                 <div className="options">
-                  {currentUser.isSeller && (
+                  {currentUser.isSeller ? (
                     <>
-                      <Link className="link" to="/mygigs">
-                        Gigs
-                      </Link>
                       <Link className="link" to="/add">
                         Add New Gig
                       </Link>
+                      <Link className="link" to="/messages">
+                        Messages
+                      </Link>
+                      <Link className="link" to="/orders">
+                        Orders
+                      </Link>
+                      <Link className="link" onClick={handleLogout}>
+                        Logout
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <Link className="link" to="/orders">
+                        Orders
+                      </Link>
+                      <Link className="link" to="/profile">
+                        Profile
+                      </Link>
+                      <Link className="link" to="/messages">
+                        Messages
+                      </Link>
+                      <Link className="link" to="/payment">
+                        Billing & Payments
+                      </Link>
+                      <Link className="link" onClick={handleLogout}>
+                        Logout
+                      </Link>
                     </>
                   )}
-                  <Link className="link" to="/profile">
-                    Profile
-                  </Link>
-                  <Link className="link" to="/orders">
-                    Orders
-                  </Link>
-                  <Link className="link" to="/messages">
-                    Messages
-                  </Link>
-                  <Link className="link" to="/payment">
-                    Billing & Payments
-                  </Link>
-                  <Link className="link" onClick={handleLogout}>
-                    Logout
-                  </Link>
                 </div>
               )}
             </div>
@@ -89,41 +114,6 @@ function Navbar() {
           )}
         </div>
       </div>
-      {(active || pathname !== "/") && (
-        <>
-          <hr />
-          {/* <div className="menu">
-            <Link className="link menuLink" to="/">
-              Graphics & Design
-            </Link>
-            <Link className="link menuLink" to="/">
-              Video & Animation
-            </Link>
-            <Link className="link menuLink" to="/">
-              Writing & Translation
-            </Link>
-            <Link className="link menuLink" to="/">
-              AI Services
-            </Link>
-            <Link className="link menuLink" to="/">
-              Digital Marketing
-            </Link>
-            <Link className="link menuLink" to="/">
-              Music & Audio
-            </Link>
-            <Link className="link menuLink" to="/">
-              Programming & Tech
-            </Link>
-            <Link className="link menuLink" to="/">
-              Business
-            </Link>
-            <Link className="link menuLink" to="/">
-              Lifestyle
-            </Link>
-          </div> */}
-          <hr />
-        </>
-      )}
     </div>
   );
 }
