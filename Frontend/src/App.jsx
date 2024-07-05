@@ -1,3 +1,4 @@
+import React from "react";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
 import Home from "./pages/Home/Home";
@@ -9,97 +10,51 @@ import Profile from "./pages/profile/Profile";
 import Messages from "./pages/Messages/Messages";
 import Message from "./pages/Message/Message";
 import MyGigs from "./pages/MyGigs/MyGigs";
+import PaymentDo from "./pages/Paymentdo/Paymentdo";
 import Otp from "./pages/otp/Otp";
 import { Payment } from "./pages/payment/Payment";
-import React from "react";
-import "./App.css";
-import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-} from "@tanstack/react-query";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import "./App.css";
 
 function App() {
   const queryClient = new QueryClient();
 
-  const Layout = () => {
-    return (
-      <div className="app">
-        <QueryClientProvider client={queryClient}>
-          <Navbar />
-          <Outlet />
-          <Footer />
-        </QueryClientProvider>
-      </div>
-    );
-  };
+  const Layout = () => (
+    <div className="app">
+      <QueryClientProvider client={queryClient}>
+        <Navbar />
+        <Outlet />
+        <Footer />
+      </QueryClientProvider>
+    </div>
+  );
+
   const router = createBrowserRouter([
     {
       path: "/",
       element: <Layout />,
       children: [
-        {
-          path: "/",
-          element: <Home />,
-        },
-        {
-          path: "/gigs",
-          element: <Gigs />,
-        },
-        {
-          path: "/gig/:id",
-          element: <Gig />,
-        },
-        {
-          path: "/orders",
-          element: <Orders />,
-        },
-        {
-          path: "/Otp",
-          element: <Otp />,
-        },
-        {
-          path: "/profile",
-          element: <Profile />,
-        },
-        {
-          path: "/payment",
-          element: <Payment />,
-        },
-        {
-          path: "/mygigs",
-          element: <MyGigs />,
-        },
-        {
-          path: "/add",
-          element: <Add />,
-        },
-        {
-          path: "/messages",
-          element: <Messages />,
-        },
-        {
-          path: "/message/:id",
-          element: <Message />,
-        },
-        {
-          path: "/login",
-          element: <Login />,
-        },
-        {
-          path: "/register",
-          element: <Register />,
-        },
-        // {
-        //   path: "/pay",
-        //   element: <Pay />,
-        // },
+        { path: "/", element: <Home /> },
+        { path: "/Paymentdo", element: <PaymentDo /> },
+        { path: "/gigs", element: <Gigs /> },
+        { path: "/gig/:id", element: <Gig /> },
+        { path: "/orders", element: <Orders /> },
+        { path: "/otp", element: <Otp /> },
+        { path: "/profile", element: <Profile /> },
+        { path: "/payment", element: <Payment /> },
+        { path: "/mygigs", element: <MyGigs /> },
+        { path: "/add", element: <Add /> },
+        { path: "/messages", element: <Messages /> },
+        { path: "/message/:id", element: <Message /> },
+        { path: "/login", element: <Login /> },
+        { path: "/register", element: <Register /> },
       ],
     },
   ]);
+
   return (
     <div>
       <RouterProvider router={router} />
