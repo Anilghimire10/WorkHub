@@ -8,6 +8,7 @@ import Reviews from "../../components/reviews/Reviews";
 
 function Gig() {
   const { id } = useParams();
+  const backendURL = "http://localhost:8800"; // Update this to your backend URL
 
   // State to track default image loading
   const [defaultImageLoaded, setDefaultImageLoaded] = useState(false);
@@ -108,7 +109,11 @@ function Gig() {
           <Slider slidesToShow={1} arrowsScroll={1} className="slider">
             {gig.images && gig.images.length > 0 ? (
               gig.images.map((img, index) => (
-                <img key={index} src={img} alt={`Slide ${index}`} />
+                <img
+                  key={index}
+                  src={`${backendURL}/uploads/${img}`}
+                  alt={`Slide ${index}`}
+                />
               ))
             ) : (
               <img

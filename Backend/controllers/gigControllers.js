@@ -9,7 +9,7 @@ export const createGig = async (req, res, next) => {
   console.log("Request Body:", req.body);
   console.log("Request Files:", req.files);
 
-  const cover = req.files["cover"] ? req.files["cover"][0].filename : null; // Check req.files for cover image
+  const cover = req.files["cover"] ? req.files["cover"][0].filename : null;
   const images = req.files["images"]
     ? req.files["images"].map((file) => file.filename)
     : []; // Map filenames for images

@@ -1,0 +1,35 @@
+# Virtual environment
+/venv
+env/
+.venv/
+
+# Python files
+*.pyc
+*.pyo
+__pycache__/
+
+# IDE/Editor specific files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Environment variables
+.env
+
+# Flask instance folder (optional, if you use it)
+instance/
+
+# Flask log files
+*.log
+
+# Flask cache
+*.cache
+
+# NLTK data
+nltk_data/
+
+# Other potential large files/directories
+.mypy_cache/
+.pytest_cache/
+.coverage

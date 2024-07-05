@@ -8,6 +8,8 @@ const GigCard = ({ item }) => {
   // Log the userId to verify it's being passed correctly
   console.log("User ID:", item.userId);
 
+  const backendURL = "http://localhost:8800"; // Update this to your backend URL
+
   const { isLoading, error, data } = useQuery({
     queryKey: [item.userId],
     queryFn: () =>
@@ -22,7 +24,7 @@ const GigCard = ({ item }) => {
   return (
     <Link to={`/gig/${item._id}`} className="link">
       <div className="gigCard">
-        <img src={item.cover} alt={item.title} />
+        <img src={`${backendURL}/uploads/${item.cover}`} alt={item.title} />
         <div className="info">
           {isLoading ? (
             "Loading..."

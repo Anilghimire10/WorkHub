@@ -14,28 +14,28 @@ const Review = ({ review }) => {
   });
 
   console.log("Review component - useQuery data:", data);
-  console.log("Review component - useQuery isLoading:", isLoading);
-  console.log("Review component - useQuery error:", error);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
-  if (!data) return null;
+  if (!data || !data.user) return null;
+
+  const user = data.user;
 
   return (
     <div className="review">
       <div className="user">
-        <img className="pp" src={data.img || "/img/man.png"} alt="" />
+        <img className="pp" src={user.img || "/img/man.png"} alt="" />
         <div className="info">
-          <span>{data.username}</span>
+          <span>{user.username}</span>
           <div className="country">
-            <span>{data.country}</span>
+            <span>{user.country}</span>
           </div>
         </div>
       </div>
       <div className="stars">
         {Array(review.star)
           .fill()
-          .map((item, i) => (
+          .map((_, i) => (
             <img src="/img/star.png" alt="" key={i} />
           ))}
         <span>{review.star}</span>
@@ -43,9 +43,9 @@ const Review = ({ review }) => {
       <p>{review.desc}</p>
       <div className="helpful">
         <span>Helpful?</span>
-        <img src="/img/like.png" alt="" />
+        <img src="/img/like.png" alt="Like" />
         <span>Yes</span>
-        <img src="/img/dislike.png" alt="" />
+        <img src="/img/dislike.png" alt="Dislike" />
         <span>No</span>
       </div>
     </div>
