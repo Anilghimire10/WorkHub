@@ -9,7 +9,7 @@ const Featured = () => {
   const navigate = useNavigate();
 
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  console.log("Current User:", currentUser);
+  // console.log("Current User:", currentUser);
 
   const saveSearchHistory = async (userId, searchQuery) => {
     const response = await newRequest.post("search/search-history", {

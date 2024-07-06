@@ -5,5 +5,5 @@ import { createOrder, getOrder } from "../controllers/orderController.js";
 const router = express.Router();
 
 router.post("/:gigId", isAuthenticated, createOrder);
-router.get("/", isAuthenticated, getOrder);
+router.get("/", getOrder);
 export default router;

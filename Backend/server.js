@@ -13,8 +13,9 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import searchHistoryRoutes from "./routes/searchHistoryRoutes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { errorMiddleware } from "./middlewares/error.js";
 import axios from "axios";
+import { isAuthenticated } from "./middlewares/auth.js";
+import { errorMiddleware } from "./middlewares/error.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url)); // Resolve __dirname
 
@@ -57,20 +58,26 @@ app.use("/api/payment", paymentRoutes);
 app.use("/api/search", searchHistoryRoutes);
 
 // Route to fetch search-based recommendations from Flask API
-app.get("/api/recommendations/search", async (req, res) => {
-  try {
-    const response = await axios.get(
-      "http://localhost:5000/api/recommendations/search"
-    );
-    res.json(response.data);
-  } catch (error) {
-    console.error("Error fetching search recommendations:", error);
-    res.status(500).json({ error: "Failed to fetch search recommendations" });
+app.get(
+  "/api/recommendations/search/:userId",
+  isAuthenticated,
+  async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      // console.log("Fetching recommendations for userId:", userId); // Log userId to debug
+      const response = await axios.get(
+        `http://localhost:5000/api/recommendations/search?userId=${userId}`
+      );
+      res.json(response.data);
+    } catch (error) {
+      console.error("Error fetching search recommendations:", error);
+      res.status(500).json({ error: "Failed to fetch search recommendations" });
+    }
   }
-});
+);
 
 // Route to fetch star-based recommendations from Flask API
-app.get("/api/recommendations/stars", async (req, res) => {
+app.get("/api/recommendations/stars", isAuthenticated, async (req, res) => {
   try {
     const response = await axios.get(
       "http://localhost:5000/api/recommendations/stars"

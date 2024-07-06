@@ -9,7 +9,7 @@ function MyGigs() {
   const currentUser = getCurrentUser();
   const queryClient = useQueryClient();
   console.log("Current user:", currentUser);
-
+  const backendURL = "http://localhost:8800";
   // Log user ID after fetching
   React.useEffect(() => {
     console.log(
@@ -26,7 +26,9 @@ function MyGigs() {
         .then((res) => res.data.gigs),
     enabled: !!currentUser?.userId,
   });
+
   console.log("Fetched gigs:", data);
+
   const mutation = useMutation({
     mutationFn: (id) => newRequest.delete(`gig/${id}`),
     onSuccess: () => {
@@ -75,7 +77,7 @@ function MyGigs() {
                     {gig.images.map((image, index) => (
                       <img
                         key={index}
-                        src={image} // Replace with your API URL and image path
+                        src={`${backendURL}/uploads/${image}`} // Replace with your API URL and image path
                         width={70}
                         height={50}
                         alt=""
