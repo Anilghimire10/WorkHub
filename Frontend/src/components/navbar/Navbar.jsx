@@ -6,7 +6,7 @@ import newRequest from "../../utils/newRequest";
 function Navbar() {
   const [active, setActive] = useState(false);
   const [open, setOpen] = useState(false);
-
+  const backendURL = "http://localhost:8800";
   const { pathname } = useLocation();
 
   const isActive = () => {
@@ -61,7 +61,13 @@ function Navbar() {
           )}
           {currentUser ? (
             <div className="user" onClick={() => setOpen(!open)}>
-              <img src={currentUser.img || "/img/userprof.avif"} alt="" />
+              <img
+                src={
+                  `${backendURL}/uploads/${currentUser.img}` ||
+                  "/img/userprof.avif"
+                }
+                alt=""
+              />
               <span>{currentUser.email}</span>
               {open && (
                 <div className="options">

@@ -1,22 +1,24 @@
-import React from 'react'
-import "./ProjectCard.scss"
-import { Link } from 'react-router-dom';
+import React from "react";
+import "./ProjectCard.scss";
+import { Link } from "react-router-dom";
 
-const ProjectCard = ({item}) => {
+const ProjectCard = ({ item }) => {
+  const gigId = item.gigId || item._id;
+  const backendURL = "http://localhost:8800";
   return (
-    <Link to="/" className='link'>
-    <div className='projectCard'> 
-    <img src={item.img} alt="" />
-    <div className="info">
-      <img src={item.pp} alt="" />
-      <div className="texts">
-        <h2>{item.cat}</h2>
-        <span>{item.username}</span>
+    <Link to={`/gig/${gigId}`} className="link">
+      <div className="projectCard">
+        <img src={`${backendURL}/uploads/${item.cover}`} alt="" />{" "}
+        <div className="info">
+          <div className="texts">
+            <h2>{item.title}</h2>
+            <h2>{item.desc}</h2>
+            <span>{item.category}</span>
+          </div>
+        </div>
       </div>
-    </div>
-    </div>
     </Link>
-  )
-}
+  );
+};
 
-export default ProjectCard
+export default ProjectCard;

@@ -8,7 +8,7 @@ const GigCard = ({ item }) => {
   // Log the userId to verify it's being passed correctly
   console.log("User ID:", item.userId);
 
-  const backendURL = "http://localhost:8800"; // Update this to your backend URL
+  const backendURL = "http://localhost:8800"; // Update this to your backend URL ok
 
   const { isLoading, error, data } = useQuery({
     queryKey: [item.userId],
