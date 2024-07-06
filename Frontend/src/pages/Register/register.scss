@@ -2,20 +2,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #f0f2f5;
 
   form {
-    width: 960px;
-    padding: 100px 0px;
+    background-color: #FFF5EA;
+    width: 800px; // Reduced width
+    padding: 50px 0px; // Reduced padding
     display: flex;
-    gap: 120px;
+    gap: 60px; // Reduced gap between columns
+    padding: 20px;
+    border-radius: 10px; // Added border-radius for rounded corners
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Added box-shadow for a slight elevation effect
 
     h1 {
-      color: gray;
+      color: #333; // Darker color for better contrast
       margin-bottom: 20px;
+      font-size: 24px; // Reduced font size
     }
 
-    .left,
-    .right {
+    .left {
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -23,24 +28,42 @@
       justify-content: space-between;
 
       label {
-        color: gray;
-        font-size: 18px;
+        color: #555; // Slightly darker color
+        font-size: 16px; // Reduced font size
+        margin-top: 20px;
+        margin-bottom: -5px;
       }
 
       input,
       textarea {
-        padding: 20px;
+        height: 40px; // Fixed height for input and textarea
+        width: 100%; // Full width
+        padding: 12px; // Reduced padding
         border: 1px solid rgb(216, 214, 214);
+        border-radius: 5px; // Added border-radius for inputs
+        font-size: 14px; // Reduced font size
+        box-sizing: border-box;
+      }
+
+      textarea {
+        resize: none; // Prevent resizing
+        height: 120px; // Fixed height for textarea
       }
 
       button {
         border: none;
-        padding: 20px;
+        padding: 12px; // Reduced padding
         color: white;
         font-weight: 500;
-        font-size: 18px;
-        background-color: #1dbf73;
+        font-size: 16px; // Reduced font size
+        background-color: #e6793b;
         cursor: pointer;
+        border-radius: 5px; // Added border-radius for button
+        transition: background-color 0.3s; // Added transition for smooth hover effect
+      }
+
+      button:hover {
+        background-color: #ff711e; // Darker green on hover
       }
 
       .toggle {
@@ -51,11 +74,10 @@
         .switch {
           position: relative;
           display: inline-block;
-          width: 50px;
-          height: 24px;
+          width: 40px; // Reduced width
+          height: 20px; // Reduced height
         }
 
-        /* Hide default HTML checkbox */
         .switch input {
           opacity: 0;
           width: 0;
@@ -70,20 +92,18 @@
           right: 0;
           bottom: 0;
           background-color: #ccc;
-          -webkit-transition: 0.4s;
           transition: 0.4s;
-          border-radius: 24px;
+          border-radius: 20px; // Adjusted border-radius for the new size
         }
 
         .slider:before {
           position: absolute;
           content: "";
-          height: 16px;
-          width: 16px;
+          height: 12px; // Reduced size
+          width: 12px; // Reduced size
           left: 4px;
           bottom: 4px;
           background-color: white;
-          -webkit-transition: 0.4s;
           transition: 0.4s;
           border-radius: 50%;
         }
@@ -97,11 +117,150 @@
         }
 
         input:checked + .slider:before {
-          -webkit-transform: translateX(26px);
-          -ms-transform: translateX(26px);
-          transform: translateX(26px);
+          transform: translateX(20px); // Adjusted transform for the new size
         }
       }
+    }
+
+    .right {
+      flex: 1;
+      gap: 10px;
+      justify-content: space-between;
+
+      label {
+        margin-top: 50px;
+        color: #555; // Slightly darker color
+        font-size: 16px; // Reduced font size
+      }
+
+      input,
+      textarea {
+        height: 40px; // Fixed height for input and textarea
+        width: 100%; // Full width
+        padding: 12px; // Reduced padding
+        border: 1px solid rgb(216, 214, 214);
+        border-radius: 5px; // Added border-radius for inputs
+        font-size: 14px; // Reduced font size
+        box-sizing: border-box;
+      }
+
+      textarea {
+        resize: none; // Prevent resizing
+        height: 120px; // Fixed height for textarea
+      }
+
+      button {
+        border: none;
+        padding: 12px; // Reduced padding
+        color: white;
+        font-weight: 500;
+        font-size: 16px; // Reduced font size
+        background-color: #e6793b;
+        cursor: pointer;
+        border-radius: 5px; // Added border-radius for button
+        transition: background-color 0.3s; // Added transition for smooth hover effect
+      }
+
+      button:hover {
+        background-color: #ff711e; // Darker green on hover
+      }
+
+      .toggle {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 40px; // Reduced width
+          height: 20px; // Reduced height
+        }
+
+        .switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          transition: 0.4s;
+          border-radius: 20px; // Adjusted border-radius for the new size
+        }
+
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 12px; // Reduced size
+          width: 12px; // Reduced size
+          left: 4px;
+          bottom: 4px;
+          background-color: white;
+          transition: 0.4s;
+          border-radius: 50%;
+        }
+
+        input:checked + .slider {
+          background-color: #2196f3;
+        }
+
+        input:focus + .slider {
+          box-shadow: 0 0 1px #2196f3;
+        }
+
+        input:checked + .slider:before {
+          transform: translateX(20px); // Adjusted transform for the new size
+        }
+      }
+    }
+
+    .right {
+      margin-top: 30px; // Adjusted margin
+
+      // Country selection CSS
+      label[for="country"] {
+        margin-top: 50px; // Increased margin for country label
+      }
+
+      input[name="country"] {
+        height: 40px; // Fixed height for country input
+        width: 100%; // Full width for country input
+        padding: 12px; // Reduced padding
+        border: 1px solid rgb(216, 214, 214);
+        border-radius: 5px; // Added border-radius for country input
+        font-size: 14px; // Reduced font size
+        box-sizing: border-box;
+        margin-bottom: 20px; // Added margin bottom for spacing
+      }
+    }
+  }
+
+  @media only screen and (max-width: 749px) {
+    form {
+      flex-direction: column;
+      gap: 20px; // Adjusted gap for smaller screens
+    }
+
+    .left, .right {
+      gap: 20px; // Adjusted gap for smaller screens
+    }
+  }
+
+  @media (max-width: 480px) {
+    form {
+      width: 100%; // Full width for mobile
+      padding: 20px; // Adjusted padding for mobile
+    }
+
+    .left, .right {
+      gap: 20px; // Adjusted gap for mobile
     }
   }
 }

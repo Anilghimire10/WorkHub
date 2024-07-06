@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import newRequest from "../../utils/newRequest";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Select from "react-select";
+import newRequest from "../../utils/newRequest";
 import "./register.scss";
 
-function Register() {
+const Register = () => {
   const [file, setFile] = useState(null);
   const [user, setUser] = useState({
     username: "",
@@ -15,12 +16,31 @@ function Register() {
     phone: "",
   });
 
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetch(
+      "https://valid.layercode.workers.dev/list/countries?format=select&flags=true&value=code"
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setCountries(data.countries);
+        setSelectedCountry(data.userSelectValue);
+      });
+  }, []);
 
   const handleChange = (e) => {
     setUser((prev) => {
       return { ...prev, [e.target.name]: e.target.value };
     });
+  };
+
+  const handleCountryChange = (selectedOption) => {
+    setSelectedCountry(selectedOption);
+    setUser((prev) => ({ ...prev, country: selectedOption.value }));
   };
 
   const handleSeller = (e) => {
@@ -59,7 +79,7 @@ function Register() {
       <form onSubmit={handleSubmit}>
         <div className="left">
           <h1>Create a new account</h1>
-          <label htmlFor="">Username</label>
+          <label htmlFor="username">Username</label>
           <input
             name="username"
             type="text"
@@ -67,7 +87,7 @@ function Register() {
             onChange={handleChange}
             required
           />
-          <label htmlFor="">Email</label>
+          <label htmlFor="email">Email</label>
           <input
             name="email"
             type="email"
@@ -75,45 +95,45 @@ function Register() {
             onChange={handleChange}
             required
           />
-          <label htmlFor="">Password</label>
+          <label htmlFor="password">Password</label>
           <input
             name="password"
             type="password"
             onChange={handleChange}
             required
           />
-          <label htmlFor="">Profile Picture</label>
+          <label htmlFor="file">Profile Picture</label>
           <input
             type="file"
             onChange={(e) => setFile(e.target.files[0])}
             required
           />
-          <label htmlFor="">Country</label>
-          <input
-            name="country"
-            type="text"
-            placeholder="Nepal"
-            onChange={handleChange}
+          <label htmlFor="country">Country</label>
+          <Select
+            options={countries}
+            value={selectedCountry}
+            onChange={handleCountryChange}
           />
           <button type="submit">Register</button>
         </div>
         <div className="right">
-          <h1>I want to become a Seller</h1>
+          <h3>I want to become a Seller</h3>
           <div className="toggle">
-            <label htmlFor="">Activate the Seller account</label>
+            <label htmlFor="isSeller">Activate the Seller account</label>
             <label className="switch">
               <input type="checkbox" onChange={handleSeller} />
               <span className="slider round"></span>
             </label>
           </div>
-          <label htmlFor="">Phone Number</label>
+          <label htmlFor="phone">Phone Number</label>
           <input
             name="phone"
             type="text"
             placeholder="+977 9826163997"
             onChange={handleChange}
+            className="phno"
           />
-          <label htmlFor="">Description</label>
+          <label htmlFor="desc">Description</label>
           <textarea
             placeholder="A short description of yourself"
             name="desc"
@@ -126,6 +146,6 @@ function Register() {
       </form>
     </div>
   );
-}
+};
 
 export default Register;
