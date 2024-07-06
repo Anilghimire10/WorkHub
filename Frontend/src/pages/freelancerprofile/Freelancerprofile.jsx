@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-import "./profile.scss";
+import "./freelancerprofile.scss";
 
 const App = () => {
   const [profile, setProfile] = useState({
@@ -78,6 +78,26 @@ const App = () => {
               <li>English</li>
               <li>Spanish</li>
               <li>French</li>
+            </ul>
+          </div>
+          <div div className="profile-App-details-box">
+            <h3>Skills</h3>
+            <ul className="profile-App-details-content-list">
+              <li>JavaScript</li>
+              <li>React</li>
+              <li>Node.js</li>
+            </ul>
+          </div>
+          <div div className="profile-App-details-box">
+            <h3>Education</h3>
+            <p>Education details go here...</p>
+          </div>
+          <div div className="profile-App-details-box">
+            <h3>Certificates</h3>
+            <ul className="profile-App-details-content-list">
+              <li>Certificate 1</li>
+              <li>Certificate 2</li>
+              <li>Certificate 3</li>
             </ul>
           </div>
         </div>

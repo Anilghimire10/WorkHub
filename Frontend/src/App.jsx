@@ -15,6 +15,7 @@ import Otp from "./pages/otp/Otp";
 import { Payment } from "./pages/payment/Payment";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
+import Freelancerprofile from "./pages/freelancerprofile/Freelancerprofile";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
@@ -51,6 +52,7 @@ function App() {
         { path: "/message/:id", element: <Message /> },
         { path: "/login", element: <Login /> },
         { path: "/register", element: <Register /> },
+        { path: "/freelancerprofile", element: <Freelancerprofile /> },
       ],
     },
   ]);

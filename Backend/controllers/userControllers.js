@@ -3,11 +3,11 @@ import path from "path";
 import bcrypt from "bcrypt";
 import ejs from "ejs";
 import { sendEmail } from "../utils/mailHandler.js";
-import ErrorHandler from "../middlewares/error.js";
 import OTP from "../model/Otp.js";
 import User from "../model/users.js";
 import Gig from "../model/gig.js";
 import { sendCookie } from "../utils/feature.js";
+import ErrorHandler from "../middlewares/error.js";
 
 // Get __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);

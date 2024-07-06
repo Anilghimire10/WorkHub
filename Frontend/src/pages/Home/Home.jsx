@@ -11,7 +11,7 @@ import CatCard from "../../components/catcard/CatCard";
 
 const Home = () => {
   const currentUser = getCurrentUser();
-  const userId = currentUser.userId;
+  const userId = currentUser?.userId;
 
   // Fetch data using useQuery hook
   const {
@@ -27,6 +27,7 @@ const Home = () => {
           `http://localhost:5000/api/recommendations/search?userId=${userId}`
         )
         .then((res) => res.data),
+    enabled: !!userId, // Only run query if userId is available
   });
 
   const {
@@ -124,7 +125,7 @@ const Home = () => {
         </div>
       </div>
 
-      {hasSearchHistory && (
+      {userId && hasSearchHistory && (
         <Slide slidesToShow={3} arrowsScroll={3}>
           {dataRecommendations.recommendations_search.map((item) => (
             <ProjectCard key={item._id} item={item} />

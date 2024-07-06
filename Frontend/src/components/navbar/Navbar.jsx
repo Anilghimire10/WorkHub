@@ -8,6 +8,8 @@ function Navbar() {
   const [open, setOpen] = useState(false);
   const backendURL = "http://localhost:8800";
   const { pathname } = useLocation();
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const navigate = useNavigate();
 
   const isActive = () => {
     window.scrollY > 0 ? setActive(true) : setActive(false);
@@ -20,13 +22,10 @@ function Navbar() {
     };
   }, []);
 
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  const navigate = useNavigate();
-
   const handleLogout = async () => {
     try {
       await newRequest.get("user/logout");
-      localStorage.setItem("currentUser", null);
+      localStorage.removeItem("currentUser");
       navigate("/");
     } catch (err) {
       console.log(err);
@@ -36,7 +35,7 @@ function Navbar() {
   const handleBecomeSeller = async () => {
     try {
       await newRequest.get("/user/logout");
-      localStorage.setItem("currentUser", null);
+      localStorage.removeItem("currentUser");
       navigate("/register");
     } catch (err) {
       console.log(err);
@@ -48,7 +47,12 @@ function Navbar() {
       <div className="container">
         <div className="logo">
           <span className="dot">|</span>
-          <Link className="link" to="/">
+          <Link
+            className="link"
+            to={
+              currentUser && currentUser.isSeller ? "/freelancerprofile" : "/"
+            }
+          >
             <span className="text">WorkHub</span>
           </Link>
           <span className="dot">|</span>

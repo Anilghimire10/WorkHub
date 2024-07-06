@@ -1,4 +1,5 @@
 import SearchHistory from "../model/searchHistory.js";
+import ErrorHandler from "../middlewares/error.js";
 
 export const searchHistory = async (req, res, next) => {
   const { userId, searchQuery } = req.body;
