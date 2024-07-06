@@ -1,0 +1,136 @@
+.payment-do {
+  font-family: "Roboto", sans-serif;
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  background: #fff7f2;
+  border-radius: 16px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+.payment-do h1 {
+  text-align: center;
+  color: #e6793b;
+  margin-bottom: 20px;
+  font-size: 28px;
+  font-weight: 700;
+}
+.payment-do .payment-info {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+.payment-do .payment-info .gig-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.payment-do .payment-info .gig-header .gig-cover-image {
+  flex-shrink: 0;
+  margin-right: 20px;
+}
+.payment-do .payment-info .gig-header .gig-cover-image img {
+  border-radius: 8px;
+  width: 100px;
+  height: 100px;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.payment-do .payment-info .gig-header .gig-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+}
+.payment-do .payment-info .gig-details,
+.payment-do .payment-info .service-fee,
+.payment-do .payment-info .total,
+.payment-do .payment-info .delivery-time {
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #555;
+}
+.payment-do .payment-info .gig-details span,
+.payment-do .payment-info .service-fee span,
+.payment-do .payment-info .total span,
+.payment-do .payment-info .delivery-time span {
+  font-weight: 700;
+  color: #333;
+}
+.payment-do .payment-info .continue-to-pay {
+  display: block;
+  width: 100%;
+  background: #e6793b;
+  color: white;
+  border: none;
+  padding: 12px;
+  cursor: pointer;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background 0.3s, transform 0.3s;
+  text-align: center;
+}
+.payment-do .payment-info .continue-to-pay:hover {
+  background: #bf5f29;
+  transform: scale(1.05);
+}
+.payment-do .payment-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.payment-do .payment-popup .popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+.payment-do .payment-popup .popup-content .close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+}
+.payment-do .payment-popup .popup-content h2 {
+  text-align: center;
+  color: #e6793b;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 700;
+}
+.payment-do .payment-popup .popup-content p {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 10px;
+}
+.payment-do .payment-popup .popup-content p strong {
+  color: #333;
+}
+.payment-do .payment-popup .popup-content .khalti-payment {
+  display: block;
+  width: 100%;
+  background: #ffc439;
+  color: #111;
+  border: none;
+  padding: 12px;
+  cursor: pointer;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background 0.3s, transform 0.3s;
+  text-align: center;
+}
+.payment-do .payment-popup .popup-content .khalti-payment:hover {
+  background: #ffb019;
+  transform: scale(1.05);
+}/*# sourceMappingURL=paymentdo.css.map */

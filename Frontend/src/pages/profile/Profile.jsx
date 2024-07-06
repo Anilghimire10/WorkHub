@@ -71,25 +71,13 @@ const App = () => {
           <div div className="profile-App-details-box">
             <h3>Description</h3>
             <p>Description text goes here...</p>
+          </div>
+          <div div className="profile-App-details-box">
             <h3>Languages</h3>
             <ul className="profile-App-details-content-list">
               <li>English</li>
               <li>Spanish</li>
               <li>French</li>
-            </ul>
-            <h3>Skills</h3>
-            <ul className="profile-App-details-content-list">
-              <li>JavaScript</li>
-              <li>React</li>
-              <li>Node.js</li>
-            </ul>
-            <h3>Education</h3>
-            <p>Education details go here...</p>
-            <h3>Certificates</h3>
-            <ul className="profile-App-details-content-list">
-              <li>Certificate 1</li>
-              <li>Certificate 2</li>
-              <li>Certificate 3</li>
             </ul>
           </div>
         </div>
