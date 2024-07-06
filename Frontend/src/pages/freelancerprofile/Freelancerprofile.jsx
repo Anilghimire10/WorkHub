@@ -102,6 +102,7 @@ const App = () => {
           </div>
         </div>
       </header>
+
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
