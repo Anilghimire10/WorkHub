@@ -1,22 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
+import axios from "axios";
 import "./freelancerprofile.scss";
+import getCurrentUser from "../../utils/getCurrentUser";
+import newRequest from "../../utils/newRequest";
 
 const App = () => {
-  const [profile, setProfile] = useState({
-    name: "Rajiv Parajuli",
-    email: "rajivprz@gmail.com",
-    dateJoined: "2021-01-01",
-    profilePicture: "https://via.placeholder.com/150",
+  const backendURL = "http://localhost:8800";
+  const currentUser = getCurrentUser();
+  const userId = currentUser.userId;
+
+  const initialProfileState = {
+    username: "",
+    email: "",
+    createdAt: "",
+    img: "",
     skills: [],
     education: [],
     certificates: [],
     languages: [],
-  });
+    desc: "",
+  };
 
+  const [profile, setProfile] = useState(initialProfileState);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [editProfile, setEditProfile] = useState({ ...profile });
+  const [editProfile, setEditProfile] = useState({ ...initialProfileState });
   const [newProfilePicture, setNewProfilePicture] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchProfileData();
+  }, []);
+
+  const fetchProfileData = async () => {
+    try {
+      const response = await newRequest.get(`user/${userId}`);
+      const fetchedProfile = response.data;
+      console.log("Fetched Profile Data:", fetchedProfile);
+      setProfile(fetchedProfile);
+      setEditProfile({ ...fetchedProfile });
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      setLoading(false);
+    }
+  };
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
@@ -35,57 +63,44 @@ const App = () => {
       setNewProfilePicture(URL.createObjectURL(file));
       setEditProfile((prevProfile) => ({
         ...prevProfile,
-        profilePicture: file,
+        img: file,
       }));
     }
   };
 
-  const handleArrayChange = (field, index, value) => {
-    const updatedArray = [...editProfile[field]];
-    updatedArray[index] = value;
-    setEditProfile((prevProfile) => ({
-      ...prevProfile,
-      [field]: updatedArray,
-    }));
-  };
+  const handleUpdate = async () => {
+    try {
+      const formData = new FormData();
+      Object.keys(editProfile).forEach((key) => {
+        if (key === "img" && editProfile[key] instanceof File) {
+          formData.append(key, editProfile[key]);
+        } else {
+          formData.append(key, JSON.stringify(editProfile[key]));
+        }
+      });
 
-  const handleAddItem = (field) => {
-    if (field === "certificates") {
-      const updatedArray = [...editProfile[field], { name: "", file: null }];
-      setEditProfile((prevProfile) => ({
-        ...prevProfile,
-        [field]: updatedArray,
-      }));
-    } else {
-      const updatedArray = [...editProfile[field], ""];
-      setEditProfile((prevProfile) => ({
-        ...prevProfile,
-        [field]: updatedArray,
-      }));
+      const response = await newRequest.put(`user/${userId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log("Profile Update Response:", response.data);
+      setProfile({ ...editProfile });
+      closeModal();
+    } catch (error) {
+      console.error("Error updating profile:", error);
     }
   };
 
-  const handleRemoveItem = (field, index) => {
-    const updatedArray = [...editProfile[field]];
-    updatedArray.splice(index, 1);
-    setEditProfile((prevProfile) => ({
-      ...prevProfile,
-      [field]: updatedArray,
-    }));
-  };
+  if (loading) {
+    return <p>Loading profile...</p>;
+  }
 
-  const handleFileChange = (field, index, file) => {
-    const updatedArray = [...editProfile[field]];
-    updatedArray[index].file = file;
-    setEditProfile((prevProfile) => ({
-      ...prevProfile,
-      [field]: updatedArray,
-    }));
-  };
-
-  const handleUpdate = () => {
-    setProfile({ ...editProfile });
-    closeModal();
+  // Function to format createdAt date to display only the date part
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString("en-US", options);
   };
 
   return (
@@ -95,14 +110,14 @@ const App = () => {
           <div className="profile-App-profilepic">
             <img
               className="profile-App-profile-picture"
-              src={profile.profilePicture}
+              src={`${backendURL}/uploads/${profile.user.img}`}
               alt="Profile"
             />
           </div>
-          <h2>{profile.name}</h2>
+          <h2>{profile.user.username}</h2>
           <div className="profile-App-details">
-            <p>Email : {profile.email}</p>
-            <p>Joined on: {profile.dateJoined}</p>
+            <p>Email : {profile.user.email}</p>
+            <p>Joined on: {formatDate(profile.user.createdAt)}</p>
           </div>
           <button className="profile-App-edit-button" onClick={openModal}>
             Edit Profile
@@ -114,122 +129,38 @@ const App = () => {
           </div>
           <div className="profile-App-details-box">
             <h3>Description</h3>
-            <p>Description text goes here...</p>
+            <p>{profile.user.desc}</p>
           </div>
           <div className="profile-App-details-box">
             <h3>Languages</h3>
             <ul className="profile-App-details-content-list">
-              {editProfile.languages.map((language, index) => (
-                <li key={index}>
-                  <input
-                    type="text"
-                    value={language}
-                    onChange={(e) =>
-                      handleArrayChange("languages", index, e.target.value)
-                    }
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveItem("languages", index)}
-                  >
-                    Remove
-                  </button>
-                </li>
-              ))}
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleAddItem("languages")}
-                >
-                  Add Language
-                </button>
-              </li>
+              {/* {profile.languages.map((language, index) => (
+                <li key={index}>{language}</li>
+              ))} */}
             </ul>
           </div>
           <div className="profile-App-details-box">
             <h3>Skills</h3>
             <ul className="profile-App-details-content-list">
-              {editProfile.skills.map((skill, index) => (
-                <li key={index}>
-                  <input
-                    type="text"
-                    value={skill}
-                    onChange={(e) =>
-                      handleArrayChange("skills", index, e.target.value)
-                    }
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveItem("skills", index)}
-                  >
-                    Remove
-                  </button>
-                </li>
-              ))}
-              <li>
-                <button type="button" onClick={() => handleAddItem("skills")}>
-                  Add Skill
-                </button>
-              </li>
+              {/* {profile.skills.map((skill, index) => (
+                <li key={index}>{skill}</li>
+              ))} */}
             </ul>
           </div>
           <div className="profile-App-details-box">
             <h3>Education</h3>
             <ul className="profile-App-details-content-list">
-              {editProfile.education.map((edu, index) => (
-                <li key={index}>
-                  <input
-                    type="text"
-                    value={edu}
-                    onChange={(e) =>
-                      handleArrayChange("education", index, e.target.value)
-                    }
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveItem("education", index)}
-                  >
-                    Remove
-                  </button>
-                </li>
-              ))}
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleAddItem("education")}
-                >
-                  Add Education
-                </button>
-              </li>
+              {/* {profile.education.map((edu, index) => (
+                <li key={index}>{edu}</li>
+              ))} */}
             </ul>
           </div>
           <div className="profile-App-details-box">
             <h3>Certificates</h3>
             <ul className="profile-App-details-content-list">
-              {editProfile.certificates.map((cert, index) => (
-                <li key={index}>
-                  <input
-                    type="file"
-                    onChange={(e) =>
-                      handleFileChange("certificates", index, e.target.files[0])
-                    }
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveItem("certificates", index)}
-                  >
-                    Remove
-                  </button>
-                </li>
-              ))}
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleAddItem("certificates")}
-                >
-                  Add Certificate
-                </button>
-              </li>
+              {/* {profile.certificates.map((cert, index) => (
+                <li key={index}>{cert.name}</li>
+              ))} */}
             </ul>
           </div>
         </div>
@@ -246,67 +177,54 @@ const App = () => {
           <label htmlFor="profilePictureInput">
             <img
               className="profile-Modal-modal-profile-picture"
-              src={newProfilePicture || profile.profilePicture}
+              src={newProfilePicture || `${backendURL}/uploads/${profile.img}`}
               alt="Profile"
             />
+            <input
+              type="file"
+              id="profilePictureInput"
+              onChange={handleProfilePictureChange}
+            />
           </label>
+        </div>
+        <div className="profile-Modal-form-group">
+          <label htmlFor="username">Username</label>
           <input
-            id="profilePictureInput"
-            type="file"
-            style={{ display: "none" }}
-            onChange={handleProfilePictureChange}
+            type="text"
+            id="username"
+            name="username"
+            value={editProfile.username}
+            onChange={handleChange}
           />
         </div>
-        <form>
-          <div className="profile-Modal-form-group">
-            <label>Full Name</label>
-            <input
-              type="text"
-              name="name"
-              value={editProfile.name}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="profile-Modal-form-group">
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              value={editProfile.email}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="profile-Modal-form-group">
-            <label>Password</label>
-            <input
-              type="password"
-              name="password"
-              onChange={handleChange}
-              placeholder="Enter new password"
-            />
-          </div>
-          <div className="profile-Modal-form-group">
-            <label>Confirm Password</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              onChange={handleChange}
-              placeholder="Confirm new password"
-            />
-          </div>
-          <button
-            type="button"
-            className="profile-Modal-update-button"
-            onClick={handleUpdate}
-          >
-            Update
-          </button>
-        </form>
+        <div className="profile-Modal-form-group">
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={editProfile.email}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="profile-Modal-form-group">
+          <label htmlFor="desc">Description</label>
+          <textarea
+            id="desc"
+            name="desc"
+            value={editProfile.desc}
+            onChange={handleChange}
+          />
+        </div>
+        <button className="profile-Modal-save-button" onClick={handleUpdate}>
+          Save Changes
+        </button>
+        <button className="profile-Modal-cancel-button" onClick={closeModal}>
+          Cancel
+        </button>
       </Modal>
     </div>
   );
 };
-
-Modal.setAppElement("#root");
 
 export default App;

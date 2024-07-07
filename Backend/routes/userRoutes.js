@@ -8,6 +8,7 @@ import {
   logout,
   register,
   requestSignupToken,
+  updateUser,
 } from "../controllers/userControllers.js";
 import { isAuthenticated } from "../middlewares/auth.js";
 import passport from "passport";
@@ -20,6 +21,7 @@ router.post("/register", register);
 router.post("/login", login);
 router.get("/logout", logout);
 router.delete("/:id", isAuthenticated, deleteUser);
+router.put("/:id", updateUser);
 router.get("/:userId", getUser);
 router.get("/", getAllUser);
 router.post("/preferences", getPreferences);

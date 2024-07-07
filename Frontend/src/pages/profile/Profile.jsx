@@ -1,18 +1,65 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
+import axios from "axios";
 import "./profile.scss";
+import getCurrentUser from "../../utils/getCurrentUser";
+import newRequest from "../../utils/newRequest";
 
 const App = () => {
+  const backendURL = "http://localhost:8800";
+  const currentUser = getCurrentUser();
+  const userId = currentUser.userId;
+
   const [profile, setProfile] = useState({
-    name: "Rajiv Parajuli",
-    email: "rajivprz@gmail.com",
-    dateJoined: "2021-01-01",
-    profilePicture: "https://via.placeholder.com/150",
+    name: "",
+    email: "",
+    createdAt: "",
+    username: "",
+    country: "",
+    phonenumber: "",
+    desc: "",
+    img: "", // Ensure img is part of profile state
   });
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [editProfile, setEditProfile] = useState(profile);
+  const [editProfile, setEditProfile] = useState({
+    name: "",
+    email: "",
+    username: "",
+    country: "",
+    phonenumber: "",
+    desc: "",
+  });
+
   const [newProfilePicture, setNewProfilePicture] = useState(null);
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      const response = await newRequest.get(`/user/${userId}`);
+      if (response.data.success) {
+        const userProfile = response.data.user;
+        setProfile({
+          ...userProfile,
+          img: userProfile.img || "", // Ensure img is set or default to empty string
+        });
+        setEditProfile({
+          email: userProfile.email,
+          username: profile.username,
+          country: userProfile.country,
+          phonenumber: userProfile.phonenumber,
+          desc: userProfile.desc,
+        });
+      } else {
+        console.error("Error fetching profile:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
+  };
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
@@ -31,34 +78,72 @@ const App = () => {
       setNewProfilePicture(URL.createObjectURL(file));
       setEditProfile((prevProfile) => ({
         ...prevProfile,
-        profilePicture: file,
+        img: file,
       }));
     }
   };
 
-  const handleUpdate = () => {
-    setProfile((prevProfile) => ({
-      ...editProfile,
-      profilePicture: newProfilePicture || prevProfile.profilePicture,
-    }));
-    closeModal();
+  const handleUpdate = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("email", editProfile.email);
+      formData.append("username", editProfile.username);
+      formData.append("country", editProfile.country);
+      formData.append("phonenumber", editProfile.phonenumber);
+      formData.append("desc", editProfile.desc);
+      if (editProfile.img instanceof File) {
+        formData.append("img", editProfile.img);
+      }
+
+      // Capture the profile data before updating
+      console.log("Profile before update:", profile);
+
+      const response = await newRequest.put(`/user/${userId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (response.data.success) {
+        // Update the profile state with the updated data
+        setProfile(response.data.user);
+        // Capture the profile data after updating
+        console.log("Profile after update:", response.data.user);
+
+        closeModal(); // Close the modal after successful update
+      } else {
+        console.error("Error updating profile:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
   };
+
+  // Ensure profile.img is defined before accessing it
+  const profileImgSrc = profile.img
+    ? `${backendURL}/uploads/${profile.img}`
+    : "";
 
   return (
     <div className="profile-App">
       <header className="profile-App-header">
         <div className="profile-App-profile-box">
           <div className="profile-App-profilepic">
-            <img
-              className="profile-App-profile-picture"
-              src={profile.profilePicture}
-              alt="Profile"
-            />
+            {profile.img && ( // Check if profile.img is defined before rendering
+              <img
+                className="profile-App-profile-picture"
+                src={`${backendURL}/uploads/${profile.img}`}
+                alt="Profile"
+              />
+            )}
           </div>
           <h2>{profile.name}</h2>
           <div className="profile-App-details">
-            <p>Email : {profile.email}</p>
-            <p>Joined on: {profile.dateJoined}</p>
+            <p>Email: {profile.email}</p>
+            <p>Joined on: {profile.createdAt}</p>
+            <p>Username: {profile.username}</p>
+            <p>Country: {profile.country}</p>
+            <p>Phone Number: {profile.phonenumber}</p>
           </div>
           <button className="profile-App-edit-button" onClick={openModal}>
             Edit Profile
@@ -68,11 +153,11 @@ const App = () => {
           <div className="profile-App-edit-icon" onClick={openModal}>
             <i className="fas fa-pen"></i>
           </div>
-          <div div className="profile-App-details-box">
+          <div className="profile-App-details-box">
             <h3>Description</h3>
-            <p>Description text goes here...</p>
+            <p>{profile.desc}</p>
           </div>
-          <div div className="profile-App-details-box">
+          <div className="profile-App-details-box">
             <h3>Languages</h3>
             <ul className="profile-App-details-content-list">
               <li>English</li>
@@ -93,7 +178,7 @@ const App = () => {
           <label htmlFor="profilePictureInput">
             <img
               className="profile-Modal-modal-profile-picture"
-              src={newProfilePicture || profile.profilePicture}
+              src={profileImgSrc} // Display current profile image in the modal
               alt="Profile"
             />
           </label>
@@ -105,7 +190,7 @@ const App = () => {
           />
         </div>
         <form>
-          <div className="profile-Modal-form-group">
+          {/* <div className="profile-Modal-form-group">
             <label>Full Name</label>
             <input
               type="text"
@@ -113,8 +198,8 @@ const App = () => {
               value={editProfile.name}
               onChange={handleChange}
             />
-          </div>
-          <div className="profile-Modal-form-group">
+          </div> */}
+          {/* <div className="profile-Modal-form-group">
             <label>Email</label>
             <input
               type="email"
@@ -122,23 +207,40 @@ const App = () => {
               value={editProfile.email}
               onChange={handleChange}
             />
-          </div>
+          </div> */}
           <div className="profile-Modal-form-group">
-            <label>Password</label>
+            <label>Username</label>
             <input
-              type="password"
-              name="password"
+              type="text"
+              name="username"
+              value={editProfile.username}
               onChange={handleChange}
-              placeholder="Enter new password"
             />
           </div>
           <div className="profile-Modal-form-group">
-            <label>Confirm Password</label>
+            <label>Country</label>
             <input
-              type="password"
-              name="confirmPassword"
+              type="text"
+              name="country"
+              value={editProfile.country}
               onChange={handleChange}
-              placeholder="Confirm new password"
+            />
+          </div>
+          <div className="profile-Modal-form-group">
+            <label>Phone Number</label>
+            <input
+              type="text"
+              name="phonenumber"
+              value={editProfile.phonenumber}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="profile-Modal-form-group">
+            <label>Description</label>
+            <textarea
+              name="desc"
+              value={editProfile.desc}
+              onChange={handleChange}
             />
           </div>
           <button
