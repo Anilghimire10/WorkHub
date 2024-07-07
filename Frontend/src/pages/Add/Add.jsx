@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import newRequest from "../../utils/newRequest";
 import "./add.scss";
-
+import React, { useState } from "react";
 const Add = () => {
   const navigate = useNavigate();
 

@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Select from "react-select";
+import React, { useState } from "react";
 import newRequest from "../../utils/newRequest";
+import { useNavigate } from "react-router-dom";
 import "./register.scss";
 
-const Register = () => {
+function Register() {
   const [file, setFile] = useState(null);
   const [user, setUser] = useState({
     username: "",
@@ -16,31 +15,12 @@ const Register = () => {
     phone: "",
   });
 
-  const [countries, setCountries] = useState([]);
-  const [selectedCountry, setSelectedCountry] = useState(null);
-
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetch(
-      "https://valid.layercode.workers.dev/list/countries?format=select&flags=true&value=code"
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setCountries(data.countries);
-        setSelectedCountry(data.userSelectValue);
-      });
-  }, []);
 
   const handleChange = (e) => {
     setUser((prev) => {
       return { ...prev, [e.target.name]: e.target.value };
     });
-  };
-
-  const handleCountryChange = (selectedOption) => {
-    setSelectedCountry(selectedOption);
-    setUser((prev) => ({ ...prev, country: selectedOption.value }));
   };
 
   const handleSeller = (e) => {
@@ -79,7 +59,7 @@ const Register = () => {
       <form onSubmit={handleSubmit}>
         <div className="left">
           <h1>Create a new account</h1>
-          <label htmlFor="username">Username</label>
+          <label htmlFor="">Username</label>
           <input
             name="username"
             type="text"
@@ -87,7 +67,7 @@ const Register = () => {
             onChange={handleChange}
             required
           />
-          <label htmlFor="email">Email</label>
+          <label htmlFor="">Email</label>
           <input
             name="email"
             type="email"
@@ -95,37 +75,38 @@ const Register = () => {
             onChange={handleChange}
             required
           />
-          <label htmlFor="password">Password</label>
+          <label htmlFor="">Password</label>
           <input
             name="password"
             type="password"
             onChange={handleChange}
             required
           />
-          <label htmlFor="file">Profile Picture</label>
+          <label htmlFor="">Profile Picture</label>
           <input
             type="file"
             onChange={(e) => setFile(e.target.files[0])}
             required
           />
-          <label htmlFor="country">Country</label>
-          <Select
-            options={countries}
-            value={selectedCountry}
-            onChange={handleCountryChange}
+          <label htmlFor="">Country</label>
+          <input
+            name="country"
+            type="text"
+            placeholder="Nepal"
+            onChange={handleChange}
           />
           <button type="submit">Register</button>
         </div>
         <div className="right">
           <h3>I want to become a Seller</h3>
           <div className="toggle">
-            <label htmlFor="isSeller">Activate the Seller account</label>
+            <label htmlFor="">Activate the Seller account</label>
             <label className="switch">
               <input type="checkbox" onChange={handleSeller} />
               <span className="slider round"></span>
             </label>
           </div>
-          <label htmlFor="phone">Phone Number</label>
+          <label htmlFor="">Phone Number</label>
           <input
             name="phone"
             type="text"
@@ -133,7 +114,7 @@ const Register = () => {
             onChange={handleChange}
             className="phno"
           />
-          <label htmlFor="desc">Description</label>
+          <label htmlFor="">Description</label>
           <textarea
             placeholder="A short description of yourself"
             name="desc"
@@ -146,6 +127,6 @@ const Register = () => {
       </form>
     </div>
   );
-};
+}
 
 export default Register;
