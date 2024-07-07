@@ -1,22 +1,25 @@
-import { serializeUser, deserializeUser, use } from "passport";
+import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import User, { findById, findOne } from "../model/users.js";
+import User from "../model/users.js";
+import dotenv from "dotenv";
 
-serializeUser((admin, done) => {
-  done(null, admin.id);
+dotenv.config();
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
 });
 
-deserializeUser((id, done) => {
-  findById(id)
-    .then((admin) => {
-      done(null, admin);
+passport.deserializeUser((id, done) => {
+  User.findById(id)
+    .then((user) => {
+      done(null, user);
     })
     .catch((err) => {
       done(err, null);
     });
 });
 
-use(
+passport.use(
   new GoogleStrategy(
     {
       callbackURL: "http://localhost:8800/api/user/google/redirect",
@@ -24,24 +27,28 @@ use(
       clientSecret: process.env.CLIENT_SECRET,
     },
     (accessToken, refreshToken, profile, done) => {
-      // Passport callback function
-      findOne({ googleId: profile.id })
+      console.log("Google profile ID:", profile.id); // Logging the profile ID
+      User.findOne({ googleId: profile.id })
         .then((currentUser) => {
           if (currentUser) {
+            console.log("Current user found:", currentUser);
             done(null, currentUser);
           } else {
-            new Admin({
+            new User({
               googleId: profile.id,
               username: profile.displayName,
               email: profile.emails[0].value,
+              password: "", // Add a default password if required
             })
               .save()
               .then((newUser) => {
+                console.log("New user created:", newUser);
                 done(null, newUser);
               });
           }
         })
         .catch((err) => {
+          console.error("Error in GoogleStrategy:", err);
           done(err, null);
         });
     }

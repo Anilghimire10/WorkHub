@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./login.scss";
 import newRequest from "../../utils/newRequest";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,35 +8,19 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const [isSeller, setIsSeller] = useState(false); // State to store seller status
   const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   // Simulated check for seller status from database
-  //   const checkSellerStatus = async () => {
-  //     try {
-  //       const res = await newRequest.get("user/seller-status"); // Replace with actual endpoint
-  //       setIsSeller(res.data.isSeller); // Assuming the response has an 'isSeller' property
-  //     } catch (err) {
-  //       console.log("Error checking seller status:", err);
-  //     }
-  //   };
-
-  //   checkSellerStatus();
-  // }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await newRequest.post("user/login", { email, password });
       localStorage.setItem("currentUser", JSON.stringify(res.data));
-      console.log("Logged in user:", res.data); // Log user details
+      console.log("Logged in user:", res.data);
 
-      // Redirect based on seller status
       if (res.data.isSeller) {
-        navigate("/freelancerprofile"); // Redirect to freelancer profile
+        navigate("/freelancerprofile");
       } else {
-        navigate("/"); // Redirect to home page
+        navigate("/");
       }
     } catch (err) {
       const errorMessage = err.response?.data?.message || "An error occurred";
@@ -47,17 +31,16 @@ const Login = () => {
 
   const handleGoogleLoginSuccess = async (response) => {
     try {
-      const res = await newRequest.post("user/google-login", {
+      const res = await newRequest.post("user/google", {
         token: response.credential,
       });
       localStorage.setItem("currentUser", JSON.stringify(res.data));
-      console.log("Logged in user:", res.data); // Log user details
+      console.log("Logged in user:", res.data);
 
-      // Redirect based on seller status
       if (res.data.isSeller) {
-        navigate("/freelancerprofile"); // Redirect to freelancer profile
+        navigate("/freelancerprofile");
       } else {
-        navigate("/"); // Redirect to home page
+        navigate("/");
       }
     } catch (err) {
       const errorMessage = err.response?.data?.message || "An error occurred";
@@ -72,7 +55,7 @@ const Login = () => {
   };
 
   return (
-    <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
+    <GoogleOAuthProvider clientId="695218282820-c00260fvcfs4ebonc1nf9lvt4fb6tbel.apps.googleusercontent.com">
       <div className="login">
         <form onSubmit={handleSubmit}>
           <h1>Log in</h1>
@@ -93,31 +76,11 @@ const Login = () => {
             autoComplete="current-password"
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button type="submit">
-            {isSeller ? (
-              <Link
-                style={{ textDecoration: "none", color: "inherit" }}
-                to="/freelancerprofile"
-              >
-                Login
-              </Link>
-            ) : (
-              "Login"
-            )}
-          </button>
+          <button type="submit">Login</button>
           {error && <div className="error-message">{error}</div>}
           <GoogleLogin
             onSuccess={handleGoogleLoginSuccess}
             onFailure={handleGoogleLoginFailure}
-            render={(renderProps) => (
-              <button
-                className="google-login"
-                onClick={renderProps.onClick}
-                disabled={renderProps.disabled}
-              >
-                Login with Google
-              </button>
-            )}
           />
           <p className="registerone">
             Don't have an account?{" "}
