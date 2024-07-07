@@ -61,13 +61,13 @@ const Register = () => {
     }
 
     try {
-      await newRequest.post("user/signup", formData, {
+      const response = await newRequest.post("user/signup", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      console.log("Form data submitted successfully");
+      console.log("Form data submitted successfully:", response.data);
       navigate("/otp");
     } catch (err) {
       console.error("Error submitting form data:", err);

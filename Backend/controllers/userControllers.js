@@ -15,19 +15,19 @@ const __dirname = path.dirname(__filename);
 
 export const requestSignupToken = async (req, res, next) => {
   try {
+    // Log the entire request body
+    console.log("Request Body:", req.body);
+
+    // Check if an image file is included in the request
+    console.log("File:", req.file);
+
     let user = await User.findOne({ email: req.body.email });
     if (user) return next(new ErrorHandler("User Already Exist", 404));
 
-    const {
-      username,
-      email,
-      password,
-      img,
-      phonenumber,
-      country,
-      desc,
-      isSeller,
-    } = req.body;
+    const { username, email, password, phonenumber, country, desc, isSeller } =
+      req.body;
+
+    const img = req.file ? req.file.filename : null;
 
     // Get all OTPs
     const otpResult = await OTP.find();

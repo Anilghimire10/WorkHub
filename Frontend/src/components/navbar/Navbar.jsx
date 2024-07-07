@@ -6,9 +6,13 @@ import newRequest from "../../utils/newRequest";
 function Navbar() {
   const [active, setActive] = useState(false);
   const [open, setOpen] = useState(false);
+
   const backendURL = "http://localhost:8800";
+
   const { pathname } = useLocation();
+
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
   const navigate = useNavigate();
 
   const isActive = () => {
@@ -34,7 +38,7 @@ function Navbar() {
 
   const handleBecomeSeller = async () => {
     try {
-      await newRequest.get("/user/logout");
+      await newRequest.get("user/logout");
       localStorage.removeItem("currentUser");
       navigate("/register");
     } catch (err) {

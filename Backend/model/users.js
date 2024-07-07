@@ -39,6 +39,9 @@ const userSchema = new Schema(
     preferences: {
       jobCategories: [String],
     },
+    googleId: {
+      type: String,
+    },
   },
   {
     timestamps: true,
