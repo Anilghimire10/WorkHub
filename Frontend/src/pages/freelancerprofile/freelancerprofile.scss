@@ -1,161 +1,180 @@
 .profile-App {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    padding: 20px;
-    box-sizing: border-box;
-    position: relative; 
-  }
-  
-  .profile-App-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    position: relative; 
-    z-index: 1; 
-    
-  }
-  
-  .profile-App-profile-box {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    position: relative; 
-    z-index: 2; 
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative;
+}
 
-  }
-  
-  .profile-App-profilepic {
-    text-align: center;
-    margin-bottom: 10px;
-  }
-  
-  .profile-App-profile-picture {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-  }
-  
-  .profile-App-details {
-    text-align: left;
+.profile-App-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  z-index: 1;
+}
 
-  }
-  
-  .profile-App-edit-button {
-    margin: 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  
-  .profile-App-edit-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .profile-App-editable-details {
-    flex-grow: 1;
-    margin-left: 20px;
-  }
-  
-  .profile-App-edit-icon {
-    cursor: pointer;
-    text-align: right;
-    margin-bottom: 10px;
-  }
-  
-  .profile-App-edit-icon i {
-    color: #007bff;
-    font-size: 18px;
-  }
-  
-  .profile-App-details-box {
-    background-color: #fff;
-    margin-bottom: 20px;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .profile-App-details-box h3 {
-    color: #007bff;
-    font-size: 20px;
-    margin-bottom: 10px;
-  }
-  
-  .profile-App-details-box p {
-    margin: 0;
-    color: #333;
-  }
-  
-  .profile-App-details-content-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .profile-App-details-content-list li {
-    margin-bottom: 5px;
-    color: #555;
-  }
-  
-  .profile-Modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 30px;
-    border-radius: 8px;
-    background-color: #ffffff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    width: 600px; 
-    max-height: 90%;
-    overflow: auto;
-    z-index: 1000; 
-  }
-  
-  .profile-Modal-form-group {
-    margin-bottom: 20px;
-  }
-  
-  .profile-Modal-form-group label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #333;
-  }
-  
-  .profile-Modal-form-group input {
-    width: 100%;
-    padding: 8px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-  
-  .profile-Modal-update-button {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  
-  .profile-Modal-update-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .profile-Overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999; 
-  }
-  
+.profile-App-profile-box {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  position: relative;
+  z-index: 2;
+}
+
+.profile-App-profilepic {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.profile-App-profile-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
+
+.profile-App-details {
+  text-align: left;
+}
+
+.profile-App-edit-button {
+  margin: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.profile-App-edit-button:hover {
+  background-color: #0056b3;
+}
+
+.profile-App-editable-details {
+  flex-grow: 1;
+  margin-left: 20px;
+}
+
+.profile-App-edit-icon {
+  cursor: pointer;
+  text-align: right;
+  margin-bottom: 10px;
+}
+
+.profile-App-edit-icon i {
+  color: #007bff;
+  font-size: 18px;
+}
+
+.profile-App-details-box {
+  background-color: #fff;
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-App-details-box h3 {
+  color: #007bff;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.profile-App-details-box p {
+  margin: 0;
+  color: #333;
+}
+
+.profile-App-details-content-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.profile-App-details-content-list li {
+  margin-bottom: 5px;
+  color: #555;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile-App-details-content-list li input {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.profile-App-details-content-list li button {
+  width: 120px; /* Adjust width as needed */
+  height: 30px; /* Adjust height as needed */
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.profile-App-details-content-list li button:hover {
+  background-color: #c82333;
+}
+
+.profile-Modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 30px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  width: 600px;
+  max-height: 90%;
+  overflow: auto;
+  z-index: 1000;
+}
+
+.profile-Modal-form-group {
+  margin-bottom: 20px;
+}
+
+.profile-Modal-form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.profile-Modal-form-group input {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.profile-Modal-update-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.profile-Modal-update-button:hover {
+  background-color: #0056b3;
+}
+
+.profile-Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}

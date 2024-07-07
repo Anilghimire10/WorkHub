@@ -8,10 +8,14 @@ const App = () => {
     email: "rajivprz@gmail.com",
     dateJoined: "2021-01-01",
     profilePicture: "https://via.placeholder.com/150",
+    skills: [],
+    education: [],
+    certificates: [],
+    languages: [],
   });
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [editProfile, setEditProfile] = useState(profile);
+  const [editProfile, setEditProfile] = useState({ ...profile });
   const [newProfilePicture, setNewProfilePicture] = useState(null);
 
   const openModal = () => setModalIsOpen(true);
@@ -36,11 +40,51 @@ const App = () => {
     }
   };
 
-  const handleUpdate = () => {
-    setProfile((prevProfile) => ({
-      ...editProfile,
-      profilePicture: newProfilePicture || prevProfile.profilePicture,
+  const handleArrayChange = (field, index, value) => {
+    const updatedArray = [...editProfile[field]];
+    updatedArray[index] = value;
+    setEditProfile((prevProfile) => ({
+      ...prevProfile,
+      [field]: updatedArray,
     }));
+  };
+
+  const handleAddItem = (field) => {
+    if (field === "certificates") {
+      const updatedArray = [...editProfile[field], { name: "", file: null }];
+      setEditProfile((prevProfile) => ({
+        ...prevProfile,
+        [field]: updatedArray,
+      }));
+    } else {
+      const updatedArray = [...editProfile[field], ""];
+      setEditProfile((prevProfile) => ({
+        ...prevProfile,
+        [field]: updatedArray,
+      }));
+    }
+  };
+
+  const handleRemoveItem = (field, index) => {
+    const updatedArray = [...editProfile[field]];
+    updatedArray.splice(index, 1);
+    setEditProfile((prevProfile) => ({
+      ...prevProfile,
+      [field]: updatedArray,
+    }));
+  };
+
+  const handleFileChange = (field, index, file) => {
+    const updatedArray = [...editProfile[field]];
+    updatedArray[index].file = file;
+    setEditProfile((prevProfile) => ({
+      ...prevProfile,
+      [field]: updatedArray,
+    }));
+  };
+
+  const handleUpdate = () => {
+    setProfile({ ...editProfile });
     closeModal();
   };
 
@@ -68,36 +112,124 @@ const App = () => {
           <div className="profile-App-edit-icon" onClick={openModal}>
             <i className="fas fa-pen"></i>
           </div>
-          <div div className="profile-App-details-box">
+          <div className="profile-App-details-box">
             <h3>Description</h3>
             <p>Description text goes here...</p>
           </div>
-          <div div className="profile-App-details-box">
+          <div className="profile-App-details-box">
             <h3>Languages</h3>
             <ul className="profile-App-details-content-list">
-              <li>English</li>
-              <li>Spanish</li>
-              <li>French</li>
+              {editProfile.languages.map((language, index) => (
+                <li key={index}>
+                  <input
+                    type="text"
+                    value={language}
+                    onChange={(e) =>
+                      handleArrayChange("languages", index, e.target.value)
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveItem("languages", index)}
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleAddItem("languages")}
+                >
+                  Add Language
+                </button>
+              </li>
             </ul>
           </div>
-          <div div className="profile-App-details-box">
+          <div className="profile-App-details-box">
             <h3>Skills</h3>
             <ul className="profile-App-details-content-list">
-              <li>JavaScript</li>
-              <li>React</li>
-              <li>Node.js</li>
+              {editProfile.skills.map((skill, index) => (
+                <li key={index}>
+                  <input
+                    type="text"
+                    value={skill}
+                    onChange={(e) =>
+                      handleArrayChange("skills", index, e.target.value)
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveItem("skills", index)}
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+              <li>
+                <button type="button" onClick={() => handleAddItem("skills")}>
+                  Add Skill
+                </button>
+              </li>
             </ul>
           </div>
-          <div div className="profile-App-details-box">
+          <div className="profile-App-details-box">
             <h3>Education</h3>
-            <p>Education details go here...</p>
+            <ul className="profile-App-details-content-list">
+              {editProfile.education.map((edu, index) => (
+                <li key={index}>
+                  <input
+                    type="text"
+                    value={edu}
+                    onChange={(e) =>
+                      handleArrayChange("education", index, e.target.value)
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveItem("education", index)}
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleAddItem("education")}
+                >
+                  Add Education
+                </button>
+              </li>
+            </ul>
           </div>
-          <div div className="profile-App-details-box">
+          <div className="profile-App-details-box">
             <h3>Certificates</h3>
             <ul className="profile-App-details-content-list">
-              <li>Certificate 1</li>
-              <li>Certificate 2</li>
-              <li>Certificate 3</li>
+              {editProfile.certificates.map((cert, index) => (
+                <li key={index}>
+                  <input
+                    type="file"
+                    onChange={(e) =>
+                      handleFileChange("certificates", index, e.target.files[0])
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveItem("certificates", index)}
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleAddItem("certificates")}
+                >
+                  Add Certificate
+                </button>
+              </li>
             </ul>
           </div>
         </div>

@@ -1,7 +1,7 @@
-import React from "react";
 import "./add.scss";
-
+import React, { useState } from "react";
 const Add = () => {
+  const [file, setFile] = useState();
   return (
     <div className="add">
       <div className="container">
@@ -22,6 +22,7 @@ const Add = () => {
             </select>
             <label htmlFor="">Cover Image</label>
             <input type="file" />
+            <img src={file} alt="" />
             <label htmlFor="">Upload Images</label>
             <input type="file" multiple />
             <label htmlFor="">Description</label>
