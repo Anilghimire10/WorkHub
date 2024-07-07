@@ -96,6 +96,29 @@
 .profile-App-details-content-list li {
   margin-bottom: 5px;
   color: #555;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile-App-details-content-list li input {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.profile-App-details-content-list li button {
+  width: 120px; /* Adjust width as needed */
+  height: 30px; /* Adjust height as needed */
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.profile-App-details-content-list li button:hover {
+  background-color: #c82333;
 }
 
 .profile-Modal {
