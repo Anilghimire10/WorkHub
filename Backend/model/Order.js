@@ -31,6 +31,17 @@ const OrderSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    paymentMethod: {
+      type: String,
+      enum: ["khalti"],
+      required: true,
+    },
+    status: {
+      type: String,
+      required: true,
+      enum: ["pending", "completed", "refunded"],
+      default: "pending",
+    },
   },
   {
     timestamps: true,

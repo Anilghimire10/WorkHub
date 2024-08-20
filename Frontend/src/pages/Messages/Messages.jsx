@@ -1,10 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import newRequest from "../../utils/newRequest.js";
-import "../../pages/Messages/Messages.jsx";
-import moment from "moment";
+import newRequest from "../../utils/newRequest";
 import "./messages.scss";
+import moment from "moment";
 
 const Messages = () => {
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
@@ -12,10 +11,11 @@ const Messages = () => {
   const queryClient = useQueryClient();
 
   const { isLoading, error, data } = useQuery({
-    queryKey: ["conversation"],
+    queryKey: ["conversations"],
     queryFn: () =>
-      newRequest.get(conversation).then((res) => {
-        return res.data;
+      newRequest.get(`conversation`).then((res) => {
+        console.log(res.data); // Log the full response to debug
+        return res.data.conversations;
       }),
   });
 
@@ -24,13 +24,17 @@ const Messages = () => {
       return newRequest.put(`conversation/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["conversation"]);
+      queryClient.invalidateQueries(["conversations"]);
     },
   });
 
   const handleRead = (id) => {
     mutation.mutate(id);
   };
+
+  useEffect(() => {
+    console.log(data); // Log data to ensure it's being set correctly
+  }, [data]);
 
   return (
     <div className="messages">
@@ -82,7 +86,7 @@ const Messages = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4">No conversations found.</td>
+                  <td colSpan="4">No conversations found</td>
                 </tr>
               )}
             </tbody>

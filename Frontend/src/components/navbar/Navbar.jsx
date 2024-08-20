@@ -39,7 +39,7 @@ function Navbar() {
   const handleBecomeSeller = async () => {
     try {
       await newRequest.get("user/logout");
-      localStorage.removeItem("currentUser");
+      // localStorage.removeItem("currentUser");
       navigate("/register");
     } catch (err) {
       console.log(err);

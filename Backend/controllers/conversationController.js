@@ -1,3 +1,4 @@
+import ErrorHandler from "../middlewares/error.js";
 import Conversation from "../model/Conversation.js";
 
 export const createConversation = async (req, res, next) => {
@@ -34,9 +35,13 @@ export const getConversations = async (req, res, next) => {
     next(error);
   }
 };
+
 export const getSingleConversation = async (req, res, next) => {
   try {
-    const conversation = await Conversation.findById(req.params.id);
+    const conversation = await Conversation.findOne({ id: req.params.id });
+    if (!conversation) {
+      return next(new ErrorHandler("Not Found", 400));
+    }
     res.status(200).json({
       success: true,
       conversation,

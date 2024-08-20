@@ -133,7 +133,7 @@ const Home = () => {
         </Slide>
       )}
 
-      {dataStarRecommendations &&
+      {/* {dataStarRecommendations &&
         dataStarRecommendations.recommendations_star_ratings && (
           <Slide slidesToShow={3} arrowsScroll={3}>
             {dataStarRecommendations.recommendations_star_ratings.map(
@@ -142,7 +142,14 @@ const Home = () => {
               )
             )}
           </Slide>
-        )}
+        )} */}
+      {dataStarRecommendations?.recommendations_star_ratings?.length > 0 && (
+        <Slide slidesToShow={3} arrowsScroll={3}>
+          {dataStarRecommendations.recommendations_star_ratings.map((item) => (
+            <CatCard key={item.gigId || item._id} item={item} />
+          ))}
+        </Slide>
+      )}
     </div>
   );
 };

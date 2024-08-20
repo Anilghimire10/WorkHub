@@ -1,26 +1,29 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { Link, useParams } from "react-router-dom";
-import newRequest from "../../utils/newRequest.js";
+import newRequest from "../../utils/newRequest";
 import "./message.scss";
 
 const Message = () => {
   const { id } = useParams();
+  console.log("ID:", id);
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
+  console.log("Current User:", currentUser);
   const queryClient = useQueryClient();
 
   const { isLoading, error, data } = useQuery({
     queryKey: ["messages"],
     queryFn: () =>
-      newRequest.get(`conversation/single/${id}`).then((res) => {
-        return res.data;
+      newRequest.get(`message/${id}`).then((res) => {
+        console.log("Fetched messages data:", res.data);
+        return res.data.message;
       }),
   });
 
   const mutation = useMutation({
     mutationFn: (message) => {
-      return newRequest.post(conversation / single, message);
+      console.log("Sending message:", message);
+      return newRequest.post(`message`, message);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["messages"]);
@@ -29,10 +32,12 @@ const Message = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    mutation.mutate({
+    const message = {
       conversationId: id,
       desc: e.target[0].value,
-    });
+    };
+    console.log("Form submitted with message:", message); // Log submitted form data
+    mutation.mutate(message);
     e.target[0].value = "";
   };
 
@@ -40,7 +45,7 @@ const Message = () => {
     <div className="message">
       <div className="container">
         <span className="breadcrumbs">
-          <Link to="/messages">Messages</Link> John Doe
+          <Link to="/messages">Messages</Link>
         </span>
         {isLoading ? (
           "loading"
@@ -50,7 +55,9 @@ const Message = () => {
           <div className="messages">
             {data.map((m) => (
               <div
-                className={m.userId === currentUser._id ? "owner item" : "item"}
+                className={
+                  m.userId === currentUser.userId ? "owner item" : "item"
+                }
                 key={m._id}
               >
                 <img

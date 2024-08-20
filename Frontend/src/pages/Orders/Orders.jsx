@@ -22,22 +22,40 @@ const Orders = () => {
   });
 
   // console.log(data, "hehe");
-
   const handleContact = async (order) => {
-    const sellerId = order.sellerId;
-    const buyerId = order.buyerId;
+    const sellerId = order.sellerID;
+    const buyerId = order.buyerID;
     const id = sellerId + buyerId;
 
     try {
+      // Fetch existing conversation
       const res = await newRequest.get(`conversation/single/${id}`);
-      navigate(`message/${res.data.id}`);
+
+      // Extract conversation ID from the response
+      const conversationId = res.data.conversation
+        ? res.data.conversation.id
+        : null;
+
+      if (conversationId) {
+        navigate(`/message/${conversationId}`);
+      } else {
+        console.error("No conversation ID returned in response.");
+      }
     } catch (err) {
-      if (err.response && err.response.status === 404) {
+      if (err.response && err.response.status === 400) {
         try {
-          const res = await newRequest.post(conversation, {
+          // Create a new conversation
+          const res = await newRequest.post(`conversation`, {
             to: currentUser.seller ? buyerId : sellerId,
           });
-          navigate(`message/${res.data.id}`);
+
+          const newConversationId = res.data.savedConversation.id;
+
+          if (newConversationId) {
+            navigate(`/message/${newConversationId}`);
+          } else {
+            console.error("No new conversation ID returned.");
+          }
         } catch (postErr) {
           console.error("Error creating new conversation:", postErr);
         }

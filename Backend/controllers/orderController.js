@@ -3,96 +3,97 @@ import Gig from "../model/gig.js";
 
 // export const createOrder = async (req, res, next) => {
 //   try {
-//     const { token, amount, gigId } = req.body;
+//     const gig = await Gig.findById(req.params.gigId);
 
-//     // Verify payment with Khalti
-//     const khaltiResponse = await axios.post(
-//       "https://khalti.com/api/v2/payment/verify/",
-//       { token, amount },
-//       {
-//         headers: {
-//           Authorization: `Key test_secret_key_3722fd6257b84dab8251b1af3dbecd37`,
-//         },
-//       }
-//     );
+//     const newOrder = new Order({
+//       gigId: gig._id,
+//       img: gig.cover,
+//       title: gig.title,
+//       price: gig.price,
+//       buyerID: req.userId,
+//       sellerID: gig.userId,
+//     });
 
-//     console.log(khaltiResponse);
+//     await newOrder.save();
 
-//     if (khaltiResponse.data && khaltiResponse.data.state.name === "Completed") {
-//       // If payment is successful, create order
-//       const gig = await Gig.findById(gigId);
-
-//       if (!gig) {
-//         return res.status(404).json({
-//           success: false,
-//           message: "Gig not found",
-//         });
-//       }
-
-//       const newOrder = new Order({
-//         gigId: gig._id,
-//         img: gig.cover,
-//         title: gig.title,
-//         price: gig.price,
-//         buyerID: req.userId,
-//         sellerID: gig.userId,
-//       });
-
-//       await newOrder.save();
-
-//       res.status(200).json({
-//         success: true,
-//         message: "Order Successful",
-//         data: khaltiResponse.data,
-//       });
-//     } else {
-//       res.status(400).json({
-//         success: false,
-//         message: "Payment verification failed",
-//       });
-//     }
+//     res.status(200).json({
+//       success: true,
+//       message: "Order Successful",
+//     });
 //   } catch (error) {
-//     console.error("Error verifying payment or creating order:", error);
-
-//     if (error.response) {
-//       console.error("Server responded with:", error.response.data);
-//       res.status(error.response.status).json({
-//         success: false,
-//         message: error.response.data.message || "Server Error",
-//       });
-//     } else if (error.request) {
-//       console.error("No response received:", error.request);
-//       res.status(500).json({
-//         success: false,
-//         message: "No response from server. Please try again later.",
-//       });
-//     } else {
-//       console.error("Error details:", error.message);
-//       res.status(500).json({
-//         success: false,
-//         message: "Unexpected error occurred. Please try again later.",
-//       });
-//     }
+//     next(error);
 //   }
 // };
+
+import {
+  initializeKhaltiPayment,
+  verifyKhaltiPayment,
+} from "../controllers/paymentController.js";
+
 export const createOrder = async (req, res, next) => {
   try {
     const gig = await Gig.findById(req.params.gigId);
 
+    // Step 1: Initialize Khalti Payment
+    const khaltiResponse = await initializeKhaltiPayment({
+      return_url: `${process.env.CLIENT_URL}/payment-verification`,
+      website_url: process.env.CLIENT_URL,
+      amount: gig.price * 100, // Khalti expects amount in paisa
+      purchase_order_id: gig._id.toString(),
+      purchase_order_name: gig.title,
+    });
+
+    // Step 2: Store the order with a pending status
     const newOrder = new Order({
       gigId: gig._id,
       img: gig.cover,
       title: gig.title,
       price: gig.price,
-      buyerID: req.userId,
-      sellerID: gig.userId,
+      buyerId: req.userId,
+      sellerId: gig.userId,
+      payment_intent: khaltiResponse.pidx, // Store the Khalti pidx
+      status: "pending", // Set initial status to pending
     });
 
     await newOrder.save();
+
+    // Step 3: Return the Khalti payment URL for the user to complete the payment
     res.status(200).json({
       success: true,
-      message: "Order Successful",
+      message: "Order Created, Please Complete Payment",
+      payment_url: khaltiResponse.payment_url, // Khalti payment URL
+      pidx: khaltiResponse.pidx, // Payment identifier for later verification
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const verifyOrderPayment = async (req, res, next) => {
+  try {
+    const { pidx } = req.body;
+
+    // Step 4: Verify Khalti Payment
+    const paymentStatus = await verifyKhaltiPayment(pidx);
+
+    if (paymentStatus.state.name === "Completed") {
+      const updatedOrder = await Order.findOneAndUpdate(
+        { payment_intent: pidx },
+        { status: "completed" },
+        { new: true }
+      );
+
+      res.status(200).json({
+        success: true,
+        message: "Payment Verified and Order Completed",
+        order: updatedOrder,
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "Payment not verified",
+      });
+    }
   } catch (error) {
     next(error);
   }

@@ -3,12 +3,14 @@ import "./gig.scss";
 import { Slider } from "infinite-react-carousel";
 import { useQuery } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import Reviews from "../../components/reviews/Reviews";
 
 function Gig() {
   const { id } = useParams();
   const backendURL = "http://localhost:8800"; // Update this to your backend URL
+  const navigate = useNavigate();
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
   // State to track default image loading
   const [defaultImageLoaded, setDefaultImageLoaded] = useState(false);
@@ -23,15 +25,18 @@ function Gig() {
     queryFn: () => newRequest.get(`gig/single/${id}`).then((res) => res.data),
   });
 
-  // Log gig data
+  // Log gig data and current user
   useEffect(() => {
     if (dataGig) {
       console.log("Gig Data:", dataGig);
     }
+    if (currentUser) {
+      console.log("Current User:", currentUser);
+    }
     if (errorGig) {
       console.error("Error loading gig data:", errorGig);
     }
-  }, [dataGig, errorGig]);
+  }, [dataGig, currentUser, errorGig]);
 
   // Fetch user data if gig data is available
   const userId = dataGig?.gig?.userId;
@@ -89,6 +94,28 @@ function Gig() {
     );
   };
 
+  const handleContact = async () => {
+    const sellerId = dataGig?.gig?.userId;
+    const buyerId = currentUser?.userId;
+
+    try {
+      // Create a new conversation
+      const res = await newRequest.post("conversation", {
+        to: sellerId, // Or any other relevant field
+      });
+
+      const newConversationId = res.data.savedConversation.id;
+
+      if (newConversationId) {
+        navigate(`/message/${newConversationId}`);
+      } else {
+        console.error("No new conversation ID returned.");
+      }
+    } catch (postErr) {
+      console.error("Error creating new conversation:", postErr);
+    }
+  };
+
   return (
     <div className="gig">
       <div className="container">
@@ -140,7 +167,7 @@ function Gig() {
                   <div className="stars">
                     {renderStars(gig.totalStars, gig.starNumber)}
                   </div>
-                  <button>Contact Me</button>
+                  <button onClick={handleContact}>Contact Me</button>
                 </div>
               </div>
               <div className="box">

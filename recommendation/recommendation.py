@@ -142,8 +142,6 @@ def get_recommendations_search():
 
     return jsonify({"recommendations_search": recommended_gigs_search})
 
-
-
 @app.route('/api/recommendations/stars', methods=['GET'])
 def get_recommendations_stars():
     # Connect to MongoDB and fetch necessary data
@@ -177,7 +175,7 @@ def get_recommendations_stars():
         "createdAt": gig['createdAt'],
         "updatedAt": gig['updatedAt'],
         "starRating": gig['totalStars'] / gig['starNumber'] if gig['starNumber'] != 0 else 0,
-    } for gig in gigs]
+    } for gig in gigs if gig['starNumber'] > 0]  # Filter out gigs with no star ratings
 
     # Sort gigs based on star ratings (highest first)
     sorted_gigs_star_ratings = sorted(gigs_details, key=lambda x: x['starRating'], reverse=True)
@@ -185,7 +183,12 @@ def get_recommendations_stars():
     # Get top gigs based on star ratings
     recommended_gigs_star_ratings = sorted_gigs_star_ratings[:3]
 
-    return jsonify({"recommendations_star_ratings": recommended_gigs_star_ratings})
+    # Return recommendations or an empty list if no recommended gigs
+    if recommended_gigs_star_ratings:
+        return jsonify({"recommendations_star_ratings": recommended_gigs_star_ratings})
+    else:
+        return jsonify({"recommendations_star_ratings": []})
+
 
 if __name__ == '__main__':
     app.run(debug=True)
