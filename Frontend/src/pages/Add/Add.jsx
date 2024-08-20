@@ -103,7 +103,6 @@ const Add = () => {
                 value={desc}
                 onChange={(e) => setDesc(e.target.value)}
               ></textarea>
-              <button type="submit">Create</button>
             </div>
             <div className="details">
               <label htmlFor="shortTitle">Short Title</label>{" "}
@@ -142,6 +141,12 @@ const Add = () => {
                 value={revisionTime}
                 onChange={(e) => setRevisionTime(e.target.value)}
               />
+              <label htmlFor="price">Price</label>
+              <input
+                type="number"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+              />
               <label htmlFor="features">Add Features</label>
               {features.map((feature, index) => (
                 <input
@@ -155,15 +160,10 @@ const Add = () => {
               <button type="button" onClick={handleAddFeature}>
                 Add Feature
               </button>
-              <label htmlFor="price">Price</label>
-              <input
-                type="number"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-              />
             </div>
           </div>
         </form>
+        <button type="submit">Create</button>
       </div>
     </div>
   );
