@@ -33,6 +33,7 @@ SMTP_PORT = 465
 SITE_URL = "http://localhost:5173"  # Replace with your website URL
 
 
+# Preprocess text by tokenizing, removing punctuation/stopwords, and lemmatizing
 def preprocess_text(text):
     tokens = word_tokenize(text)
     tokens = [token.lower() for token in tokens if token not in string.punctuation]
@@ -85,16 +86,10 @@ def get_newly_added_recommendations():
         if not search_histories:
             return jsonify({"error": "No search history found"}), 404
 
-        print("\nSearch Histories:")
-        for entry in search_histories:
-            print(
-                f"- Email: {entry.get('email', 'N/A')}, Search Query: {entry.get('searchQuery', 'N/A')}, Timestamp: {entry.get('timestamp', 'N/A')}"
-            )
-
         search_queries = [
             preprocess_text(entry["searchQuery"]) for entry in search_histories
         ]
-        user_emails = {
+        user_search_queries = {
             entry.get("email", "N/A"): preprocess_text(entry["searchQuery"])
             for entry in search_histories
             if entry.get("email")
@@ -102,12 +97,6 @@ def get_newly_added_recommendations():
 
         date_threshold = datetime.now() - timedelta(days=1)
         newly_added_gigs = list(db.gigs.find({"createdAt": {"$gte": date_threshold}}))
-
-        print("\nNewly Added Gigs:")
-        for gig in newly_added_gigs:
-            print(
-                f"- Title: {gig['title']}, Category: {gig['category']}, Created At: {gig['createdAt']}"
-            )
 
         gig_urls = {
             str(gig["_id"]): f"{SITE_URL}/gig/{gig['_id']}" for gig in newly_added_gigs
@@ -125,7 +114,7 @@ def get_newly_added_recommendations():
         tfidf_search_queries = tfidf_matrix[num_gig_categories:]
 
         recommended_gigs = []
-        sent_emails = set()  # To track sent emails and avoid duplicates
+        sent_emails = set()
 
         for i, query_vector in enumerate(tfidf_search_queries):
             category_similarities = cosine_similarity(
@@ -133,39 +122,40 @@ def get_newly_added_recommendations():
             )
 
             print(f"\nSearch Query: {search_queries[i]}")
-            print(f"Category Similarities: {category_similarities}")
 
             for index, similarity in enumerate(category_similarities.flatten()):
+                email = search_histories[i].get("email", "N/A")
+                print(f"Email: {email}, Similarity: {similarity}")
+
                 if similarity > 0.3:  # Adjusted threshold to capture more matches
                     gig_title = newly_added_gigs[index]["title"]
-                    best_match_category = gig_title
                     gig_url = gig_urls[str(newly_added_gigs[index]["_id"])]
 
-                    for email, query in user_emails.items():
-                        if query == search_queries[i]:
-                            unique_id = (
+                    unique_id = (email, search_queries[i], gig_url)
+
+                    if unique_id not in sent_emails:
+                        recommended_gigs.append(
+                            {
+                                "searchQuery": search_queries[i],
+                                "bestMatchCategory": gig_title,
+                                "email": email,
+                                "gigUrl": gig_url,
+                            }
+                        )
+                        sent_emails.add(unique_id)
+
+                        if email != "N/A":  # Ensure the email exists before sending
+                            print(
+                                f"Sending email to {email} with subject 'New Gig Match Notification'"
+                            )
+                            send_email(
                                 email,
-                                query,
-                                gig_url,
-                            )  # Include query in unique_id
-                            if unique_id not in sent_emails:
-                                recommended_gigs.append(
-                                    {
-                                        "searchQuery": search_queries[i],
-                                        "bestMatchCategory": best_match_category,
-                                        "email": email,
-                                        "gigUrl": gig_url,
-                                    }
-                                )
-                                sent_emails.add(unique_id)
-                                print(
-                                    f"Sending email to {email} with subject 'New Gig Match Notification'"
-                                )
-                                send_email(
-                                    email,
-                                    "New Gig Match Notification",
-                                    f"Hi, We have found new gigs that match your recent search query '{search_queries[i]}'.\n\nGig Title: {gig_title}\nView it here: {gig_url}\n\nCheck out more on our website!\n\nBest regards,\nWorkHub Team\n\nVisit our site: {SITE_URL}",
-                                )
+                                "New Gig Match Notification",
+                                f"Hi, We have found new gigs that match your recent search query '{search_queries[i]}'.\n\nGig Title: {gig_title}\nView it here: {gig_url}\n\nCheck out more on our website!\n\nBest regards,\nWorkHub Team\n\nVisit our site: {SITE_URL}",
+                            )
+                            print(
+                                f"Email sent to: {email} for query '{search_queries[i]}'"
+                            )
 
         return jsonify({"recommendedGigs": recommended_gigs}), 200
 

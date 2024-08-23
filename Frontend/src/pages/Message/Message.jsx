@@ -15,7 +15,7 @@ const Message = () => {
     queryKey: ["messages"],
     queryFn: () =>
       newRequest.get(`message/${id}`).then((res) => {
-        // console.log("Fetched messages data:", res.data);
+        console.log("Fetched messages data:", res.data);
         return res.data.message;
       }),
   });
@@ -32,12 +32,26 @@ const Message = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Extracting values from the form
+    const textareaValue = e.target[0].value;
+
+    // Creating the message object
     const message = {
       conversationId: id,
-      desc: e.target[0].value,
+      desc: textareaValue,
     };
-    console.log("Form submitted with message:", message); // Log submitted form data
+
+    // Logging details for debugging
+    console.log("Form submission event:", e);
+    console.log("Conversation ID from URL:", id);
+    console.log("Textarea value before sending:", textareaValue);
+    console.log("Message object created:", message);
+
+    // Mutating the message
     mutation.mutate(message);
+
+    // Clearing the textarea
     e.target[0].value = "";
   };
 
