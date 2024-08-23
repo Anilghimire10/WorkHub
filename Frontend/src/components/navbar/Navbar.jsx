@@ -31,6 +31,7 @@ function Navbar() {
       await newRequest.get("user/logout");
       localStorage.removeItem("currentUser");
       navigate("/");
+      window.scrollTo(0, 0); // Scroll to top
     } catch (err) {
       console.log(err);
     }
@@ -41,9 +42,15 @@ function Navbar() {
       await newRequest.get("user/logout");
       // localStorage.removeItem("currentUser");
       navigate("/register");
+      window.scrollTo(0, 0); // Scroll to top
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const handleNavigate = (path) => {
+    navigate(path);
+    window.scrollTo(0, 0); // Scroll to top
   };
 
   return (
@@ -56,6 +63,7 @@ function Navbar() {
             to={
               currentUser && currentUser.isSeller ? "/freelancerprofile" : "/"
             }
+            onClick={() => window.scrollTo(0, 0)} // Ensure scroll to top on link click
           >
             <span className="text">WorkHub</span>
           </Link>
@@ -63,7 +71,14 @@ function Navbar() {
         </div>
         <div className="links">
           {currentUser && !currentUser.isSeller && (
-            <Link to="/register" className="link" onClick={handleBecomeSeller}>
+            <Link
+              to="/register"
+              className="link"
+              onClick={() => {
+                handleBecomeSeller();
+                window.scrollTo(0, 0); // Scroll to top
+              }}
+            >
               Become a Seller
             </Link>
           )}
@@ -81,16 +96,32 @@ function Navbar() {
                 <div className="options">
                   {currentUser.isSeller ? (
                     <>
-                      <Link className="link" to="/add">
+                      <Link
+                        className="link"
+                        to="/add"
+                        onClick={() => window.scrollTo(0, 0)}
+                      >
                         Add New Gig
                       </Link>
-                      <Link className="link" to="/mygigs">
+                      <Link
+                        className="link"
+                        to="/mygigs"
+                        onClick={() => window.scrollTo(0, 0)}
+                      >
                         MyGigs
                       </Link>
-                      <Link className="link" to="/messages">
+                      <Link
+                        className="link"
+                        to="/messages"
+                        onClick={() => window.scrollTo(0, 0)}
+                      >
                         Messages
                       </Link>
-                      <Link className="link" to="/orders">
+                      <Link
+                        className="link"
+                        to="/orders"
+                        onClick={() => window.scrollTo(0, 0)}
+                      >
                         Orders
                       </Link>
                       <Link className="link" onClick={handleLogout}>
@@ -99,16 +130,32 @@ function Navbar() {
                     </>
                   ) : (
                     <>
-                      <Link className="link" to="/orders">
+                      <Link
+                        className="link"
+                        to="/orders"
+                        onClick={() => window.scrollTo(0, 0)}
+                      >
                         Orders
                       </Link>
-                      <Link className="link" to="/profile">
+                      <Link
+                        className="link"
+                        to="/profile"
+                        onClick={() => window.scrollTo(0, 0)}
+                      >
                         Profile
                       </Link>
-                      <Link className="link" to="/messages">
+                      <Link
+                        className="link"
+                        to="/messages"
+                        onClick={() => window.scrollTo(0, 0)}
+                      >
                         Messages
                       </Link>
-                      <Link className="link" to="/payment">
+                      <Link
+                        className="link"
+                        to="/payment"
+                        onClick={() => window.scrollTo(0, 0)}
+                      >
                         Billing & Payments
                       </Link>
                       <Link className="link" onClick={handleLogout}>
@@ -121,10 +168,18 @@ function Navbar() {
             </div>
           ) : (
             <>
-              <Link to="/login" className="link">
+              <Link
+                to="/login"
+                className="link"
+                onClick={() => window.scrollTo(0, 0)}
+              >
                 Sign in
               </Link>
-              <Link className="link" to="/register">
+              <Link
+                className="link"
+                to="/register"
+                onClick={() => window.scrollTo(0, 0)}
+              >
                 <button>Join</button>
               </Link>
             </>
