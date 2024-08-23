@@ -1,194 +1,232 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
 from flask_cors import CORS
 import pymongo
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 import string
+from datetime import datetime, timedelta
+import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS if necessary
+CORS(app)
 
 # Initialize NLTK objects
-nltk.download('punkt')
-nltk.download('wordnet')
-nltk.download('stopwords')
+nltk.download("punkt")
+nltk.download("wordnet")
+nltk.download("stopwords")
 
-# Initialize NLTK objects
-stop_words = set(stopwords.words('english'))
+stop_words = set(stopwords.words("english"))
 wordnet_lemmatizer = WordNetLemmatizer()
 
-# Function to preprocess text
+# Email setup
+EMAIL_ADDRESS = "ghimireaneel50@gmail.com"
+EMAIL_PASSWORD = "rjdc uqxu ycxg swrg"
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 465
+SITE_URL = "http://localhost:5173"  # Replace with your website URL
+
+
 def preprocess_text(text):
-    # Tokenize
     tokens = word_tokenize(text)
-
-    # Remove punctuation and lowercase
     tokens = [token.lower() for token in tokens if token not in string.punctuation]
-
-    # Remove stopwords
     tokens = [token for token in tokens if token not in stop_words]
-
-    # Lemmatize tokens
     tokens = [wordnet_lemmatizer.lemmatize(token) for token in tokens]
+    return " ".join(tokens)
 
-    # Join tokens back into a string
-    clean_text = ' '.join(tokens)
-    return clean_text
 
-@app.route('/api/recommendations/search', methods=['GET'])
-def get_recommendations_search():
-    # Connect to MongoDB and fetch necessary data
-    client = pymongo.MongoClient("mongodb+srv://Anilghimire:sehuLAgU@cluster0.om29z8c.mongodb.net/WorkHub")
-    db = client['WorkHub']
+def send_email(to_email, subject, body):
+    try:
+        msg = MIMEMultipart()
+        msg["From"] = EMAIL_ADDRESS
+        msg["To"] = to_email
+        msg["Subject"] = subject
 
-    # Get user ID from request query parameters
-    user_id = request.args.get('userId')
+        # HTML body
+        html_body = f"""
+        <html>
+        <body>
+            <p>{body}</p>
+            <p>Visit our site: <a href="{SITE_URL}">{SITE_URL}</a></p>
+        </body>
+        </html>
+        """
 
-    # Fetch search history for the user
-    search_history = list(db.searchhistories.find({"userId": user_id}))
+        msg.attach(MIMEText(html_body, "html"))
 
-    # If no search history found, return an empty list or appropriate message
-    if not search_history:
-        return jsonify({"recommendations_search": []})
+        print(f"Sending email to {to_email} with subject '{subject}'")
 
-    # Fetch gigs from MongoDB
-    gigs = list(db.gigs.find())
+        with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as server:
+            server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            text = msg.as_string()
+            server.sendmail(EMAIL_ADDRESS, to_email, text)
 
-    # Preprocess user's search queries
-    search_queries = " ".join([preprocess_text(entry['searchQuery']) for entry in search_history])
+        print(f"Email sent successfully to {to_email}")
 
-    # Preprocess gig texts and fetch all details
-    gig_texts = []
-    gig_ids_seen = set()  # Track seen gig IDs to avoid duplicates
+    except Exception as e:
+        print(f"Failed to send email to {to_email}. Error: {e}")
 
-    for gig in gigs:
-        gig_id = str(gig['_id'])  # Convert ObjectId to string if needed
-        if gig_id not in gig_ids_seen:
-            gig_texts.append({
-                "gigId": gig_id,
-                "title": gig['title'],
-                "desc": gig['desc'],
-                "totalStars": gig['totalStars'],
-                "starNumber": gig['starNumber'],
-                "category": gig['category'],
-                "price": gig['price'],
-                "cover": gig['cover'],
-                "images": gig['images'],
-                "shortDesc": gig['shortDesc'],
-                "shortTitle": gig['shortTitle'],
-                "deliveryTime": gig['deliveryTime'],
-                "revisionTime": gig['revisionTime'],
-                "revisionNumber": gig['revisionNumber'],
-                "features": gig['features'],
-                "sales": gig['sales'],
-                "createdAt": gig['createdAt'],
-                "updatedAt": gig['updatedAt'],
-                "text": preprocess_text(gig['title'] + " " + gig['desc'])  # Add preprocessed text for TF-IDF
-            })
-            gig_ids_seen.add(gig_id)
 
-    # Combine search queries and gig texts into corpus
-    corpus = [search_queries] + [gig['text'] for gig in gig_texts]
+@app.route("/api/recommendations/newly_added", methods=["GET"])
+def get_newly_added_recommendations():
+    try:
+        client = pymongo.MongoClient(
+            "mongodb+srv://Anilghimire:sehuLAgU@cluster0.om29z8c.mongodb.net/WorkHub"
+        )
+        db = client["WorkHub"]
 
-    # Compute TF-IDF vectors
-    vectorizer = TfidfVectorizer(stop_words='english')
-    tfidf_matrix = vectorizer.fit_transform(corpus)
+        search_histories = list(db.searchhistories.find())
+        if not search_histories:
+            return jsonify({"error": "No search history found"}), 404
 
-    # Compute cosine similarity
-    cosine_similarities = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:]).flatten()
+        print("\nSearch Histories:")
+        for entry in search_histories:
+            print(
+                f"- Email: {entry.get('email', 'N/A')}, Search Query: {entry.get('searchQuery', 'N/A')}, Timestamp: {entry.get('timestamp', 'N/A')}"
+            )
 
-    # Get top recommendations based on search queries
-    top_indices_search = cosine_similarities.argsort()[::-1]
+        search_queries = [
+            preprocess_text(entry["searchQuery"]) for entry in search_histories
+        ]
+        user_emails = {
+            entry.get("email", "N/A"): preprocess_text(entry["searchQuery"])
+            for entry in search_histories
+            if entry.get("email")
+        }
 
-    # Initialize recommended gigs list
-    recommended_gigs_search = []
-    recommended_gig_ids = set()  # Track recommended gig IDs
+        date_threshold = datetime.now() - timedelta(days=1)
+        newly_added_gigs = list(db.gigs.find({"createdAt": {"$gte": date_threshold}}))
 
-    # Loop through top indices and add unique gigs with non-zero similarity
-    for i in top_indices_search:
-        if cosine_similarities[i] > 0:
-            gig_id = gig_texts[i]['gigId']
-            if gig_id not in recommended_gig_ids:
-                recommended_gigs_search.append({
-                    "gigId": gig_id,
-                    "title": gig_texts[i]['title'],
-                    "desc": gig_texts[i]['desc'],
-                    "totalStars": gig_texts[i]['totalStars'],
-                    "starNumber": gig_texts[i]['starNumber'],
-                    "category": gig_texts[i]['category'],
-                    "price": gig_texts[i]['price'],
-                    "cover": gig_texts[i]['cover'],
-                    "images": gig_texts[i]['images'],
-                    "shortDesc": gig_texts[i]['shortDesc'],
-                    "shortTitle": gig_texts[i]['shortTitle'],
-                    "deliveryTime": gig_texts[i]['deliveryTime'],
-                    "revisionTime": gig_texts[i]['revisionTime'],
-                    "revisionNumber": gig_texts[i]['revisionNumber'],
-                    "features": gig_texts[i]['features'],
-                    "sales": gig_texts[i]['sales'],
-                    "createdAt": gig_texts[i]['createdAt'],
-                    "updatedAt": gig_texts[i]['updatedAt'],
-                    "similarity": cosine_similarities[i],
-                })
-                recommended_gig_ids.add(gig_id)
+        print("\nNewly Added Gigs:")
+        for gig in newly_added_gigs:
+            print(
+                f"- Title: {gig['title']}, Category: {gig['category']}, Created At: {gig['createdAt']}"
+            )
 
-                # Break if we have added 3 unique gigs
-                if len(recommended_gigs_search) >= 3:
-                    break
+        gig_urls = {
+            str(gig["_id"]): f"{SITE_URL}/gig/{gig['_id']}" for gig in newly_added_gigs
+        }
+        gig_categories = [preprocess_text(gig["category"]) for gig in newly_added_gigs]
 
-    return jsonify({"recommendations_search": recommended_gigs_search})
+        documents = gig_categories + search_queries
+        vectorizer = TfidfVectorizer()
+        tfidf_matrix = vectorizer.fit_transform(documents)
 
-@app.route('/api/recommendations/stars', methods=['GET'])
+        num_gig_categories = len(gig_categories)
+        num_search_queries = len(search_queries)
+
+        tfidf_gig_categories = tfidf_matrix[:num_gig_categories]
+        tfidf_search_queries = tfidf_matrix[num_gig_categories:]
+
+        recommended_gigs = []
+        sent_emails = set()  # To track sent emails and avoid duplicates
+
+        for i, query_vector in enumerate(tfidf_search_queries):
+            category_similarities = cosine_similarity(
+                query_vector, tfidf_gig_categories
+            )
+
+            print(f"\nSearch Query: {search_queries[i]}")
+            print(f"Category Similarities: {category_similarities}")
+
+            for index, similarity in enumerate(category_similarities.flatten()):
+                if similarity > 0.3:  # Adjusted threshold to capture more matches
+                    gig_title = newly_added_gigs[index]["title"]
+                    best_match_category = gig_title
+                    gig_url = gig_urls[str(newly_added_gigs[index]["_id"])]
+
+                    for email, query in user_emails.items():
+                        if query == search_queries[i]:
+                            unique_id = (
+                                email,
+                                query,
+                                gig_url,
+                            )  # Include query in unique_id
+                            if unique_id not in sent_emails:
+                                recommended_gigs.append(
+                                    {
+                                        "searchQuery": search_queries[i],
+                                        "bestMatchCategory": best_match_category,
+                                        "email": email,
+                                        "gigUrl": gig_url,
+                                    }
+                                )
+                                sent_emails.add(unique_id)
+                                print(
+                                    f"Sending email to {email} with subject 'New Gig Match Notification'"
+                                )
+                                send_email(
+                                    email,
+                                    "New Gig Match Notification",
+                                    f"Hi, We have found new gigs that match your recent search query '{search_queries[i]}'.\n\nGig Title: {gig_title}\nView it here: {gig_url}\n\nCheck out more on our website!\n\nBest regards,\nWorkHub Team\n\nVisit our site: {SITE_URL}",
+                                )
+
+        return jsonify({"recommendedGigs": recommended_gigs}), 200
+
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return jsonify({"error": "Internal server error"}), 500
+
+
+@app.route("/api/recommendations/stars", methods=["GET"])
 def get_recommendations_stars():
-    # Connect to MongoDB and fetch necessary data
-    client = pymongo.MongoClient("mongodb+srv://Anilghimire:sehuLAgU@cluster0.om29z8c.mongodb.net/WorkHub")
-    db = client['WorkHub']
+    try:
+        client = pymongo.MongoClient(
+            "mongodb+srv://Anilghimire:sehuLAgU@cluster0.om29z8c.mongodb.net/WorkHub"
+        )
+        db = client["WorkHub"]
 
-    gigs = list(db.gigs.find())
+        gigs = list(db.gigs.find())
+        if not gigs:
+            return jsonify({"error": "No gigs found"}), 404
 
-    # Check if gigs are not empty
-    if not gigs:
-        return jsonify({"error": "No gigs found"}), 404
+        gigs_details = [
+            {
+                "gigId": str(gig["_id"]),
+                "title": gig["title"],
+                "desc": gig["desc"],
+                "totalStars": gig["totalStars"],
+                "starNumber": gig["starNumber"],
+                "category": gig["category"],
+                "price": gig["price"],
+                "cover": gig["cover"],
+                "images": gig["images"],
+                "shortDesc": gig["shortDesc"],
+                "shortTitle": gig["shortTitle"],
+                "deliveryTime": gig["deliveryTime"],
+                "revisionTime": gig["revisionTime"],
+                "revisionNumber": gig["revisionNumber"],
+                "features": gig["features"],
+                "sales": gig["sales"],
+                "createdAt": gig["createdAt"],
+                "updatedAt": gig["updatedAt"],
+                "starRating": (
+                    gig["totalStars"] / gig["starNumber"]
+                    if gig["starNumber"] != 0
+                    else 0
+                ),
+            }
+            for gig in gigs
+            if gig["starNumber"] > 0
+        ]
 
-    # Fetch all details for gigs
-    gigs_details = [{
-        "gigId": str(gig['_id']),  # Convert ObjectId to string if needed
-        "title": gig['title'],
-        "desc": gig['desc'],
-        "totalStars": gig['totalStars'],
-        "starNumber": gig['starNumber'],
-        "category": gig['category'],
-        "price": gig['price'],
-        "cover": gig['cover'],
-        "images": gig['images'],
-        "shortDesc": gig['shortDesc'],
-        "shortTitle": gig['shortTitle'],
-        "deliveryTime": gig['deliveryTime'],
-        "revisionTime": gig['revisionTime'],
-        "revisionNumber": gig['revisionNumber'],
-        "features": gig['features'],
-        "sales": gig['sales'],
-        "createdAt": gig['createdAt'],
-        "updatedAt": gig['updatedAt'],
-        "starRating": gig['totalStars'] / gig['starNumber'] if gig['starNumber'] != 0 else 0,
-    } for gig in gigs if gig['starNumber'] > 0]  # Filter out gigs with no star ratings
+        sorted_gigs_star_ratings = sorted(
+            gigs_details, key=lambda x: x["starRating"], reverse=True
+        )
+        recommended_gigs_star_ratings = sorted_gigs_star_ratings[:3]
 
-    # Sort gigs based on star ratings (highest first)
-    sorted_gigs_star_ratings = sorted(gigs_details, key=lambda x: x['starRating'], reverse=True)
-
-    # Get top gigs based on star ratings
-    recommended_gigs_star_ratings = sorted_gigs_star_ratings[:3]
-
-    # Return recommendations or an empty list if no recommended gigs
-    if recommended_gigs_star_ratings:
         return jsonify({"recommendations_star_ratings": recommended_gigs_star_ratings})
-    else:
-        return jsonify({"recommendations_star_ratings": []})
+
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return jsonify({"error": "Internal server error"}), 500
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)

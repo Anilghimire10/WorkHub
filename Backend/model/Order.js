@@ -34,7 +34,6 @@ const OrderSchema = new Schema(
     paymentMethod: {
       type: String,
       enum: ["khalti"],
-      required: true,
     },
     status: {
       type: String,

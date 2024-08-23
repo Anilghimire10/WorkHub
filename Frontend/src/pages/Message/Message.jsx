@@ -6,16 +6,16 @@ import "./message.scss";
 
 const Message = () => {
   const { id } = useParams();
-  console.log("ID:", id);
+  // console.log("ID:", id);
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  console.log("Current User:", currentUser);
+  // console.log("Current User:", currentUser);
   const queryClient = useQueryClient();
 
   const { isLoading, error, data } = useQuery({
     queryKey: ["messages"],
     queryFn: () =>
       newRequest.get(`message/${id}`).then((res) => {
-        console.log("Fetched messages data:", res.data);
+        // console.log("Fetched messages data:", res.data);
         return res.data.message;
       }),
   });

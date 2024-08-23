@@ -77,7 +77,7 @@ function MyGigs() {
                     {gig.images.map((image, index) => (
                       <img
                         key={index}
-                        src={`${backendURL}/uploads/${image}`} // Replace with your API URL and image path
+                        src={`${backendURL}/uploads/images/${image}`} // Replace with your API URL and image path
                         width={70}
                         height={50}
                         alt=""

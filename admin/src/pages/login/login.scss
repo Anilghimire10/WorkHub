@@ -1,0 +1,51 @@
+.login {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: aqua;
+  background-color: #E6793B;
+}
+.lContainer {
+  .admin_text{
+    margin-left: 60px;
+
+  }
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #E6793B;
+  padding-top: 30px;
+  padding-right: 50px;
+  padding-bottom: 30px;
+  padding-left: 50px;
+  border-radius: 30px;
+  width: 300px;
+}
+
+.lInput {
+  height: 25px;
+  padding: 10px;
+  justify-content: space-between;
+  border-radius: 10px;
+}
+
+.lButton {
+  border: none;
+  padding: 10px 20px;
+  background-color: #e72311;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.lButton:hover {
+  border: none;
+  padding: 10px 20px;
+  background-color: #00c11d;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+}
+

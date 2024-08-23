@@ -1,3 +1,4 @@
+// model/users.js
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
@@ -14,7 +15,9 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: function () {
+        return !this.googleId;
+      },
     },
     img: {
       type: String,
@@ -27,6 +30,7 @@ const userSchema = new Schema(
     country: {
       type: String,
       required: true,
+      default: "Nepal",
     },
     desc: {
       type: String,

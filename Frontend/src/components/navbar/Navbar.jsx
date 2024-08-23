@@ -76,7 +76,7 @@ function Navbar() {
                 }
                 alt=""
               />
-              <span>{currentUser.email}</span>
+              <span>{currentUser.username}</span>
               {open && (
                 <div className="options">
                   {currentUser.isSeller ? (

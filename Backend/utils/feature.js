@@ -4,22 +4,27 @@ export const sendCookie = (user, res, message, statusCode = 200) => {
   try {
     const token = jwt.sign(
       { _id: user._id, isSeller: user.isSeller },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET,
+      { expiresIn: "50m" } // Token expires in 50 minutes
     );
 
-    res
-      .status(statusCode)
-      .cookie("token", token, {
-        httpOnly: true,
-        maxAge: 50 * 60 * 1000, // 50 minutes in milliseconds
-      })
-      .json({
-        success: true,
-        message,
-        userId: user._id,
-        isSeller: user.isSeller,
-        img: user.img,
-      });
+    // Set the cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Secure in production
+      sameSite: "strict", // Adjust as needed
+      maxAge: 50 * 60 * 1000, // 50 minutes
+    });
+
+    // Send a response
+    res.status(statusCode).json({
+      success: true,
+      message,
+      userId: user._id,
+      isSeller: user.isSeller,
+      img: user.img,
+      email: user.email,
+    });
   } catch (err) {
     console.error("Error generating JWT token:", err);
     res.status(500).json({

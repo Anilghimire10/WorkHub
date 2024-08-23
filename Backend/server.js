@@ -15,6 +15,9 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { errorMiddleware } from "./middlewares/error.js";
 import axios from "axios";
+import passport from "passport";
+import session from "express-session";
+import "./config/passport-setup.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url)); // Resolve __dirname
 
@@ -27,9 +30,29 @@ const connect = async () => {
     await mongoose.connect(process.env.MONGO);
     console.log("Connected to the database");
   } catch (error) {
-    console.log(error);
+    console.error("Database connection error:", error);
   }
 };
+
+// Set up session cookies
+app.use(
+  session({
+    secret: process.env.Cookie_Session || "hehehe",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Ensure HTTPS in production
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week expiration
+    },
+  })
+);
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.set("view engine", "ejs");
 
 // Using middlewares
 app.use(express.json());
@@ -37,9 +60,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "http://localhost:3000"],
     methods: ["GET", "PUT", "POST", "DELETE"],
-    credentials: true,
+    credentials: true, // Ensure cookies are sent
   })
 );
 
@@ -60,7 +83,7 @@ app.use("/api/search", searchHistoryRoutes);
 app.get("/api/recommendations/search/:userId", async (req, res) => {
   try {
     const userId = req.params.userId;
-    // console.log("Fetching recommendations for userId:", userId); // Log userId to debug
+    console.log(`Fetching search recommendations for userId: ${userId}`);
     const response = await axios.get(
       `http://localhost:5000/api/recommendations/search?userId=${userId}`
     );
@@ -74,6 +97,7 @@ app.get("/api/recommendations/search/:userId", async (req, res) => {
 // Route to fetch star-based recommendations from Flask API
 app.get("/api/recommendations/stars", async (req, res) => {
   try {
+    console.log("Fetching star ratings recommendations");
     const response = await axios.get(
       "http://localhost:5000/api/recommendations/stars"
     );

@@ -14,6 +14,7 @@ const router = express.Router();
 const uploadFields = upload.fields([
   { name: "cover", maxCount: 1 },
   { name: "images", maxCount: 5 },
+  { name: "videos", maxCount: 1 },
 ]);
 
 router.post("/new", isAuthenticated, uploadFields, createGig);

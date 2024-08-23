@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
 import Home from "./pages/Home/Home";
@@ -16,22 +16,84 @@ import { Payment } from "./pages/payment/Payment";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import Freelancerprofile from "./pages/freelancerprofile/Freelancerprofile";
-import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Outlet,
+  useNavigate,
+} from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import getCurrentUser from "./utils/getCurrentUser"; // Import the getCurrentUser utility
 import "./App.css";
 
 function App() {
   const queryClient = new QueryClient();
+  const [currentUser, setCurrentUser] = useState(getCurrentUser());
 
-  const Layout = () => (
-    <div className="app">
-      <QueryClientProvider client={queryClient}>
-        <Navbar />
-        <Outlet />
-        <Footer />
-      </QueryClientProvider>
-    </div>
-  );
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:8800/api/user/login/success",
+          {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Credentials": true,
+            },
+          }
+        );
+        if (response.status === 200) {
+          const resObject = await response.json();
+          setCurrentUser(resObject.user);
+          localStorage.setItem("currentUser", JSON.stringify(resObject.user));
+        } else {
+          throw new Error("Authentication failed!");
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  const Layout = () => {
+    const navigate = useNavigate(); // Now it's inside a component rendered by Router
+
+    const handleLogout = async () => {
+      try {
+        const response = await fetch("http://localhost:8800/api/user/logout", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        if (response.status === 200) {
+          localStorage.removeItem("currentUser");
+          setCurrentUser(null);
+          navigate("/login"); // Redirect to login page
+        } else {
+          throw new Error("Logout failed!");
+        }
+      } catch (error) {
+        console.error("Error logging out:", error);
+      }
+    };
+
+    return (
+      <div className="app">
+        <QueryClientProvider client={queryClient}>
+          <Navbar onLogout={handleLogout} />
+          <Outlet context={{ currentUser }} />
+          <Footer />
+        </QueryClientProvider>
+      </div>
+    );
+  };
 
   const router = createBrowserRouter([
     {
@@ -57,11 +119,7 @@ function App() {
     },
   ]);
 
-  return (
-    <div>
-      <RouterProvider router={router} />
-    </div>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

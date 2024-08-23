@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
-import axios from "axios";
-import "./freelancerprofile.scss";
-import getCurrentUser from "../../utils/getCurrentUser";
 import newRequest from "../../utils/newRequest";
+import getCurrentUser from "../../utils/getCurrentUser";
+import "./freelancerprofile.scss";
 
 const App = () => {
   const backendURL = "http://localhost:8800";
@@ -34,8 +33,8 @@ const App = () => {
 
   const fetchProfileData = async () => {
     try {
-      const response = await newRequest.get(`user/${userId}`);
-      const fetchedProfile = response.data;
+      const response = await newRequest.get(`/user/${userId}`);
+      const fetchedProfile = response.data.user;
       console.log("Fetched Profile Data:", fetchedProfile);
       setProfile(fetchedProfile);
       setEditProfile({ ...fetchedProfile });
@@ -75,7 +74,7 @@ const App = () => {
         if (key === "img" && editProfile[key] instanceof File) {
           formData.append(key, editProfile[key]);
         } else {
-          formData.append(key, JSON.stringify(editProfile[key]));
+          formData.append(key, editProfile[key]);
         }
       });
 
@@ -86,7 +85,7 @@ const App = () => {
       });
 
       console.log("Profile Update Response:", response.data);
-      setProfile({ ...editProfile });
+      setProfile(response.data.user);
       closeModal();
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -110,14 +109,18 @@ const App = () => {
           <div className="profile-App-profilepic">
             <img
               className="profile-App-profile-picture"
-              src={`${backendURL}/uploads/${profile.user.img}`}
+              src={
+                profile.img
+                  ? `${backendURL}/uploads/images/${profile.img}`
+                  : `${backendURL}/uploads/images/default-profile.png`
+              }
               alt="Profile"
             />
           </div>
-          <h2>{profile.user.username}</h2>
+          <h2>{profile.username}</h2>
           <div className="profile-App-details">
-            <p>Email : {profile.user.email}</p>
-            <p>Joined on: {formatDate(profile.user.createdAt)}</p>
+            <p>Email: {profile.email}</p>
+            <p>Joined on: {formatDate(profile.createdAt)}</p>
           </div>
           <button className="profile-App-edit-button" onClick={openModal}>
             Edit Profile
@@ -129,40 +132,9 @@ const App = () => {
           </div>
           <div className="profile-App-details-box">
             <h3>Description</h3>
-            <p>{profile.user.desc}</p>
+            <p>{profile.desc}</p>
           </div>
-          <div className="profile-App-details-box">
-            <h3>Languages</h3>
-            <ul className="profile-App-details-content-list">
-              {/* {profile.languages.map((language, index) => (
-                <li key={index}>{language}</li>
-              ))} */}
-            </ul>
-          </div>
-          <div className="profile-App-details-box">
-            <h3>Skills</h3>
-            <ul className="profile-App-details-content-list">
-              {/* {profile.skills.map((skill, index) => (
-                <li key={index}>{skill}</li>
-              ))} */}
-            </ul>
-          </div>
-          <div className="profile-App-details-box">
-            <h3>Education</h3>
-            <ul className="profile-App-details-content-list">
-              {/* {profile.education.map((edu, index) => (
-                <li key={index}>{edu}</li>
-              ))} */}
-            </ul>
-          </div>
-          <div className="profile-App-details-box">
-            <h3>Certificates</h3>
-            <ul className="profile-App-details-content-list">
-              {/* {profile.certificates.map((cert, index) => (
-                <li key={index}>{cert.name}</li>
-              ))} */}
-            </ul>
-          </div>
+          {/* Add more profile details sections as needed */}
         </div>
       </header>
 
@@ -177,7 +149,10 @@ const App = () => {
           <label htmlFor="profilePictureInput">
             <img
               className="profile-Modal-modal-profile-picture"
-              src={newProfilePicture || `${backendURL}/uploads/${profile.img}`}
+              src={
+                newProfilePicture ||
+                `${backendURL}/uploads/images/${profile.img}`
+              }
               alt="Profile"
             />
             <input

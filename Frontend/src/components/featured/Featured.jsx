@@ -8,20 +8,28 @@ const Featured = () => {
   const [input, setInput] = useState("");
   const navigate = useNavigate();
 
+  // Retrieve current user from local storage
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  // console.log("Current User:", currentUser);
+  console.log("Current User:", currentUser);
 
-  const saveSearchHistory = async (userId, searchQuery) => {
+  // Extract email from currentUser
+  const email = currentUser?.email;
+  const userId = currentUser?.userId;
+
+  // Save search history function
+  const saveSearchHistory = async (userId, searchQuery, email) => {
     const response = await newRequest.post("search/search-history", {
       userId,
       searchQuery,
+      email,
     });
     return response.data;
   };
 
+  // Query configuration to save search history
   const { refetch } = useQuery({
     queryKey: ["saveSearchHistory", currentUser?.userId, input],
-    queryFn: () => saveSearchHistory(currentUser.userId, input),
+    queryFn: () => saveSearchHistory(currentUser.userId, input, email),
     enabled: false, // Disable automatic refetching
     onSuccess: () => {
       console.log("Search history saved successfully");
@@ -32,6 +40,7 @@ const Featured = () => {
     },
   });
 
+  // Handle button click
   const handleClick = () => {
     if (currentUser && currentUser.userId) {
       refetch().then(() => {
@@ -52,7 +61,7 @@ const Featured = () => {
               <img className="imgsearch" src="./img/search.png" alt="" />
               <input
                 type="text"
-                placeholder='Try "Building Mobile App"'
+                placeholder="Search By Category"
                 onChange={(e) => setInput(e.target.value)}
               />
             </div>

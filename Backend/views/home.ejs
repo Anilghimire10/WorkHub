@@ -43,12 +43,12 @@
   <body>
     <nav>
       <ul>
-        <% if (user) { %>
-        <li><a href="/logout">Log out</a></li>
+        <% if (!user) { %>
+        <a href="/api/user/google">Login with Google</a>
         <% } else { %>
-        <li><a href="/login">Login</a></li>
+        <p>Welcome, <%= user.username %>!</p>
         <% } %>
-        <li><a href="/">Homepage</a></li>
+
         <!-- <li><a href="/profile">Profile</a></li> -->
       </ul>
     </nav>

@@ -8,7 +8,10 @@ const CatCard = ({ item }) => {
   return (
     <Link to={`/gig/${gigId}`}>
       <div className="catCard">
-        <img src={`${backendURL}/uploads/${item.cover}`} alt="Product Image" />
+        <img
+          src={`${backendURL}/uploads/images/${item.cover}`}
+          alt="Product Image"
+        />
         <span className="desc">{item.desc}</span>
         <span className="title">{item.title}</span>
       </div>

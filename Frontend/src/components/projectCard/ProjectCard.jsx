@@ -8,7 +8,7 @@ const ProjectCard = ({ item }) => {
   return (
     <Link to={`/gig/${gigId}`} className="link">
       <div className="projectCard">
-        <img src={`${backendURL}/uploads/${item.cover}`} alt="" />{" "}
+        <img src={`${backendURL}/uploads/images/${item.cover}`} alt="" />{" "}
         <div className="info">
           <div className="texts">
             <h2>{item.title}</h2>

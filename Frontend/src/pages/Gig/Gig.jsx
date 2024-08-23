@@ -3,19 +3,17 @@ import "./gig.scss";
 import { Slider } from "infinite-react-carousel";
 import { useQuery } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Reviews from "../../components/reviews/Reviews";
 
 function Gig() {
   const { id } = useParams();
-  const backendURL = "http://localhost:8800"; // Update this to your backend URL
+  const backendURL = "http://localhost:8800";
   const navigate = useNavigate();
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-  // State to track default image loading
   const [defaultImageLoaded, setDefaultImageLoaded] = useState(false);
 
-  // Fetch gig data
   const {
     isLoading: isLoadingGig,
     error: errorGig,
@@ -25,7 +23,6 @@ function Gig() {
     queryFn: () => newRequest.get(`gig/single/${id}`).then((res) => res.data),
   });
 
-  // Log gig data and current user
   useEffect(() => {
     if (dataGig) {
       console.log("Gig Data:", dataGig);
@@ -38,7 +35,6 @@ function Gig() {
     }
   }, [dataGig, currentUser, errorGig]);
 
-  // Fetch user data if gig data is available
   const userId = dataGig?.gig?.userId;
   const {
     isLoading: isLoadingUser,
@@ -51,7 +47,6 @@ function Gig() {
     enabled: !!userId,
   });
 
-  // Log user data
   useEffect(() => {
     if (dataUser) {
       console.log("User Data:", dataUser);
@@ -61,12 +56,10 @@ function Gig() {
     }
   }, [dataUser, errorUser]);
 
-  // Handle default image loading
   const handleDefaultImageLoad = () => {
     setDefaultImageLoaded(true);
   };
 
-  // Default image path
   const defaultImagePath = "/img/man.png";
 
   if (isLoadingGig || isLoadingUser) return <div>Loading...</div>;
@@ -80,6 +73,8 @@ function Gig() {
   }
 
   const { gig } = dataGig;
+
+  const mediaFiles = [...(gig.images || []), ...(gig.videos || [])];
 
   const renderStars = (totalStars, starNumber) => {
     if (!totalStars || !starNumber) return null;
@@ -98,29 +93,67 @@ function Gig() {
     const sellerId = dataGig?.gig?.userId;
     const buyerId = currentUser?.userId;
 
-    try {
-      // Create a new conversation
-      const res = await newRequest.post("conversation", {
-        to: sellerId, // Or any other relevant field
-      });
-
-      const newConversationId = res.data.savedConversation.id;
-
-      if (newConversationId) {
-        navigate(`/message/${newConversationId}`);
-      } else {
-        console.error("No new conversation ID returned.");
-      }
-    } catch (postErr) {
-      console.error("Error creating new conversation:", postErr);
+    if (!sellerId || !buyerId) {
+      console.error("Seller ID or Buyer ID is missing.");
+      return;
     }
+
+    const conversationId = sellerId + buyerId; // Create a unique ID for the conversation
+    console.log(`Generated Conversation ID: ${conversationId}`);
+
+    try {
+      // Step 1: Fetch existing conversation
+      console.log(`Fetching conversation with ID: ${conversationId}`);
+      const res = await newRequest.get(`conversation/single/${conversationId}`);
+      console.log("Fetch Conversation Response:", res.data);
+
+      const existingConversation = res.data?.conversation;
+
+      if (existingConversation) {
+        console.log("Existing Conversation Found:", existingConversation);
+        // If conversation exists, navigate to it
+        navigate(`/message/${existingConversation.id}`);
+      } else {
+        console.log("No existing conversation found, creating a new one.");
+        // Step 2: Create a new conversation if it does not exist
+        try {
+          const createRes = await newRequest.post("conversation", {
+            to: sellerId,
+          });
+          console.log("Create Conversation Response:", createRes.data);
+
+          const newConversationId = createRes.data?.savedConversation?.id;
+
+          if (newConversationId) {
+            console.log("New Conversation Created with ID:", newConversationId);
+            navigate(`/message/${newConversationId}`);
+          } else {
+            console.error("No new conversation ID returned.");
+          }
+        } catch (createErr) {
+          console.error(
+            "Error creating new conversation:",
+            createErr.response?.data || createErr.message
+          );
+        }
+      }
+    } catch (fetchErr) {
+      console.error(
+        "Error fetching conversation:",
+        fetchErr.response?.data || fetchErr.message
+      );
+    }
+  };
+
+  const handleContinue = () => {
+    navigate("/Paymentdo", { state: { gig } });
   };
 
   return (
     <div className="gig">
       <div className="container">
         <div className="left">
-          <span className="breadcrumbs">Liverr : Graphics & Design :</span>
+          <span className="breadcrumbs">Fiverr : Graphics & Design :</span>
           <h1>{gig.title}</h1>
           {isLoadingUser ? (
             "Loading"
@@ -134,13 +167,24 @@ function Gig() {
             </div>
           )}
           <Slider slidesToShow={1} arrowsScroll={1} className="slider">
-            {gig.images && gig.images.length > 0 ? (
-              gig.images.map((img, index) => (
-                <img
-                  key={index}
-                  src={`${backendURL}/uploads/${img}`}
-                  alt={`Slide ${index}`}
-                />
+            {mediaFiles.length > 0 ? (
+              mediaFiles.map((file, index) => (
+                <div key={index} className="media-slide">
+                  {file.endsWith(".mp4") ? (
+                    <video controls>
+                      <source
+                        src={`${backendURL}/uploads/videos/${file}`}
+                        type="video/mp4"
+                      />
+                      Your browser does not support the video tag.
+                    </video>
+                  ) : (
+                    <img
+                      src={`${backendURL}/uploads/images/${file}`}
+                      alt={`Slide ${index}`}
+                    />
+                  )}
+                </div>
               ))
             ) : (
               <img
@@ -151,6 +195,7 @@ function Gig() {
               />
             )}
           </Slider>
+
           <h2>About This Gig</h2>
           <p>{gig.desc}</p>
           {isLoadingUser ? (
@@ -215,14 +260,7 @@ function Gig() {
               </div>
             )}
           </div>
-          <Link
-            to={{
-              pathname: "/Paymentdo",
-              state: { gig },
-            }}
-          >
-            <button>Continue</button>
-          </Link>
+          <button onClick={handleContinue}>Continue</button>
         </div>
       </div>
     </div>

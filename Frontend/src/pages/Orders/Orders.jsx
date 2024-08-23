@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const Orders = () => {
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const navigate = useNavigate();
-
+  const backendURL = "http://localhost:8800";
   const { isLoading, error, data } = useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
@@ -88,7 +88,10 @@ const Orders = () => {
             {data.orders.map((order) => (
               <tr key={order._id}>
                 <td>
-                  <img className="image" src={order.img} />
+                  <img
+                    className="image"
+                    src={`${backendURL}/uploads/images/${order.img}`}
+                  />
                 </td>
                 <td>{order.title}</td>
                 <td>{order.price}</td>

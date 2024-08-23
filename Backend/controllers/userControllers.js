@@ -172,12 +172,11 @@ export const login = async (req, res, next) => {
 export const logout = (req, res) => {
   res
     .status(200)
-    .cookie("token", "", {
-      expires: new Date(Date.now()),
-    })
+    .clearCookie("connect.sid", { path: "/" }) // Clear session cookie
+    .clearCookie("token", { path: "/" }) // Clear authentication token cookie
     .json({
       success: true,
-      user: req.user,
+      user: null,
       message: "You have been logged out",
     });
 };
@@ -221,19 +220,43 @@ export const deleteUser = async (req, res, next) => {
 //     next(error);
 //   }
 // };
+
 export const updateUser = async (req, res, next) => {
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    console.log("Update request body:", req.body);
+    console.log("Uploaded file:", req.file);
+
+    // Find the user by ID
+    const user = await User.findById(req.params.id);
     if (!user) return next(new ErrorHandler("User not found", 404));
+
+    // Prepare the update object
+    const updateData = { ...req.body };
+
+    // Check if a new image file is uploaded
+    if (req.file) {
+      updateData.img = req.file.filename; // Save the new image filename
+    }
+
+    // Update user with validated data
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    console.log("User after update:", updatedUser);
+
     res.status(200).json({
       success: true,
       message: "User has been updated successfully",
-      user,
+      user: updatedUser,
     });
   } catch (error) {
+    console.error("Error updating user:", error);
     next(error);
   }
 };
@@ -241,6 +264,7 @@ export const updateUser = async (req, res, next) => {
 export const getUser = async (req, res, next) => {
   try {
     const userId = req.params.userId;
+    console.log("UserID:", userId);
     const user = await User.findById(userId);
 
     if (!user) {
@@ -255,6 +279,7 @@ export const getUser = async (req, res, next) => {
     next(error);
   }
 };
+
 export const getAllUser = async (req, res, next) => {
   try {
     const user = await User.find();

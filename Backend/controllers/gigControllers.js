@@ -13,15 +13,18 @@ export const createGig = async (req, res, next) => {
   const images = req.files["images"]
     ? req.files["images"].map((file) => file.filename)
     : []; // Map filenames for images
-
+  const videos = req.files["videos"]
+    ? req.files["videos"].map((file) => file.filename)
+    : [];
   console.log("Cover:", cover);
   console.log("Images:", images);
-
+  console.log("Videos:", videos);
   const newGig = new Gig({
     userId: req.userId,
     ...req.body,
     cover,
     images,
+    videos,
   });
 
   try {

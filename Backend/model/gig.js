@@ -39,6 +39,7 @@ const gigSchema = new Schema(
       type: [String],
       required: false,
     },
+    videos: [{ type: String }],
     shortDesc: {
       type: String,
       required: true,

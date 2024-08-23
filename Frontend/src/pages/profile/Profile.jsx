@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
-import axios from "axios";
-import "./profile.scss";
-import getCurrentUser from "../../utils/getCurrentUser";
 import newRequest from "../../utils/newRequest";
+import getCurrentUser from "../../utils/getCurrentUser";
+import "./profile.scss";
 
 const App = () => {
   const backendURL = "http://localhost:8800";
@@ -18,7 +17,7 @@ const App = () => {
     country: "",
     phonenumber: "",
     desc: "",
-    img: "", // Ensure img is part of profile state
+    img: "", // Added for image
   });
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -29,9 +28,8 @@ const App = () => {
     country: "",
     phonenumber: "",
     desc: "",
+    img: null, // Added for image file
   });
-
-  const [newProfilePicture, setNewProfilePicture] = useState(null);
 
   useEffect(() => {
     fetchUserProfile();
@@ -44,14 +42,16 @@ const App = () => {
         const userProfile = response.data.user;
         setProfile({
           ...userProfile,
-          img: userProfile.img || "", // Ensure img is set or default to empty string
+          img: userProfile.img || "",
         });
         setEditProfile({
+          name: userProfile.name,
           email: userProfile.email,
-          username: profile.username,
+          username: userProfile.username,
           country: userProfile.country,
           phonenumber: userProfile.phonenumber,
           desc: userProfile.desc,
+          img: null, // Reset image file state
         });
       } else {
         console.error("Error fetching profile:", response.data.message);
@@ -72,10 +72,9 @@ const App = () => {
     }));
   };
 
-  const handleProfilePictureChange = (e) => {
+  const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setNewProfilePicture(URL.createObjectURL(file));
       setEditProfile((prevProfile) => ({
         ...prevProfile,
         img: file,
@@ -86,31 +85,25 @@ const App = () => {
   const handleUpdate = async () => {
     try {
       const formData = new FormData();
+      formData.append("name", editProfile.name);
       formData.append("email", editProfile.email);
       formData.append("username", editProfile.username);
       formData.append("country", editProfile.country);
       formData.append("phonenumber", editProfile.phonenumber);
       formData.append("desc", editProfile.desc);
-      if (editProfile.img instanceof File) {
+      if (editProfile.img) {
         formData.append("img", editProfile.img);
       }
 
-      // Capture the profile data before updating
-      console.log("Profile before update:", profile);
-
-      const response = await newRequest.put(`/user/${userId}`, formData, {
+      const response = await newRequest.put(`user/${userId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
       if (response.data.success) {
-        // Update the profile state with the updated data
         setProfile(response.data.user);
-        // Capture the profile data after updating
-        console.log("Profile after update:", response.data.user);
-
-        closeModal(); // Close the modal after successful update
+        closeModal();
       } else {
         console.error("Error updating profile:", response.data.message);
       }
@@ -119,9 +112,8 @@ const App = () => {
     }
   };
 
-  // Ensure profile.img is defined before accessing it
   const profileImgSrc = profile.img
-    ? `${backendURL}/uploads/${profile.img}`
+    ? `${backendURL}/uploads/images/${profile.img}`
     : "";
 
   return (
@@ -129,10 +121,10 @@ const App = () => {
       <header className="profile-App-header">
         <div className="profile-App-profile-box">
           <div className="profile-App-profilepic">
-            {profile.img && ( // Check if profile.img is defined before rendering
+            {profile.img && (
               <img
                 className="profile-App-profile-picture"
-                src={`${backendURL}/uploads/${profile.img}`}
+                src={profileImgSrc}
                 alt="Profile"
               />
             )}
@@ -174,40 +166,18 @@ const App = () => {
         overlayClassName="profile-Overlay"
       >
         <h2>Edit Profile</h2>
-        <div className="profile-Modal-form-group">
-          <label htmlFor="profilePictureInput">
-            <img
-              className="profile-Modal-modal-profile-picture"
-              src={profileImgSrc} // Display current profile image in the modal
-              alt="Profile"
-            />
-          </label>
-          <input
-            id="profilePictureInput"
-            type="file"
-            style={{ display: "none" }}
-            onChange={handleProfilePictureChange}
-          />
-        </div>
         <form>
-          {/* <div className="profile-Modal-form-group">
-            <label>Full Name</label>
-            <input
-              type="text"
-              name="name"
-              value={editProfile.name}
-              onChange={handleChange}
-            />
-          </div> */}
-          {/* <div className="profile-Modal-form-group">
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              value={editProfile.email}
-              onChange={handleChange}
-            />
-          </div> */}
+          <div className="profile-Modal-form-group">
+            <label>Profile Picture</label>
+            <input type="file" accept="image/*" onChange={handleImageChange} />
+            {editProfile.img && (
+              <img
+                className="profile-Modal-preview-image"
+                src={URL.createObjectURL(editProfile.img)}
+                alt="Profile Preview"
+              />
+            )}
+          </div>
           <div className="profile-Modal-form-group">
             <label>Username</label>
             <input
