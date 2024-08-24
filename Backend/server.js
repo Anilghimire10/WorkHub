@@ -11,6 +11,7 @@ import conversationRoutes from "./routes/conversationRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import searchHistoryRoutes from "./routes/searchHistoryRoutes.js";
+import dataCountRoutes from "./routes/dataCountRoutes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { errorMiddleware } from "./middlewares/error.js";
@@ -80,7 +81,7 @@ app.use("/api/conversation", conversationRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/search", searchHistoryRoutes);
-
+app.use("/api/datacount", dataCountRoutes);
 // Route to fetch star-based recommendations from Flask API
 app.get("/api/recommendations/stars", async (req, res) => {
   try {

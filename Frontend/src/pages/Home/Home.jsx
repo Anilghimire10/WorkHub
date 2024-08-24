@@ -13,45 +13,24 @@ const Home = () => {
   const userId = currentUser?.userId;
 
   // Fetch data using useQuery hook
-  // const {
-  //   isLoading: isLoadingRecommendations,
-  //   error: errorRecommendations,
-  //   data: dataRecommendations,
-  //   refetch: refetchRecommendations,
-  // } = useQuery({
-  //   queryKey: ["recommendations", userId],
-  //   queryFn: () =>
-  //     axios
-  //       .get(
-  //         `http://localhost:5000/api/recommendations/search?userId=${userId}`
-  //       )
-  //       .then((res) => res.data),
-  //   enabled: !!userId, // Only run query if userId is available
-  // });
 
-  // const {
-  //   isLoading: isLoadingStarRecommendations,
-  //   error: errorStarRecommendations,
-  //   data: dataStarRecommendations,
-  //   refetch: refetchStarRecommendations,
-  // } = useQuery({
-  //   queryKey: ["starrecommendations"],
-  //   queryFn: () =>
-  //     axios
-  //       .get(`http://localhost:5000/api/recommendations/stars`)
-  //       .then((res) => res.data),
-  // });
+  const {
+    isLoading: isLoadingStarRecommendations,
+    error: errorStarRecommendations,
+    data: dataStarRecommendations,
+    refetch: refetchStarRecommendations,
+  } = useQuery({
+    queryKey: ["starrecommendations"],
+    queryFn: () =>
+      axios
+        .get(`http://localhost:5000/api/recommendations/stars`)
+        .then((res) => res.data),
+  });
 
-  // Log userId and dataRecommendations for debugging
-  // useEffect(() => {
-  //   console.log("Fetching recommendations for userId:", userId);
-  //   console.log("Data recommendations:", dataRecommendations);
-  // }, [userId, dataRecommendations]);
-
-  // useEffect(() => {
-  //   console.log("Data Star recommendations:", dataStarRecommendations);
-  //   console.log("Fetching star recommendations for userId:", userId);
-  // }, [dataStarRecommendations]);
+  useEffect(() => {
+    console.log("Data Star recommendations:", dataStarRecommendations);
+    console.log("Fetching star recommendations for userId:", userId);
+  }, [dataStarRecommendations]);
 
   // Handle loading and error states for recommendations
   // if (isLoadingRecommendations) return <div>Loading recommendations...</div>;
@@ -59,11 +38,6 @@ const Home = () => {
   //   return (
   //     <div>Error fetching recommendations: {errorRecommendations.message}</div>
   //   );
-
-  // Conditional rendering based on search history availability
-  // const hasSearchHistory =
-  //   dataRecommendations &&
-  //   dataRecommendations.recommendations_search.length > 0;
 
   return (
     <div className="home">
@@ -119,31 +93,13 @@ const Home = () => {
         </div>
       </div>
 
-      {/* {userId && hasSearchHistory && (
-        <Slide slidesToShow={3} arrowsScroll={3}>
-          {dataRecommendations.recommendations_search.map((item) => (
-            <ProjectCard key={item._id} item={item} />
-          ))}
-        </Slide>
-      )} */}
-
-      {/* {dataStarRecommendations &&
-        dataStarRecommendations.recommendations_star_ratings && (
-          <Slide slidesToShow={3} arrowsScroll={3}>
-            {dataStarRecommendations.recommendations_star_ratings.map(
-              (item) => (
-                <CatCard key={item.gigId || item._id} item={item} />
-              )
-            )}
-          </Slide>
-        )} */}
-      {/* {dataStarRecommendations?.recommendations_star_ratings?.length > 0 && (
+      {dataStarRecommendations?.recommendations_star_ratings?.length > 0 && (
         <Slide slidesToShow={3} arrowsScroll={3}>
           {dataStarRecommendations.recommendations_star_ratings.map((item) => (
             <CatCard key={item.gigId || item._id} item={item} />
           ))}
         </Slide>
-      )} */}
+      )}
     </div>
   );
 };

@@ -44,13 +44,15 @@ router.post("/khalti", async (req, res) => {
           message: "Gig not found.",
         });
       }
+      const amountInRupees = amount / 100;
+
       const paymentData = {
         transactionId: idx,
         gigId,
         gigTitle: gig.title,
         userId,
         sellerId: gig.userId,
-        amount,
+        amount: amountInRupees,
         dataFromVerificationReq: khaltiResponse.data,
         apiQueryFromUser: req.body,
         paymentGateway: "khalti",
@@ -79,6 +81,7 @@ router.post("/khalti", async (req, res) => {
     });
   }
 });
+
 router.get("/payments", async (req, res) => {
   const { userId, sellerId, date } = req.query;
 
@@ -124,84 +127,38 @@ router.get("/payments", async (req, res) => {
 });
 
 // // Get All Payments
-// router.get("/payments", async (req, res) => {
-//   try {
-//     const payments = await Payment.find();
-//     res.json({
-//       success: true,
-//       data: payments,
-//     });
-//   } catch (error) {
-//     console.error("Error fetching payments:", error);
+router.get("/allPayment", async (req, res) => {
+  const { date } = req.query;
 
-//     res.status(500).json({
-//       success: false,
-//       message: "Internal Server Error",
-//     });
-//   }
-// });
+  try {
+    let query = {};
 
-// // Get Payments by User ID
-// router.get("/payments/user/:userId", async (req, res) => {
-//   const { userId } = req.params;
+    // Add date filter if provided
+    if (date) {
+      // Parse the received date and get the start and end of the day in UTC
+      const startOfDayUTC = moment.utc(date).startOf("day").toDate();
+      const endOfDayUTC = moment.utc(date).endOf("day").toDate();
 
-//   try {
-//     const payments = await Payment.find({ userId });
-//     res.json({
-//       success: true,
-//       data: payments,
-//     });
-//   } catch (error) {
-//     console.error("Error fetching payments by userId:", error);
+      query.createdAt = {
+        $gte: startOfDayUTC,
+        $lte: endOfDayUTC,
+      };
+    }
 
-//     res.status(500).json({
-//       success: false,
-//       message: "Internal Server Error",
-//     });
-//   }
-// });
+    // Fetch gigs based on the constructed query
+    const payments = await Payment.find(query);
 
-// // GET payments by a specific date
-
-// router.get("/payments/date", async (req, res) => {
-//   const { date } = req.query;
-
-//   if (!date) {
-//     return res
-//       .status(400)
-//       .json({ success: false, message: "Missing date parameter" });
-//   }
-
-//   try {
-//     // Parse the received date and get the start and end of the day in UTC
-//     const startOfDayUTC = moment.utc(date).startOf("day").toDate();
-//     const endOfDayUTC = moment.utc(date).endOf("day").toDate();
-
-//     // console.log("Received date:", date);
-//     // console.log("Start of the day (UTC):", startOfDayUTC);
-//     // console.log("End of the day (UTC):", endOfDayUTC);
-
-//     // Query the payments using the UTC start and end of the day
-//     const payments = await Payment.find({
-//       paymentDate: {
-//         $gte: startOfDayUTC,
-//         $lte: endOfDayUTC,
-//       },
-//     });
-
-//     // console.log("Payments found:", payments);
-
-//     res.json({
-//       success: true,
-//       data: payments,
-//     });
-//   } catch (error) {
-//     console.error("Error fetching payments by date:", error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Internal Server Error",
-//     });
-//   }
-// });
+    res.json({
+      success: true,
+      data: payments,
+    });
+  } catch (error) {
+    console.error("Error fetching Payments:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+});
 
 export default router;
