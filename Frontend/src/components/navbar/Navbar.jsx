@@ -44,8 +44,10 @@ function Navbar() {
         Swal.fire({
           title: 'Logged Out',
           text: 'You have been successfully logged out.',
-          icon: 'success',
-          confirmButtonText: 'OK',
+          icon: 'success',         
+          timer: 2000, // Display for 4 seconds
+          timerProgressBar: true,
+          showConfirmButton: false,
         });
         navigate("/");
       } catch (err) {

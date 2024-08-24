@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import KhaltiCheckout from "khalti-checkout-web";
+import Swal from "sweetalert2";
 import "./paymentdo.scss";
 
 const PaymentDo = () => {
@@ -53,19 +54,43 @@ const PaymentDo = () => {
               }
             );
 
-            alert("Order Successful! Your order has been created.");
+            // Show success alert
+            await Swal.fire({
+              title: 'Payment Successful!',
+              text: 'Your order has been placed successfully.',
+              icon: 'success',
+              timer: 4000, // Display for 4 seconds
+              timerProgressBar: true,
+              showConfirmButton: false,
+            });
+
             navigate("/orders");
           } else {
-            alert("Failed to verify payment. Please try again later.");
+            Swal.fire({
+              title: 'Error!',
+              text: 'Failed to verify payment. Please try again later.',
+              icon: 'error',
+              confirmButtonText: 'OK',
+            });
           }
         } catch (error) {
           console.error("Order failed:", error);
-          alert("Order failed. Please try again later.");
+          Swal.fire({
+            title: 'Error!',
+            text: 'Order failed. Please try again later.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+          });
         }
       },
       onError(error) {
         console.error("Khalti error:", error);
-        alert("Payment failed. Please try again later.");
+        Swal.fire({
+          title: 'Payment Error!',
+          text: 'Payment failed. Please try again later.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
       },
       onClose() {
         console.log("Khalti widget is closing");
