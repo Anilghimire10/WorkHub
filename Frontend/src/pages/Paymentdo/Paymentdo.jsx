@@ -20,12 +20,8 @@ const PaymentDo = () => {
     return null;
   }
 
-  // Console logs for debugging
-  console.log("Gig User ID:", gig.userId);
   const currentUser = getCurrentUser();
-  const userId = currentUser.userId;
-  // const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  console.log("Logged-in User ID:", currentUser?.userId);
+  const userId = currentUser?.userId;
 
   const config = {
     publicKey: "test_public_key_ee71705cad0e48279ef9a71a6ef42b75",
@@ -35,10 +31,6 @@ const PaymentDo = () => {
     eventHandler: {
       async onSuccess(payload) {
         try {
-          // Ensure you have the correct sellerId
-          const sellerId = gig.userId; // Make sure gig.userId is the seller's ID
-
-          // Verify payment with Khalti
           const response = await axios.post(
             "http://localhost:8800/api/payment/khalti",
             {
@@ -47,15 +39,13 @@ const PaymentDo = () => {
               gigId: gig._id,
               title: gig.title,
               sellerId: gig.userId,
-              userId: currentUser?.userId,
+              userId: userId,
             }
           );
 
           if (response.data.success) {
-            // Save response data for confirmation
             setPaymentData(response.data.data);
 
-            // Create the order after successful payment
             await axios.post(
               `http://localhost:8800/api/order/${gig._id}`,
               {
@@ -66,20 +56,17 @@ const PaymentDo = () => {
                 deliveryTime: gig.deliveryTime,
                 isCompleted: true,
                 paymentMethod: "khalti",
-                buyerName: response.data.data.buyerName, // Include buyer's name
-                buyerPhone: response.data.data.buyerPhone, // Include buyer's phone number
+                buyerName: response.data.data.buyerName,
+                buyerPhone: response.data.data.buyerPhone,
               },
-              {
-                withCredentials: true,
-              }
+              { withCredentials: true }
             );
 
-            // Show success alert
             await Swal.fire({
-              title: 'Payment Successful!',
-              text: 'Your order has been placed successfully.',
-              icon: 'success',
-              timer: 4000, // Display for 4 seconds
+              title: "Payment Successful!",
+              text: "Your order has been placed successfully.",
+              icon: "success",
+              timer: 4000,
               timerProgressBar: true,
               showConfirmButton: false,
             });
@@ -87,29 +74,29 @@ const PaymentDo = () => {
             navigate("/orders");
           } else {
             Swal.fire({
-              title: 'Error!',
-              text: 'Failed to verify payment. Please try again later.',
-              icon: 'error',
-              confirmButtonText: 'OK',
+              title: "Error!",
+              text: "Failed to verify payment. Please try again later.",
+              icon: "error",
+              confirmButtonText: "OK",
             });
           }
         } catch (error) {
           console.error("Order failed:", error);
           Swal.fire({
-            title: 'Error!',
-            text: 'Order failed. Please try again later.',
-            icon: 'error',
-            confirmButtonText: 'OK',
+            title: "Error!",
+            text: "Order failed. Please try again later.",
+            icon: "error",
+            confirmButtonText: "OK",
           });
         }
       },
       onError(error) {
         console.error("Khalti error:", error);
         Swal.fire({
-          title: 'Payment Error!',
-          text: 'Payment failed. Please try again later.',
-          icon: 'error',
-          confirmButtonText: 'OK',
+          title: "Payment Error!",
+          text: "Payment failed. Please try again later.",
+          icon: "error",
+          confirmButtonText: "OK",
         });
       },
       onClose() {
@@ -119,7 +106,7 @@ const PaymentDo = () => {
     paymentPreference: ["KHALTI"],
   };
 
-  let checkout = new KhaltiCheckout(config);
+  const checkout = new KhaltiCheckout(config);
 
   const handleContinueToPay = () => {
     setShowPaymentPopup(true);
@@ -129,10 +116,8 @@ const PaymentDo = () => {
     setShowPaymentPopup(false);
   };
 
-  const { title, price, desc, deliveryTime, cover, shortDesc, images } = gig;
-
   const handleKhaltiPayment = () => {
-    checkout.show({ amount: price * 100 });
+    checkout.show({ amount: gig.price * 100 });
   };
 
   return (
@@ -140,31 +125,23 @@ const PaymentDo = () => {
       <h1>PAYMENT DETAILS</h1>
       <div className="payment-info">
         <div className="gig-header">
-          <div className="gig-title">{title}</div>
+          <div className="gig-title">{gig.title}</div>
         </div>
         <div className="gig-details">
           <span>Short Description: </span>
-          {shortDesc}
+          {gig.shortDesc}
         </div>
         <div className="gig-details">
           <span>Description: </span>
-          {desc}
+          {gig.desc}
         </div>
         <div className="total">
-          <span>Total: </span>Rs {price}
+          <span>Total: </span>Rs {gig.price}
         </div>
         <div className="delivery-time">
           <span>Delivery Time: </span>
-          {deliveryTime} days
+          {gig.deliveryTime} days
         </div>
-        {/* <div className="gig-images">
-          <span>Images: </span>
-          <div className="image-gallery">
-            {images.map((image, index) => (
-              <img key={index} src={image} alt={`Gig Image ${index + 1}`} />
-            ))}
-          </div>
-        </div> */}
         <button className="continue-to-pay" onClick={handleContinueToPay}>
           Continue to Pay
         </button>
@@ -178,10 +155,10 @@ const PaymentDo = () => {
             <h2>Confirm Payment</h2>
             <p>
               <strong>Title: </strong>
-              {title}
+              {gig.title}
             </p>
             <p>
-              <strong>Amount: </strong>Rs {price}
+              <strong>Amount: </strong>Rs {gig.price}
             </p>
             {paymentData && (
               <>

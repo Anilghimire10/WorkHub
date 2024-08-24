@@ -21,6 +21,7 @@ const Home = () => {
         const response = await axios.get(
           `http://localhost:8800/api/datacount/data-count`
         );
+        console.log(response.data);
         setStats(response.data);
       } catch (err) {
         console.error(err);

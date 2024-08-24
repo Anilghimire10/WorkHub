@@ -12,6 +12,6 @@ const router = express.Router();
 router.post("/", isAuthenticated, createReview);
 router.get("/:gigId", getReviews);
 router.delete("/:id", isAuthenticated, deleteReview);
-router.get("/", isAuthenticated, getAllReview);
+router.get("/", getAllReview);
 
 export default router;

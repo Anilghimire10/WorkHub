@@ -1,34 +1,9 @@
-import React, { useState, useEffect } from "react";
-import DateFilter from "./DateFilter";
+import React from "react";
 
 const InvoiceTable = ({ payments }) => {
-  const [filteredPayments, setFilteredPayments] = useState(payments);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-
-  useEffect(() => {
-    if (startDate && endDate) {
-      const filtered = payments.filter((payment) => {
-        const paymentDate = new Date(payment.paymentDate);
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        return paymentDate >= start && paymentDate <= end;
-      });
-      setFilteredPayments(filtered);
-    } else {
-      setFilteredPayments(payments);
-    }
-  }, [startDate, endDate, payments]);
-
   return (
     <div style={{ padding: "20px" }}>
       <h1 style={{ marginBottom: 16 }}>Invoice Listings</h1>
-      <DateFilter
-        // onFilterChange={(start, end) => {
-        //   setStartDate(start);
-        //   setEndDate(end);
-        // }}
-      />
       <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
           <tr>
@@ -41,18 +16,18 @@ const InvoiceTable = ({ payments }) => {
             <th style={{ border: "1px solid #ddd", padding: "8px" }}>Gig ID</th>
             <th style={{ border: "1px solid #ddd", padding: "8px" }}>Amount</th>
             <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-              Merchant
+              Receiver
             </th>
             <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-              User Name
+              Reeived From
             </th>
             <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-              User Phone
+              Phone Number
             </th>
           </tr>
         </thead>
         <tbody>
-          {filteredPayments.map((payment) => (
+          {payments.map((payment) => (
             <tr key={payment._id}>
               <td style={{ border: "1px solid #ddd", padding: "8px" }}>
                 {new Date(payment.paymentDate).toLocaleDateString()}
