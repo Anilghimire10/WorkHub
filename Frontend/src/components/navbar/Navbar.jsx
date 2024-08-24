@@ -45,7 +45,9 @@ function Navbar() {
           title: "Logged Out",
           text: "You have been successfully logged out.",
           icon: "success",
-          confirmButtonText: "OK",
+          timer: 2000, // Display for 4 seconds
+          timerProgressBar: true,
+          showConfirmButton: false,
         });
         navigate("/");
       } catch (err) {

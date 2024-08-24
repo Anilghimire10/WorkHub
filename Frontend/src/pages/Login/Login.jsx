@@ -33,7 +33,9 @@ const Login = () => {
           title: "Login Successful!",
           text: "Welcome back!",
           icon: "success",
-          confirmButtonText: "OK",
+          timer: 2000, // Display for 4 seconds
+          timerProgressBar: true,
+          showConfirmButton: false,
         });
 
         if (res.data.isSeller) {

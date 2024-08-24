@@ -3,7 +3,6 @@ import axios from "axios";
 import dotenv from "dotenv";
 import Payment from "../model/Payment.js";
 import moment from "moment-timezone";
-import Gig from "../model/gig.js";
 
 const router = express.Router();
 dotenv.config();
