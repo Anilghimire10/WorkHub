@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
+import Swal from "sweetalert2";
 import newRequest from "../../utils/newRequest";
 import getCurrentUser from "../../utils/getCurrentUser";
 import "./profile.scss";
@@ -17,7 +18,7 @@ const App = () => {
     country: "",
     phonenumber: "",
     desc: "",
-    img: "", // Added for image
+    img: "",
   });
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -28,7 +29,7 @@ const App = () => {
     country: "",
     phonenumber: "",
     desc: "",
-    img: null, // Added for image file
+    img: null,
   });
 
   useEffect(() => {
@@ -51,7 +52,7 @@ const App = () => {
           country: userProfile.country,
           phonenumber: userProfile.phonenumber,
           desc: userProfile.desc,
-          img: null, // Reset image file state
+          img: null,
         });
       } else {
         console.error("Error fetching profile:", response.data.message);
@@ -83,32 +84,55 @@ const App = () => {
   };
 
   const handleUpdate = async () => {
-    try {
-      const formData = new FormData();
-      formData.append("name", editProfile.name);
-      formData.append("email", editProfile.email);
-      formData.append("username", editProfile.username);
-      formData.append("country", editProfile.country);
-      formData.append("phonenumber", editProfile.phonenumber);
-      formData.append("desc", editProfile.desc);
-      if (editProfile.img) {
-        formData.append("img", editProfile.img);
-      }
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to update the profile?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, update it!',
+      cancelButtonText: 'Cancel',
+    });
 
-      const response = await newRequest.put(`user/${userId}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+    if (result.isConfirmed) {
+      try {
+        const formData = new FormData();
+        formData.append("name", editProfile.name);
+        formData.append("email", editProfile.email);
+        formData.append("username", editProfile.username);
+        formData.append("country", editProfile.country);
+        formData.append("phonenumber", editProfile.phonenumber);
+        formData.append("desc", editProfile.desc);
+        if (editProfile.img) {
+          formData.append("img", editProfile.img);
+        }
 
-      if (response.data.success) {
-        setProfile(response.data.user);
-        closeModal();
-      } else {
-        console.error("Error updating profile:", response.data.message);
+        const response = await newRequest.put(`user/${userId}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        if (response.data.success) {
+          setProfile(response.data.user);
+          closeModal();
+          Swal.fire({
+            title: 'Profile Updated',
+            text: 'Your profile has been successfully updated.',
+            icon: 'success',
+            confirmButtonText: 'OK',
+          });
+        } else {
+          console.error("Error updating profile:", response.data.message);
+        }
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        Swal.fire({
+          title: 'Error',
+          text: 'An error occurred while updating the profile. Please try again.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
       }
-    } catch (error) {
-      console.error("Error updating profile:", error);
     }
   };
 

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import newRequest from "../../utils/newRequest";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import "./register.scss";
 
 function Register() {
@@ -32,25 +33,52 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    for (const key in user) {
-      formData.append(key, user[key]);
-    }
-    if (file) {
-      formData.append("image", file);
-    }
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: `Do you want to register as ${user.isSeller ? "a Seller" : "a Buyer"}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Register',
+      cancelButtonText: 'Cancel',
+    });
 
-    try {
-      const response = await newRequest.post("user/signup", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+    if (result.isConfirmed) {
+      const formData = new FormData();
+      for (const key in user) {
+        formData.append(key, user[key]);
+      }
+      if (file) {
+        formData.append("image", file);
+      }
 
-      console.log("Form data submitted successfully:", response.data);
-      navigate("/otp");
-    } catch (err) {
-      console.error("Error submitting form data:", err);
+      try {
+        const response = await newRequest.post("user/signup", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        console.log("Form data submitted successfully:", response.data);
+
+        // Show success alert and then redirect to OTP page after 3 seconds
+        await Swal.fire({
+          text: 'An OTP has been sent to your email.',
+          icon: 'success',
+          timer: 3000, // Display for 3 seconds
+          timerProgressBar: true,
+          showConfirmButton: false,
+        });
+
+        navigate("/otp");
+      } catch (err) {
+        console.error("Error submitting form data:", err);
+        Swal.fire({
+          title: 'Error!',
+          text: 'An error occurred while registering. Please try again.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+      }
     }
   };
 

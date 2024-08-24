@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./login.scss";
+import Swal from "sweetalert2";
 import newRequest from "../../utils/newRequest";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -11,27 +12,60 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const res = await newRequest.post("user/login", { email, password });
-      localStorage.setItem("currentUser", JSON.stringify(res.data));
-      console.log("Logged in user:", res.data);
 
-      if (res.data.isSeller) {
-        navigate("/freelancerprofile");
-      } else {
-        navigate("/");
+    // Show a confirmation prompt before logging in
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to log in with these credentials?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, log in!',
+      cancelButtonText: 'No, cancel!',
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const res = await newRequest.post("user/login", { email, password });
+        localStorage.setItem("currentUser", JSON.stringify(res.data));
+        console.log("Logged in user:", res.data);
+
+        Swal.fire({
+          title: 'Login Successful!',
+          text: 'Welcome back!',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        });
+
+        if (res.data.isSeller) {
+          navigate("/freelancerprofile");
+        } else {
+          navigate("/");
+        }
+      } catch (err) {
+        const errorMessage = err.response?.data?.message || "An error occurred";
+        setError(errorMessage);
+        console.log(errorMessage);
+
+        Swal.fire({
+          title: 'Login Failed',
+          text: errorMessage,
+          icon: 'error',
+          confirmButtonText: 'Try Again',
+        });
       }
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || "An error occurred";
-      setError(errorMessage);
-      console.log(errorMessage);
     }
   };
+
   const handleGoogleAuth = () => {
     try {
       window.location.href = `http://localhost:8800/api/user/login/google`;
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      Swal.fire({
+        title: 'Error',
+        text: err?.data?.message || err.error,
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
     }
   };
 
@@ -64,14 +98,12 @@ const Login = () => {
         >
           Sign in with Google
         </button>
-        {/* {error && <div className="error-message">{error}</div>} */}
         <p className="registerone">
           Don't have an account?{" "}
           <Link style={{ textDecoration: "none" }} to="/register">
             Join here
           </Link>
         </p>
-
         <p className="terms">
           By joining, you agree to the Workhub Terms of Service. Please read our{" "}
           <Link style={{ textDecoration: "none" }} to="/privacy-policy">

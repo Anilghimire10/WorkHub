@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import newRequest from "../../utils/newRequest";
 import "./add.scss";
+
 const Add = () => {
   const navigate = useNavigate();
 
@@ -38,28 +40,49 @@ const Add = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("category", category);
-    formData.append("cover", coverImage);
-    Array.from(uploadImages).forEach((image) => {
-      formData.append("images", image);
-    });
-    formData.append("desc", desc);
-    formData.append("shortTitle", shortTitle);
-    formData.append("shortDesc", shortDesc);
-    formData.append("deliveryTime", deliveryTime);
-    formData.append("revisionNumber", revisionNumber);
-    formData.append("revisionTime", revisionTime);
-    formData.append("features", JSON.stringify(features));
-    formData.append("price", price);
 
-    try {
-      const response = await newRequest.post("gig/new", formData);
-      console.log(response.data);
-      navigate("/mygigs");
-    } catch (error) {
-      console.error("Error adding gig:", error);
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to create this gig?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Add",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed) {
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("category", category);
+      formData.append("cover", coverImage);
+      Array.from(uploadImages).forEach((image) => {
+        formData.append("images", image);
+      });
+      formData.append("desc", desc);
+      formData.append("shortTitle", shortTitle);
+      formData.append("shortDesc", shortDesc);
+      formData.append("deliveryTime", deliveryTime);
+      formData.append("revisionNumber", revisionNumber);
+      formData.append("revisionTime", revisionTime);
+      formData.append("features", JSON.stringify(features));
+      formData.append("price", price);
+
+      try {
+        const response = await newRequest.post("gig/new", formData);
+        console.log(response.data);
+
+        await Swal.fire({
+          title: "Gig created successfully!",
+          icon: "success",
+        });
+        navigate("/mygigs");
+      } catch (error) {
+        console.error("Error adding gig:", error);
+        Swal.fire("Failed to create gig!", "Something went wrong.", "error");
+      }
+    } else {
+      Swal.fire("Gig creation canceled!", "", "info");
     }
   };
 
@@ -162,8 +185,8 @@ const Add = () => {
               </button>
             </div>
           </div>
+          <button type="submit">Create</button>
         </form>
-        <button type="submit">Create</button>
       </div>
     </div>
   );

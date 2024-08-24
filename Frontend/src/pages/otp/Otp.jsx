@@ -42,6 +42,7 @@ const VerifyOTP = () => {
   const handleCancel = () => {
     console.log("Cancelled");
     setOTP(Array(length).fill(""));
+    navigate("/register");
     inputRef.current[0]?.focus(); // Focus on the first input
   };
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
+import Swal from "sweetalert2";
 import newRequest from "../../utils/newRequest";
 import getCurrentUser from "../../utils/getCurrentUser";
 import "./freelancerprofile.scss";
@@ -68,27 +69,50 @@ const App = () => {
   };
 
   const handleUpdate = async () => {
-    try {
-      const formData = new FormData();
-      Object.keys(editProfile).forEach((key) => {
-        if (key === "img" && editProfile[key] instanceof File) {
-          formData.append(key, editProfile[key]);
-        } else {
-          formData.append(key, editProfile[key]);
-        }
-      });
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to update the profile?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, update it!',
+      cancelButtonText: 'Cancel',
+    });
 
-      const response = await newRequest.put(`user/${userId}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+    if (result.isConfirmed) {
+      try {
+        const formData = new FormData();
+        Object.keys(editProfile).forEach((key) => {
+          if (key === "img" && editProfile[key] instanceof File) {
+            formData.append(key, editProfile[key]);
+          } else {
+            formData.append(key, editProfile[key]);
+          }
+        });
 
-      console.log("Profile Update Response:", response.data);
-      setProfile(response.data.user);
-      closeModal();
-    } catch (error) {
-      console.error("Error updating profile:", error);
+        const response = await newRequest.put(`user/${userId}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        console.log("Profile Update Response:", response.data);
+        setProfile(response.data.user);
+        closeModal();
+        Swal.fire({
+          title: 'Profile Updated',
+          text: 'Your profile has been successfully updated.',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        });
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        Swal.fire({
+          title: 'Error',
+          text: 'An error occurred while updating the profile. Please try again.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+      }
     }
   };
 
@@ -191,11 +215,12 @@ const App = () => {
             onChange={handleChange}
           />
         </div>
-        <button className="profile-Modal-save-button" onClick={handleUpdate}>
-          Save Changes
-        </button>
-        <button className="profile-Modal-cancel-button" onClick={closeModal}>
-          Cancel
+        <button
+          type="button"
+          className="profile-Modal-update-button"
+          onClick={handleUpdate}
+        >
+          Update
         </button>
       </Modal>
     </div>

@@ -172,8 +172,8 @@ export const login = async (req, res, next) => {
 export const logout = (req, res) => {
   res
     .status(200)
-    .clearCookie("connect.sid", { path: "/" }) // Clear session cookie
-    .clearCookie("token", { path: "/" }) // Clear authentication token cookie
+    .clearCookie("connect.sid", { path: "/" }) 
+    .clearCookie("token", { path: "/" }) 
     .json({
       success: true,
       user: null,

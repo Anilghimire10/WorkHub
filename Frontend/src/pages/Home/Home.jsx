@@ -31,18 +31,18 @@ const Home = () => {
   //   enabled: !!userId, // Only run query if userId is available
   // });
 
-  const {
-    isLoading: isLoadingStarRecommendations,
-    error: errorStarRecommendations,
-    data: dataStarRecommendations,
-    refetch: refetchStarRecommendations,
-  } = useQuery({
-    queryKey: ["starrecommendations"],
-    queryFn: () =>
-      axios
-        .get(`http://localhost:5000/api/recommendations/stars`)
-        .then((res) => res.data),
-  });
+  // const {
+  //   isLoading: isLoadingStarRecommendations,
+  //   error: errorStarRecommendations,
+  //   data: dataStarRecommendations,
+  //   refetch: refetchStarRecommendations,
+  // } = useQuery({
+  //   queryKey: ["starrecommendations"],
+  //   queryFn: () =>
+  //     axios
+  //       .get(`http://localhost:5000/api/recommendations/stars`)
+  //       .then((res) => res.data),
+  // });
 
   // Log userId and dataRecommendations for debugging
   // useEffect(() => {
@@ -50,10 +50,10 @@ const Home = () => {
   //   console.log("Data recommendations:", dataRecommendations);
   // }, [userId, dataRecommendations]);
 
-  useEffect(() => {
-    console.log("Data Star recommendations:", dataStarRecommendations);
-    console.log("Fetching star recommendations for userId:", userId);
-  }, [dataStarRecommendations]);
+  // useEffect(() => {
+  //   console.log("Data Star recommendations:", dataStarRecommendations);
+  //   console.log("Fetching star recommendations for userId:", userId);
+  // }, [dataStarRecommendations]);
 
   // Handle loading and error states for recommendations
   // if (isLoadingRecommendations) return <div>Loading recommendations...</div>;
@@ -145,13 +145,13 @@ const Home = () => {
             )}
           </Slide>
         )} */}
-      {dataStarRecommendations?.recommendations_star_ratings?.length > 0 && (
+      {/* {dataStarRecommendations?.recommendations_star_ratings?.length > 0 && (
         <Slide slidesToShow={3} arrowsScroll={3}>
           {dataStarRecommendations.recommendations_star_ratings.map((item) => (
             <CatCard key={item.gigId || item._id} item={item} />
           ))}
         </Slide>
-      )}
+      )} */}
     </div>
   );
 };

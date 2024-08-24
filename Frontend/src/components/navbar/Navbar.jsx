@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import "./navbar.scss";
 import newRequest from "../../utils/newRequest";
 
@@ -27,22 +28,50 @@ function Navbar() {
   }, []);
 
   const handleLogout = async () => {
-    try {
-      await newRequest.get("user/logout");
-      localStorage.removeItem("currentUser");
-      navigate("/");
-    } catch (err) {
-      console.log(err);
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to log out?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, log out!',
+      cancelButtonText: 'No, stay!',
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await newRequest.get("user/logout");
+        localStorage.removeItem("currentUser");
+        Swal.fire({
+          title: 'Logged Out',
+          text: 'You have been successfully logged out.',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        });
+        navigate("/");
+      } catch (err) {
+        console.log(err);
+        Swal.fire({
+          title: 'Error',
+          text: 'An error occurred during logout. Please try again.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+      }
     }
   };
 
   const handleBecomeSeller = async () => {
     try {
       await newRequest.get("user/logout");
-      // localStorage.removeItem("currentUser");
       navigate("/register");
     } catch (err) {
       console.log(err);
+      Swal.fire({
+        title: 'Error',
+        text: 'An error occurred. Please try again.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
     }
   };
 
@@ -71,7 +100,7 @@ function Navbar() {
             <div className="user" onClick={() => setOpen(!open)}>
               <img
                 src={
-                  `${backendURL}/uploads/${currentUser.img}` ||
+                  `${backendURL}/uploads/images/${currentUser.img}` ||
                   "/img/userprof.avif"
                 }
                 alt=""
