@@ -22,6 +22,7 @@ export const sendCookie = (user, res, message, statusCode = 200) => {
       message,
       userId: user._id,
       isSeller: user.isSeller,
+      isAdmin: user.isAdmin,
       img: user.img,
       email: user.email,
     });

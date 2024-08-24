@@ -27,10 +27,9 @@ import User from "./pages/user/User";
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
+  const { user } = useContext(AuthContext);
 
   const ProtectedRoute = ({ children }) => {
-    const { user } = useContext(AuthContext);
-
     if (!user) {
       console.log("User is not authenticated, redirecting to login.");
       return <Navigate to="/login" />;
@@ -89,8 +88,7 @@ function App() {
               }
             />
             <Route
-              path="/bus/edit/:id"
-              exact
+              path="edit/:id"
               element={
                 <ProtectedRoute>
                   <EditBus />
@@ -108,8 +106,7 @@ function App() {
               }
             />
             <Route
-              path="/book/edit/:id"
-              exact
+              path="edit/:id"
               element={
                 <ProtectedRoute>
                   <EditBook />
