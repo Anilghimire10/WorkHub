@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
 import "./home.scss";
 import Featured from "../../components/featured/Featured";
-import Trustedby from "../../components/trustedby/Trustedby";
 import Slide from "../../components/slide/Slide";
-import ProjectCard from "../../components/projectCard/ProjectCard";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import getCurrentUser from "../../utils/getCurrentUser";
@@ -70,12 +68,6 @@ const Home = () => {
   return (
     <div className="home">
       <Featured />
-      <Trustedby />
-      {/* <Slide slidesToShow={3} arrowsScroll={3}>
-        {cards.map((card) => (
-          <CatCard key={card.id} item={card} />
-        ))}
-      </Slide> */}
 
       <div className="features">
         <div className="container">

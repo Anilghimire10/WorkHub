@@ -107,16 +107,13 @@ const PaymentDo = () => {
       <h1>PAYMENT DETAILS</h1>
       <div className="payment-info">
         <div className="gig-header">
-          <div className="gig-cover-image">
-            <img src={cover} alt="Gig Cover" />
-          </div>
           <div className="gig-title">{title}</div>
         </div>
         <div className="gig-details">
           <span>Short Description: </span>
           {shortDesc}
         </div>
-        <div className="gig-description">
+        <div className="gig-details">
           <span>Description: </span>
           {desc}
         </div>
@@ -130,14 +127,14 @@ const PaymentDo = () => {
           <span>Delivery Time: </span>
           {deliveryTime} days
         </div>
-        <div className="gig-images">
+        {/* <div className="gig-images">
           <span>Images: </span>
           <div className="image-gallery">
             {images.map((image, index) => (
               <img key={index} src={image} alt={`Gig Image ${index + 1}`} />
             ))}
           </div>
-        </div>
+        </div> */}
         <button className="continue-to-pay" onClick={handleContinueToPay}>
           Continue to Pay
         </button>

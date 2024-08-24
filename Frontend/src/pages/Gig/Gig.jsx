@@ -165,6 +165,14 @@ function Gig() {
 
   const handleContinue = () => {
     navigate("/Paymentdo", { state: { gig } });
+    scrollToTop(); // Scroll to top when navigating to payment
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   return (

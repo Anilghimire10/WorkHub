@@ -141,6 +141,7 @@ function Register() {
             placeholder="+977 9826163997"
             onChange={handleChange}
             className="phno"
+            required
           />
           <label htmlFor="">Description</label>
           <textarea
