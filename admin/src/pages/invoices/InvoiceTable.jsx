@@ -24,10 +24,10 @@ const InvoiceTable = ({ payments }) => {
     <div style={{ padding: "20px" }}>
       <h1 style={{ marginBottom: 16 }}>Invoice Listings</h1>
       <DateFilter
-        // onFilterChange={(start, end) => {
-        //   setStartDate(start);
-        //   setEndDate(end);
-        // }}
+        onFilterChange={(start, end) => {
+          setStartDate(start);
+          setEndDate(end);
+        }}
       />
       <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>

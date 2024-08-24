@@ -13,7 +13,7 @@ const Invoices = () => {
     const fetchPayments = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:8800/api/payment/payments"
+          "http://localhost:8800/api/payment/allPayment"
         );
 
         // Log the response to check if it's an array
