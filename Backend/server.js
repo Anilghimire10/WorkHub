@@ -81,21 +81,6 @@ app.use("/api/message", messageRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/search", searchHistoryRoutes);
 
-// Route to fetch search-based recommendations from Flask API
-app.get("/api/recommendations/search/:userId", async (req, res) => {
-  try {
-    const userId = req.params.userId;
-    console.log(`Fetching search recommendations for userId: ${userId}`);
-    const response = await axios.get(
-      `http://localhost:5000/api/recommendations/search?userId=${userId}`
-    );
-    res.json(response.data);
-  } catch (error) {
-    console.error("Error fetching search recommendations:", error);
-    res.status(500).json({ error: "Failed to fetch search recommendations" });
-  }
-});
-
 // Route to fetch star-based recommendations from Flask API
 app.get("/api/recommendations/stars", async (req, res) => {
   try {

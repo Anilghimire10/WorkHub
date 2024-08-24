@@ -4,20 +4,28 @@ import axios from "axios";
 import KhaltiCheckout from "khalti-checkout-web";
 import Swal from "sweetalert2";
 import "./paymentdo.scss";
+import getCurrentUser from "../../utils/getCurrentUser";
 
 const PaymentDo = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { gig } = location.state || {};
 
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  const buyerID = currentUser?.userId;
+  const [paymentData, setPaymentData] = useState(null);
+  const [showPaymentPopup, setShowPaymentPopup] = useState(false);
 
-  if (!gig || !buyerID) {
-    console.error("Gig data or user ID is missing. Redirecting...");
+  if (!gig) {
+    console.error("Gig data is missing. Redirecting...");
     navigate(-1);
     return null;
   }
+
+  // Console logs for debugging
+  console.log("Gig User ID:", gig.userId);
+  const currentUser = getCurrentUser();
+  const userId = currentUser.userId;
+  // const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  console.log("Logged-in User ID:", currentUser?.userId);
 
   const config = {
     publicKey: "test_public_key_ee71705cad0e48279ef9a71a6ef42b75",
@@ -27,27 +35,39 @@ const PaymentDo = () => {
     eventHandler: {
       async onSuccess(payload) {
         try {
+          // Ensure you have the correct sellerId
+          const sellerId = gig.userId; // Make sure gig.userId is the seller's ID
+
           // Verify payment with Khalti
           const response = await axios.post(
             "http://localhost:8800/api/payment/khalti",
             {
               token: payload.token,
               amount: payload.amount,
+              gigId: gig._id,
+              title: gig.title,
+              sellerId: gig.userId,
+              userId: currentUser?.userId,
             }
           );
 
           if (response.data.success) {
+            // Save response data for confirmation
+            setPaymentData(response.data.data);
+
             // Create the order after successful payment
             await axios.post(
               `http://localhost:8800/api/order/${gig._id}`,
               {
-                buyerID,
+                buyerID: response.data.data.userId,
                 price: gig.price,
                 title: gig.title,
                 desc: gig.desc,
                 deliveryTime: gig.deliveryTime,
                 isCompleted: true,
                 paymentMethod: "khalti",
+                buyerName: response.data.data.buyerName, // Include buyer's name
+                buyerPhone: response.data.data.buyerPhone, // Include buyer's phone number
               },
               {
                 withCredentials: true,
@@ -100,7 +120,6 @@ const PaymentDo = () => {
   };
 
   let checkout = new KhaltiCheckout(config);
-  const [showPaymentPopup, setShowPaymentPopup] = useState(false);
 
   const handleContinueToPay = () => {
     setShowPaymentPopup(true);
@@ -110,21 +129,10 @@ const PaymentDo = () => {
     setShowPaymentPopup(false);
   };
 
-  const {
-    title,
-    price,
-    desc,
-    serviceFee = 50,
-    deliveryTime,
-    cover,
-    shortDesc,
-    images,
-  } = gig;
-
-  const total = price + serviceFee;
+  const { title, price, desc, deliveryTime, cover, shortDesc, images } = gig;
 
   const handleKhaltiPayment = () => {
-    checkout.show({ amount: total * 100 });
+    checkout.show({ amount: price * 100 });
   };
 
   return (
@@ -132,37 +140,31 @@ const PaymentDo = () => {
       <h1>PAYMENT DETAILS</h1>
       <div className="payment-info">
         <div className="gig-header">
-          <div className="gig-cover-image">
-            <img src={cover} alt="Gig Cover" />
-          </div>
           <div className="gig-title">{title}</div>
         </div>
         <div className="gig-details">
           <span>Short Description: </span>
           {shortDesc}
         </div>
-        <div className="gig-description">
+        <div className="gig-details">
           <span>Description: </span>
           {desc}
         </div>
-        <div className="service-fee">
-          <span>Service Fee: </span>Rs {serviceFee}
-        </div>
         <div className="total">
-          <span>Total: </span>Rs {total}
+          <span>Total: </span>Rs {price}
         </div>
         <div className="delivery-time">
           <span>Delivery Time: </span>
           {deliveryTime} days
         </div>
-        <div className="gig-images">
+        {/* <div className="gig-images">
           <span>Images: </span>
           <div className="image-gallery">
             {images.map((image, index) => (
               <img key={index} src={image} alt={`Gig Image ${index + 1}`} />
             ))}
           </div>
-        </div>
+        </div> */}
         <button className="continue-to-pay" onClick={handleContinueToPay}>
           Continue to Pay
         </button>
@@ -181,12 +183,18 @@ const PaymentDo = () => {
             <p>
               <strong>Amount: </strong>Rs {price}
             </p>
-            <p>
-              <strong>Service Fee: </strong>Rs {serviceFee}
-            </p>
-            <p>
-              <strong>Total: </strong>Rs {total}
-            </p>
+            {paymentData && (
+              <>
+                <p>
+                  <strong>Buyer Name: </strong>
+                  {paymentData.buyerName}
+                </p>
+                <p>
+                  <strong>Buyer Phone: </strong>
+                  {paymentData.buyerPhone}
+                </p>
+              </>
+            )}
             <button className="khalti-payment" onClick={handleKhaltiPayment}>
               Pay with Khalti
             </button>

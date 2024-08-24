@@ -1,35 +1,207 @@
 import express from "express";
 import axios from "axios";
 import dotenv from "dotenv";
-const app = express();
+import Payment from "../model/Payment.js";
+import moment from "moment-timezone";
+import Gig from "../model/gig.js";
+
 const router = express.Router();
 dotenv.config();
 
 router.post("/khalti", async (req, res) => {
-  const { token, amount } = req.body;
-  const khaltiresponse = await axios.post(
-    "https://khalti.com/api/v2/payment/verify/",
-    {
-      token,
-      amount,
-    },
-    {
-      headers: {
-        Authorization: `Key test_secret_key_3722fd6257b84dab8251b1af3dbecd37`,
+  const { token, amount, gigId, userId } = req.body;
+
+  try {
+    const khaltiResponse = await axios.post(
+      "https://khalti.com/api/v2/payment/verify/",
+      {
+        token,
+        amount,
       },
+      {
+        headers: {
+          Authorization: `Key test_secret_key_3722fd6257b84dab8251b1af3dbecd37`,
+        },
+      }
+    );
+
+    console.log("Khalti Response Data:", khaltiResponse.data);
+
+    if (khaltiResponse?.data) {
+      const { idx, state, user } = khaltiResponse.data;
+
+      if (!user || !gigId || !userId) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Payment validation failed: Missing user data, gigId, or userId.",
+        });
+      }
+      const gig = await Gig.findById(gigId).select("title userId");
+      if (!gig) {
+        return res.status(404).json({
+          success: false,
+          message: "Gig not found.",
+        });
+      }
+      const paymentData = {
+        transactionId: idx,
+        gigId,
+        gigTitle: gig.title,
+        userId,
+        sellerId: gig.userId,
+        amount,
+        dataFromVerificationReq: khaltiResponse.data,
+        apiQueryFromUser: req.body,
+        paymentGateway: "khalti",
+        status: state?.name.toLowerCase() || "unknown",
+      };
+
+      const payment = new Payment(paymentData);
+      await payment.save();
+
+      res.json({
+        success: true,
+        data: khaltiResponse.data,
+      });
+    } else {
+      res.json({
+        success: false,
+        message: "Payment verification failed.",
+      });
     }
-  );
-  console.log(khaltiresponse);
-  if (khaltiresponse) {
-    res.json({
-      success: true,
-      data: khaltiresponse?.data,
-    });
-  } else {
-    res.json({
+  } catch (error) {
+    console.error("Error verifying payment with Khalti:", error);
+
+    res.status(500).json({
       success: false,
-      message: "Something Went Wrong",
+      message: "Internal Server Error",
     });
   }
 });
+router.get("/payments", async (req, res) => {
+  const { userId, sellerId, date } = req.query;
+
+  try {
+    let query = {};
+
+    // Add userId filter if provided
+    if (userId) {
+      query.userId = userId;
+    }
+
+    // Add sellerId filter if provided
+    if (sellerId) {
+      query.sellerId = sellerId;
+    }
+
+    // Add date filter if provided
+    if (date) {
+      // Parse the received date and get the start and end of the day in UTC
+      const startOfDayUTC = moment.utc(date).startOf("day").toDate();
+      const endOfDayUTC = moment.utc(date).endOf("day").toDate();
+
+      query.paymentDate = {
+        $gte: startOfDayUTC,
+        $lte: endOfDayUTC,
+      };
+    }
+
+    // Fetch payments based on the constructed query
+    const payments = await Payment.find(query);
+
+    res.json({
+      success: true,
+      data: payments,
+    });
+  } catch (error) {
+    console.error("Error fetching payments:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+});
+
+// // Get All Payments
+// router.get("/payments", async (req, res) => {
+//   try {
+//     const payments = await Payment.find();
+//     res.json({
+//       success: true,
+//       data: payments,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching payments:", error);
+
+//     res.status(500).json({
+//       success: false,
+//       message: "Internal Server Error",
+//     });
+//   }
+// });
+
+// // Get Payments by User ID
+// router.get("/payments/user/:userId", async (req, res) => {
+//   const { userId } = req.params;
+
+//   try {
+//     const payments = await Payment.find({ userId });
+//     res.json({
+//       success: true,
+//       data: payments,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching payments by userId:", error);
+
+//     res.status(500).json({
+//       success: false,
+//       message: "Internal Server Error",
+//     });
+//   }
+// });
+
+// // GET payments by a specific date
+
+// router.get("/payments/date", async (req, res) => {
+//   const { date } = req.query;
+
+//   if (!date) {
+//     return res
+//       .status(400)
+//       .json({ success: false, message: "Missing date parameter" });
+//   }
+
+//   try {
+//     // Parse the received date and get the start and end of the day in UTC
+//     const startOfDayUTC = moment.utc(date).startOf("day").toDate();
+//     const endOfDayUTC = moment.utc(date).endOf("day").toDate();
+
+//     // console.log("Received date:", date);
+//     // console.log("Start of the day (UTC):", startOfDayUTC);
+//     // console.log("End of the day (UTC):", endOfDayUTC);
+
+//     // Query the payments using the UTC start and end of the day
+//     const payments = await Payment.find({
+//       paymentDate: {
+//         $gte: startOfDayUTC,
+//         $lte: endOfDayUTC,
+//       },
+//     });
+
+//     // console.log("Payments found:", payments);
+
+//     res.json({
+//       success: true,
+//       data: payments,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching payments by date:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Internal Server Error",
+//     });
+//   }
+// });
+
 export default router;

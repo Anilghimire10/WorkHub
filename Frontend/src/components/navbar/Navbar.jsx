@@ -144,6 +144,13 @@ function Navbar() {
                       </Link>
                       <Link
                         className="link"
+                        to="/payment"
+                        onClick={() => window.scrollTo(0, 0)}
+                      >
+                        Billing & Payments
+                      </Link>
+                      <Link
+                        className="link"
                         to="/orders"
                         onClick={() => window.scrollTo(0, 0)}
                       >
