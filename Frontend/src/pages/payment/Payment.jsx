@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import "./payment.css";
 
+// Main Payment Component
 const Payment = () => {
   const [selectedSection, setSelectedSection] = useState("BillingHistory");
 
@@ -9,10 +10,6 @@ const Payment = () => {
     switch (selectedSection) {
       case "BillingHistory":
         return <BillingHistory />;
-      case "BillingInformation":
-        return <BillingInformation />;
-      case "AvailableBalances":
-        return <AvailableBalances />;
       case "PaymentMethods":
         return <PaymentMethods />;
       default:
@@ -26,12 +23,6 @@ const Payment = () => {
         <button onClick={() => setSelectedSection("BillingHistory")}>
           Billing History
         </button>
-        <button onClick={() => setSelectedSection("BillingInformation")}>
-          Billing Information
-        </button>
-        <button onClick={() => setSelectedSection("AvailableBalances")}>
-          Available Balances
-        </button>
         <button onClick={() => setSelectedSection("PaymentMethods")}>
           Payment Methods
         </button>
@@ -41,88 +32,96 @@ const Payment = () => {
   );
 };
 
-const BillingHistory = () => (
-  <div>
-    <h2>Billing History</h2>
-    <input type="text" placeholder="Search orders..." />
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Document</th>
-          <th>Service</th>
-          <th>Currency</th>
-          <th>Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>2023-06-20</td>
-          <td>Invoice #1234</td>
-          <td>Design Service</td>
-          <td>USD</td>
-          <td>$500</td>
-        </tr>
-        {/* Add more rows as needed */}
-      </tbody>
-    </table>
-  </div>
-);
+// BillingHistory Component
+const BillingHistory = () => {
+  // Example billing data
+  const billingData = [
+    {
+      username: "user1",
+      date: "2024-08-20",
+      document: "Invoice #1234",
+      service: "Design Service",
+      currency: "NPR",
+      total: "Rs 500",
+    },
+    {
+      username: "user2",
+      date: "2024-08-21",
+      document: "Invoice #5678",
+      service: "Development Service",
+      currency: "NPR",
+      total: "Rs 300",
+    },
+    // Add more records...
+  ];
 
-const BillingInformation = () => (
-  <div>
-    <h2>Billing Information</h2>
-    <form>
-      <label>
-        Full Name:
-        <input type="text" name="fullname" />
-      </label>
-      <label>
-        Company Name:
-        <input type="text" name="companyname" />
-      </label>
-      <label>
-        State/City:
-        <input type="text" name="statecity" />
-      </label>
-      <label>
-        Postal Code:
-        <input type="text" name="postalcode" />
-      </label>
-      <label>
-        Tax ID:
-        <input type="text" name="taxid" />
-      </label>
-      <button type="submit">Save</button>
-    </form>
-  </div>
-);
+  // State for filters
+  const [filterUsername, setFilterUsername] = useState("");
+  const [filterDate, setFilterDate] = useState("");
 
-const AvailableBalances = () => (
-  <div>
-    <h2>Available Balances</h2>
-    <div className="balance-box">
-      <h3>Cancelled Balances</h3>
-      <p>$100</p>
+  // Filter function
+  const filteredData = billingData.filter((item) => {
+    const usernameMatch = item.username
+      .toLowerCase()
+      .includes(filterUsername.toLowerCase());
+    const dateMatch = item.date.includes(filterDate);
+    return usernameMatch && dateMatch;
+  });
+
+  return (
+    <div>
+      <h2>Billing History</h2>
+      <div className="filters">
+        <input
+          type="text"
+          placeholder="Filter by Username"
+          value={filterUsername}
+          onChange={(e) => setFilterUsername(e.target.value)}
+        />
+        <input
+          type="date"
+          value={filterDate}
+          onChange={(e) => setFilterDate(e.target.value)}
+        />
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Document</th>
+            <th>Service</th>
+            <th>Currency</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredData.length > 0 ? (
+            filteredData.map((item, index) => (
+              <tr key={index}>
+                <td>{item.date}</td>
+                <td>{item.document}</td>
+                <td>{item.service}</td>
+                <td>{item.currency}</td>
+                <td>{item.total}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5">No results found</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
-    <div className="balance-box">
-      <h3>Credits</h3>
-      <p>$50</p>
-    </div>
-  </div>
-);
-
-const PaymentMethods = () => (
-  <div>
-    <h2>Payment Methods</h2>
-    <button>Pay with PayPal</button>
-  </div>
-);
-
-export {
-  Payment,
-  BillingHistory,
-  BillingInformation,
-  AvailableBalances,
-  PaymentMethods,
+  );
 };
+
+// PaymentMethods Component (unchanged)
+const PaymentMethods = () => (
+  <div className="paymentmethod">
+    <h2>Payment Methods</h2>
+    <button className="buttonme">Khalti</button>
+  </div>
+);
+
+export { Payment, BillingHistory, PaymentMethods };

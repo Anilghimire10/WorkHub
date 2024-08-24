@@ -18,6 +18,7 @@ import axios from "axios";
 import passport from "passport";
 import session from "express-session";
 import "./config/passport-setup.js";
+import { scheduleDailyRecommendationCheck } from "./utils/cronScheduler.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url)); // Resolve __dirname
 
@@ -29,6 +30,7 @@ const connect = async () => {
   try {
     await mongoose.connect(process.env.MONGO);
     console.log("Connected to the database");
+    scheduleDailyRecommendationCheck();
   } catch (error) {
     console.error("Database connection error:", error);
   }

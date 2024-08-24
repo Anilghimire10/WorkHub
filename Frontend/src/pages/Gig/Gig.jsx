@@ -73,7 +73,6 @@ function Gig() {
   }
 
   const { gig } = dataGig;
-
   const mediaFiles = [...(gig.images || []), ...(gig.videos || [])];
 
   const renderStars = (totalStars, starNumber) => {
@@ -89,61 +88,80 @@ function Gig() {
     );
   };
 
-  const handleContact = async () => {
+  const handleContact = async (order) => {
     const sellerId = dataGig?.gig?.userId;
     const buyerId = currentUser?.userId;
-
-    if (!sellerId || !buyerId) {
-      console.error("Seller ID or Buyer ID is missing.");
-      return;
-    }
-
-    const conversationId = sellerId + buyerId; // Create a unique ID for the conversation
-    console.log(`Generated Conversation ID: ${conversationId}`);
-
+    const id = sellerId + buyerId;
     try {
-      // Step 1: Fetch existing conversation
-      console.log(`Fetching conversation with ID: ${conversationId}`);
-      const res = await newRequest.get(`conversation/single/${conversationId}`);
-      console.log("Fetch Conversation Response:", res.data);
+      const res = await newRequest.get(`/conversation/single/${id}`);
+      // console.log("Response data from get request:", res.data);
+      const conversationId = res.data.conversation.id; // Access the id within the conversation object
+      // console.log("Existing conversation ID:", conversationId);
+      navigate(`/message/${conversationId}`);
+    } catch (err) {
+      if (err.response && err.response.status === 404) {
+        const res = await newRequest.post(`/conversation/`, {
+          to: currentUser.seller ? buyerId : sellerId,
+        });
+        // console.log("Response data from post request:", res.data); // Log the entire response data
 
-      const existingConversation = res.data?.conversation;
+        // Access the ID from savedConversation
+        const newConversationId = res.data.savedConversation.id;
+        // console.log("New conversation created with ID:", newConversationId);
 
-      if (existingConversation) {
-        console.log("Existing Conversation Found:", existingConversation);
-        // If conversation exists, navigate to it
-        navigate(`/message/${existingConversation.id}`);
-      } else {
-        console.log("No existing conversation found, creating a new one.");
-        // Step 2: Create a new conversation if it does not exist
-        try {
-          const createRes = await newRequest.post("conversation", {
-            to: sellerId,
-          });
-          console.log("Create Conversation Response:", createRes.data);
-
-          const newConversationId = createRes.data?.savedConversation?.id;
-
-          if (newConversationId) {
-            console.log("New Conversation Created with ID:", newConversationId);
-            navigate(`/message/${newConversationId}`);
-          } else {
-            console.error("No new conversation ID returned.");
-          }
-        } catch (createErr) {
-          console.error(
-            "Error creating new conversation:",
-            createErr.response?.data || createErr.message
-          );
+        if (newConversationId) {
+          navigate(`/message/${newConversationId}`);
+        } else {
+          console.error("Failed to retrieve the new conversation ID");
         }
+      } else {
+        console.error("Error fetching conversation:", err);
       }
-    } catch (fetchErr) {
-      console.error(
-        "Error fetching conversation:",
-        fetchErr.response?.data || fetchErr.message
-      );
     }
   };
+
+  // const handleContact = async (order) => {
+  //   const sellerId = dataGig?.gig?.userId;
+  //   const buyerId = currentUser?.userId;
+  //   const id = sellerId + buyerId;
+
+  //   try {
+  //     // Fetch existing conversation
+  //     const res = await newRequest.get(`conversation/single/${id}`);
+
+  //     // Extract conversation ID from the response
+  //     const conversationId = res.data.conversation
+  //       ? res.data.conversation.id
+  //       : null;
+
+  //     if (conversationId) {
+  //       navigate(`/message/${conversationId}`);
+  //     } else {
+  //       console.error("No conversation ID returned in response.");
+  //     }
+  //   } catch (err) {
+  //     if (err.response && err.response.status === 400) {
+  //       try {
+  //         // Create a new conversation
+  //         const res = await newRequest.post(`conversation`, {
+  //           to: currentUser.seller ? buyerId : sellerId,
+  //         });
+
+  //         const newConversationId = res.data.savedConversation.id;
+
+  //         if (newConversationId) {
+  //           navigate(`/message/${newConversationId}`);
+  //         } else {
+  //           console.error("No new conversation ID returned.");
+  //         }
+  //       } catch (postErr) {
+  //         console.error("Error creating new conversation:", postErr);
+  //       }
+  //     } else {
+  //       console.error("Error fetching conversation:", err);
+  //     }
+  //   }
+  // };
 
   const handleContinue = () => {
     navigate("/Paymentdo", { state: { gig } });

@@ -28,36 +28,26 @@ const Orders = () => {
     const id = sellerId + buyerId;
 
     try {
-      // Fetch existing conversation
-      const res = await newRequest.get(`conversation/single/${id}`);
-
-      // Extract conversation ID from the response
-      const conversationId = res.data.conversation
-        ? res.data.conversation.id
-        : null;
-
-      if (conversationId) {
-        navigate(`/message/${conversationId}`);
-      } else {
-        console.error("No conversation ID returned in response.");
-      }
+      const res = await newRequest.get(`/conversation/single/${id}`);
+      // console.log("Response data from get request:", res.data);
+      const conversationId = res.data.conversation.id; // Access the id within the conversation object
+      // console.log("Existing conversation ID:", conversationId);
+      navigate(`/message/${conversationId}`);
     } catch (err) {
-      if (err.response && err.response.status === 400) {
-        try {
-          // Create a new conversation
-          const res = await newRequest.post(`conversation`, {
-            to: currentUser.seller ? buyerId : sellerId,
-          });
+      if (err.response && err.response.status === 404) {
+        const res = await newRequest.post(`/conversation/`, {
+          to: currentUser.seller ? buyerId : sellerId,
+        });
+        // console.log("Response data from post request:", res.data); // Log the entire response data
 
-          const newConversationId = res.data.savedConversation.id;
+        // Access the ID from savedConversation
+        const newConversationId = res.data.savedConversation.id;
+        // console.log("New conversation created with ID:", newConversationId);
 
-          if (newConversationId) {
-            navigate(`/message/${newConversationId}`);
-          } else {
-            console.error("No new conversation ID returned.");
-          }
-        } catch (postErr) {
-          console.error("Error creating new conversation:", postErr);
+        if (newConversationId) {
+          navigate(`/message/${newConversationId}`);
+        } else {
+          console.error("Failed to retrieve the new conversation ID");
         }
       } else {
         console.error("Error fetching conversation:", err);
