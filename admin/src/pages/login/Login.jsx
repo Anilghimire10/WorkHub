@@ -32,21 +32,22 @@ const Login = () => {
       });
 
       if (!response.ok) {
+        const errorData = await response.json();
         dispatch({
           type: "LOGIN_FAILURE",
-          payload: "You are not allowed to log in.",
+          payload: errorData.message || "Login failed.",
         });
         Swal.fire({
           icon: "error",
           title: "Login Failed",
-          text: "You are not allowed to log in.",
+          text: errorData.message || "You are not allowed to log in.",
         });
         return;
       }
 
       const data = await response.json();
       console.log("Login response data:", data); // Debug the login response
-      dispatch({ type: "LOGIN_SUCCESS", payload: data.details });
+      dispatch({ type: "LOGIN_SUCCESS", payload: data });
 
       Swal.fire({
         icon: "success",
@@ -55,7 +56,7 @@ const Login = () => {
       });
 
       console.log("Navigation triggered");
-      navigate("/"); // Attempt to navigate to the home page after login
+      navigate("/"); // Ensure this path is correct
     } catch (err) {
       dispatch({ type: "LOGIN_FAILURE", payload: err.message });
       Swal.fire({

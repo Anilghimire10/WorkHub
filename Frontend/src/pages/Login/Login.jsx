@@ -15,12 +15,12 @@ const Login = () => {
 
     // Show a confirmation prompt before logging in
     const result = await Swal.fire({
-      title: 'Are you sure?',
-      text: 'Do you want to log in with these credentials?',
-      icon: 'warning',
+      title: "Are you sure?",
+      text: "Do you want to log in with these credentials?",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: 'Yes, log in!',
-      cancelButtonText: 'No, cancel!',
+      confirmButtonText: "Yes, log in!",
+      cancelButtonText: "No, cancel!",
     });
 
     if (result.isConfirmed) {
@@ -30,10 +30,10 @@ const Login = () => {
         console.log("Logged in user:", res.data);
 
         Swal.fire({
-          title: 'Login Successful!',
-          text: 'Welcome back!',
-          icon: 'success',
-          confirmButtonText: 'OK',
+          title: "Login Successful!",
+          text: "Welcome back!",
+          icon: "success",
+          confirmButtonText: "OK",
         });
 
         if (res.data.isSeller) {
@@ -47,10 +47,10 @@ const Login = () => {
         console.log(errorMessage);
 
         Swal.fire({
-          title: 'Login Failed',
+          title: "Login Failed",
           text: errorMessage,
-          icon: 'error',
-          confirmButtonText: 'Try Again',
+          icon: "error",
+          confirmButtonText: "Try Again",
         });
       }
     }
@@ -61,10 +61,10 @@ const Login = () => {
       window.location.href = `http://localhost:8800/api/user/login/google`;
     } catch (err) {
       Swal.fire({
-        title: 'Error',
+        title: "Error",
         text: err?.data?.message || err.error,
-        icon: 'error',
-        confirmButtonText: 'OK',
+        icon: "error",
+        confirmButtonText: "OK",
       });
     }
   };
@@ -106,10 +106,8 @@ const Login = () => {
         </p>
         <p className="terms">
           By joining, you agree to the Workhub Terms of Service. Please read our{" "}
-          <Link style={{ textDecoration: "none" }} to="/privacy-policy">
-            Privacy Policy
-          </Link>{" "}
-          to learn how we use your personal data.
+          <Link style={{ textDecoration: "none" }}>Privacy Policy</Link> to
+          learn how we use your personal data.
         </p>
       </form>
     </div>

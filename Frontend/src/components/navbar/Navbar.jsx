@@ -29,12 +29,12 @@ function Navbar() {
 
   const handleLogout = async () => {
     const result = await Swal.fire({
-      title: 'Are you sure?',
-      text: 'Do you want to log out?',
-      icon: 'warning',
+      title: "Are you sure?",
+      text: "Do you want to log out?",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: 'Yes, log out!',
-      cancelButtonText: 'No, stay!',
+      confirmButtonText: "Yes, log out!",
+      cancelButtonText: "No, stay!",
     });
 
     if (result.isConfirmed) {
@@ -42,19 +42,19 @@ function Navbar() {
         await newRequest.get("user/logout");
         localStorage.removeItem("currentUser");
         Swal.fire({
-          title: 'Logged Out',
-          text: 'You have been successfully logged out.',
-          icon: 'success',
-          confirmButtonText: 'OK',
+          title: "Logged Out",
+          text: "You have been successfully logged out.",
+          icon: "success",
+          confirmButtonText: "OK",
         });
         navigate("/");
       } catch (err) {
         console.log(err);
         Swal.fire({
-          title: 'Error',
-          text: 'An error occurred during logout. Please try again.',
-          icon: 'error',
-          confirmButtonText: 'OK',
+          title: "Error",
+          text: "An error occurred during logout. Please try again.",
+          icon: "error",
+          confirmButtonText: "OK",
         });
       }
     }
@@ -68,10 +68,10 @@ function Navbar() {
     } catch (err) {
       console.log(err);
       Swal.fire({
-        title: 'Error',
-        text: 'An error occurred. Please try again.',
-        icon: 'error',
-        confirmButtonText: 'OK',
+        title: "Error",
+        text: "An error occurred. Please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
       });
     }
   };
@@ -93,18 +93,6 @@ function Navbar() {
           <span className="dot">|</span>
         </div>
         <div className="links">
-          {currentUser && !currentUser.isSeller && (
-            <Link
-              to="/register"
-              className="link"
-              onClick={() => {
-                handleBecomeSeller();
-                window.scrollTo(0, 0); // Scroll to top
-              }}
-            >
-              Become a Seller
-            </Link>
-          )}
           {currentUser ? (
             <div className="user" onClick={() => setOpen(!open)}>
               <img

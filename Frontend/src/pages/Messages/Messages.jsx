@@ -14,7 +14,7 @@ const Messages = () => {
     queryKey: ["conversations"],
     queryFn: () =>
       newRequest.get(`conversation`).then((res) => {
-        console.log(res.data); // Log the full response to debug
+        console.log(res.data); 
         return res.data.conversations;
       }),
   });
@@ -33,7 +33,7 @@ const Messages = () => {
   };
 
   useEffect(() => {
-    console.log(data); // Log data to ensure it's being set correctly
+    console.log(data); 
   }, [data]);
 
   return (
