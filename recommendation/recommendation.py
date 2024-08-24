@@ -30,7 +30,7 @@ EMAIL_ADDRESS = "ghimireaneel50@gmail.com"
 EMAIL_PASSWORD = "rjdc uqxu ycxg swrg"
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 465
-SITE_URL = "http://localhost:5173"  # Replace with your website URL
+SITE_URL = "http://localhost:5173"  
 
 
 # Preprocess text by tokenizing, removing punctuation/stopwords, and lemmatizing

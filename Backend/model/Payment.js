@@ -1,54 +1,27 @@
-// models/payment.js
 import mongoose from "mongoose";
 
-// const paymentSchema = new mongoose.Schema({
-//   // userId: {
-//   //   type: mongoose.Schema.Types.ObjectId,
-//   //   ref: "User",
-//   //   required: true,
-//   // },
-//   // amount: {
-//   //   type: Number,
-//   //   required: true,
-//   // },
-//   // paymentDate: {
-//   //   type: Date,
-//   //   default: Date.now,
-//   // },
-//   // paymentType: {
-//   //   type: String,
-//   //   required: true,
-//   // },
-//   // status: {
-//   //   type: String,
-//   //   enum: ["Pending", "Completed", "Failed"],
-//   //   default: "Pending",
-//   // },
-//   // transactionId: {
-//   //   type: String,
-//   //   required: true,
-//   // },
-// });
 const paymentSchema = new mongoose.Schema(
   {
-    transactionId: { type: String, unique: true },
-    pidx: { type: String, unique: true },
+    transactionId: { type: String, unique: true, required: true },
     gigId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Gig",
       required: true,
     },
-    amount: { type: Number, required: true },
-    dataFromVerificationReq: { type: Object },
-    apiQueryFromUser: { type: Object },
+    userId: { type: String, required: true }, // ID of the person making the payment
+    sellerId: { type: String, required: true }, // ID of the person who created the gig    amount: { type: Number, required: true },
+    dataFromVerificationReq: { type: Object, required: true },
+    amount: { type: String, required: true },
+    apiQueryFromUser: { type: Object, required: true },
     paymentGateway: {
       type: String,
       enum: ["khalti", "esewa", "connectIps"],
       required: true,
     },
+    gigTitle: { type: String },
     status: {
       type: String,
-      enum: ["success", "pending", "failed"],
+      enum: ["pending", "completed", "failed"], // Add valid statuses here
       default: "pending",
     },
     paymentDate: { type: Date, default: Date.now },

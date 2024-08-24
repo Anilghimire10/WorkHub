@@ -82,7 +82,7 @@ export const getGigsByUser = async (req, res, next) => {
   }
 };
 
-export const getGigs = async (req, res) => {
+export const getGigs = async (req, res, next) => {
   const q = req.query;
   const filters = {
     ...(q.userId && { userId: q.userId }),
