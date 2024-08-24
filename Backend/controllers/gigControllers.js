@@ -93,13 +93,26 @@ export const getGigs = async (req, res, next) => {
         ...(q.max && { $lte: q.max }),
       },
     }),
-    ...(q.search && { title: { $regex: q.search, $options: "i" } }),
+    ...(q.search && { category: { $regex: q.search, $options: "i" } }),
   };
   // console.log("Filters applied:", filters);
   try {
     // console.log(filters);
     const gigs = await Gig.find(filters);
     if (!gigs) return next(new ErrorHandler("Gigs not found", 404));
+    res.status(200).json({
+      success: true,
+      gigs,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllGigs = async (req, res, next) => {
+  try {
+    const gigs = await Gig.find();
+    if (!gigs) return next(new ErrorHandler("Gig not Found", 404));
     res.status(200).json({
       success: true,
       gigs,

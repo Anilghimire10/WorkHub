@@ -13,9 +13,8 @@ const Gigs = () => {
   useEffect(() => {
     const fetchGigs = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8800/api/gig?title=tit&min=100"
-        );
+        const response = await axios.get("http://localhost:8800/api/gig/all");
+        console.log(response.data.gigs);
         setGigs(response.data.gigs);
         setLoading(false);
       } catch (err) {

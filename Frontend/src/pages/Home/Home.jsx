@@ -32,13 +32,6 @@ const Home = () => {
     console.log("Fetching star recommendations for userId:", userId);
   }, [dataStarRecommendations]);
 
-  // Handle loading and error states for recommendations
-  // if (isLoadingRecommendations) return <div>Loading recommendations...</div>;
-  // if (errorRecommendations)
-  //   return (
-  //     <div>Error fetching recommendations: {errorRecommendations.message}</div>
-  //   );
-
   return (
     <div className="home">
       <Featured />

@@ -3,6 +3,7 @@ import { isAuthenticated } from "../middlewares/auth.js";
 import {
   createGig,
   deleteGig,
+  getAllGigs,
   getGigs,
   getGigsByUser,
   getSingleGig,
@@ -23,5 +24,6 @@ router.delete("/:id", isAuthenticated, deleteGig);
 router.get("/single/:id", getSingleGig);
 router.get("/user/:id", getGigsByUser);
 router.get("/", getGigs);
+router.get("/all", getAllGigs);
 
 export default router;
