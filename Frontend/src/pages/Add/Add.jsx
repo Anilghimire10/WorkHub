@@ -111,6 +111,7 @@ const Add = () => {
                 <option value="web">Web Development</option>
                 <option value="animation">Animation</option>
                 <option value="music">Music</option>
+                <option value="ai">AI Creation</option>
               </select>
               <label htmlFor="cover">Cover Image</label>
               <input type="file" onChange={handleFileChange} />
