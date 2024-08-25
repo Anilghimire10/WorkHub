@@ -11,16 +11,17 @@ import { useState } from "react";
 const Home = () => {
   const [stats, setStats] = useState({
     users: 0,
-    bus: 0,
+    gig: 0,
+    review: 0,
   });
   console.log(stats);
   useEffect(() => {
     const getStats = async () => {
       try {
-        const response = await axios
-          .get
-          // http://localhost:8800/api/commonroute/data-count
-          ();
+        const response = await axios.get(
+          `http://localhost:8800/api/datacount/data-count`
+        );
+        console.log(response.data);
         setStats(response.data);
       } catch (err) {
         console.error(err);
@@ -35,7 +36,8 @@ const Home = () => {
         <Navbar />
         <div className="widgets">
           <Widget type="user" count={stats.users} />
-          <Widget type="bus" count={stats.bus} />
+          <Widget type="gig" count={stats.gig} />
+          <Widget type="review" count={stats.review} />
         </div>
         {/* <div className="charts">
           <Featured />

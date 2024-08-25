@@ -30,20 +30,12 @@ const Login = () => {
         console.log("Logged in user:", res.data);
 
         Swal.fire({
-<<<<<<< HEAD
-          title: 'Login Successful!',
-          text: 'Welcome back!',
-          icon: 'success',
-          timer: 2000, // Display for 4 seconds
-          timerProgressBar: true,
-          showConfirmButton: false,
-         
-=======
           title: "Login Successful!",
           text: "Welcome back!",
           icon: "success",
-          confirmButtonText: "OK",
->>>>>>> e521674c9696e0f40b5a225a8fcb806f45a9987a
+          timer: 2000, // Display for 4 seconds
+          timerProgressBar: true,
+          showConfirmButton: false,
         });
 
         if (res.data.isSeller) {

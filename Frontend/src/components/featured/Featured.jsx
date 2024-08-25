@@ -47,7 +47,8 @@ const Featured = () => {
         navigate(`/gigs?search=${input}`);
       });
     } else {
-      console.log("User not logged in");
+      // Navigate to search results directly if not logged in
+      navigate(`/gigs?search=${input}`);
     }
   };
 

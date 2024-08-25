@@ -60,3 +60,16 @@ export const getOrder = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getAllOrder = async (req, res, next) => {
+  try {
+    const order = await Order.find();
+    if (!order) return next(new ErrorHandler("Order not Found", 404));
+    res.status(200).json({
+      success: true,
+      order,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

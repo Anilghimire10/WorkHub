@@ -2,11 +2,12 @@ import React from "react";
 import "./widget.scss";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
+import ReviewIcon from "@mui/icons-material/RateReview";
+import AlbumIcon from "@mui/icons-material/Album"; // Import an icon for gigs, if available
 import { Link } from "react-router-dom";
 
 const Widget = ({ type, count }) => {
-  let data;
+  let data = {}; // Initialize data to an empty object
 
   // Temporary values
   const amount = 12;
@@ -30,24 +31,49 @@ const Widget = ({ type, count }) => {
         ),
       };
       break;
-    case "bus":
+    case "review":
       data = {
-        title: "BUS",
-        onClick: "/bus",
+        title: "REVIEWS",
+        onClick: "/reviews",
         isMoney: false,
-        link: "View all Bus",
+        link: "View all Reviews",
         icon: (
-          <DirectionsBusIcon
+          <ReviewIcon
             className="icon"
             style={{
-              backgroundColor: "rgba(218, 165, 32, 0.2)",
-              color: "goldenrod",
+              backgroundColor: "rgba(0, 128, 0, 0.2)",
+              color: "green",
+            }}
+          />
+        ),
+      };
+      break;
+    case "gig":
+      data = {
+        title: "GIGS",
+        onClick: "/gigs",
+        isMoney: false,
+        link: "View all Gigs",
+        icon: (
+          <AlbumIcon
+            className="icon"
+            style={{
+              backgroundColor: "rgba(0, 0, 255, 0.2)",
+              color: "blue",
             }}
           />
         ),
       };
       break;
     default:
+      // Handle the case where type does not match any of the cases
+      data = {
+        title: "Unknown",
+        isMoney: false,
+        link: "No link available",
+        onClick: "#",
+        icon: null,
+      };
       break;
   }
 

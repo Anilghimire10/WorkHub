@@ -42,19 +42,12 @@ function Navbar() {
         await newRequest.get("user/logout");
         localStorage.removeItem("currentUser");
         Swal.fire({
-<<<<<<< HEAD
-          title: 'Logged Out',
-          text: 'You have been successfully logged out.',
-          icon: 'success',         
-          timer: 2000, // Display for 4 seconds
-          timerProgressBar: true,
-          showConfirmButton: false,
-=======
           title: "Logged Out",
           text: "You have been successfully logged out.",
           icon: "success",
-          confirmButtonText: "OK",
->>>>>>> e521674c9696e0f40b5a225a8fcb806f45a9987a
+          timer: 2000, // Display for 4 seconds
+          timerProgressBar: true,
+          showConfirmButton: false,
         });
         navigate("/");
       } catch (err) {

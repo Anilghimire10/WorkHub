@@ -1,6 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 
 const GigTable = ({ gigs }) => {
+  const [defaultImageLoaded, setDefaultImageLoaded] = useState(false);
+  const backendURL = "http://localhost:8800"; // Define your backend URL here
+
+  const handleImageLoad = (event) => {
+    // Handle the image load event
+    event.target.style.display = "block";
+  };
+
+  const handleImageError = (event) => {
+    // If image fails to load, show a default image
+    event.target.src = `${backendURL}/uploads/images/man.png`; // Path to your default image on the server
+    event.target.style.display = "block";
+  };
+
   return (
     <div style={{ padding: "20px" }}>
       <h1 style={{ marginBottom: 16 }}>Gig Listings</h1>
@@ -36,7 +50,16 @@ const GigTable = ({ gigs }) => {
           {gigs.map((gig) => (
             <tr key={gig._id}>
               <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                <img src={gig.cover} alt="Cover" style={{ width: "100px" }} />
+                <img
+                  src={`${backendURL}/uploads/images/${gig.cover}`} // Construct the image URL dynamically
+                  alt="Cover"
+                  style={{
+                    width: "100px",
+                    display: defaultImageLoaded ? "block" : "none",
+                  }}
+                  onLoad={handleImageLoad}
+                  onError={handleImageError}
+                />
               </td>
               <td style={{ border: "1px solid #ddd", padding: "8px" }}>
                 {gig.title}

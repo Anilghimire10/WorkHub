@@ -11,7 +11,7 @@ const paymentSchema = new mongoose.Schema(
     userId: { type: String, required: true }, // ID of the person making the payment
     sellerId: { type: String, required: true }, // ID of the person who created the gig    amount: { type: Number, required: true },
     dataFromVerificationReq: { type: Object, required: true },
-    amount: { type: String, required: true },
+    amount: { type: Number, required: true },
     apiQueryFromUser: { type: Object, required: true },
     paymentGateway: {
       type: String,
