@@ -1,91 +1,111 @@
-
 .message {
-    display: flex;
-    justify-content: center;
-    .container {
-      width: 1200px;
-      margin: 50px;
-      .breadcrumbs {
-        font-weight: 300;
-        font-size: 13px;
-        color: #555;
-      }
-      .messages {
-        margin: 30px 0px;
-        padding: 50px;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        height: 500px;
-        overflow: scroll;
-        border: 1px solid lightgray;
-  
-        .item {
-          display: flex;
-          gap: 20px;
-          max-width: 600px;
-          font-size: 18px;
-  
-          &.owner {
-            flex-direction: row-reverse;
-            align-self: flex-end;
-  
-            p {
-              max-width: 500px;
-              border-radius: 20px 0px 20px 20px;
-              background-color: royalblue;
-              color: white;
-            }
-          }
-  
-          img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-          }
-  
-          p {
-            max-width: 500px;
-            padding: 20px;
-            background-color: rgb(244, 241, 241);
-            border-radius: 0px 20px 20px 20px;
-            color: gray;
-            font-weight: 300;
-          }
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+
+  .container {
+    width: 100%;
+    max-width: 800px;
+    height: 600px;
+    background-color: #f7f7f7;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+
+    .breadcrumbs {
+      font-weight: 500;
+      font-size: 14px;
+      color: #007bff;
+      margin-bottom: 10px;
+      a {
+        text-decoration: none;
+        color: inherit;
+        &:hover {
+          text-decoration: underline;
         }
       }
-  
-      hr {
-        height: 0;
-        border: 0.5px solid rgb(232, 230, 230);
-        margin-bottom: 20px;
-      }
-  
-      .write {
+    }
+
+    .messages {
+      margin: 20px 0;
+      padding: 15px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      height: 400px;
+      overflow-y: auto;
+
+      .item {
         display: flex;
+        gap: 15px;
         align-items: center;
-        justify-content: space-between;
-  
-        textarea {
-          width: 80%;
-          height: 100px;
-          padding: 10px;
-          border: 1px solid lightgray;
-          border-radius: 10px;
+        max-width: 100%;
+
+        &.owner {
+          flex-direction: row-reverse;
+          text-align: right;
+          p {
+            background-color: #1dbf73;
+            color: white;
+            border-radius: 20px 20px 0px 20px;
+          }
         }
-  
-        button{
-          background-color: #1dbf73;
-          padding: 20px;
-          color: white;
-          font-weight: 500;
-          border: none;
-          border-radius: 10px;
-          cursor: pointer;
-          width: 100px;
+
+        img {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+
+        p {
+          padding: 10px 15px;
+          background-color: #f1f1f1;
+          border-radius: 20px 20px 20px 0px;
+          font-size: 16px;
+          color: #333;
+          max-width: 70%;
+          word-wrap: break-word;
+        }
+      }
+    }
+
+    hr {
+      margin: 20px 0;
+      border: 0.5px solid #e2e2e2;
+    }
+
+    .write {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+
+      textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 16px;
+        resize: none;
+      }
+
+      button {
+        padding: 12px 20px;
+        background-color: #1dbf73;
+        color: white;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: #16a765;
         }
       }
     }
   }
-  
+}
