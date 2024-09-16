@@ -24,7 +24,7 @@ const PaymentDo = () => {
   const userId = currentUser?.userId;
 
   const config = {
-    publicKey: "test_public_key_ee71705cad0e48279ef9a71a6ef42b75",
+    publicKey: process.env.frontend_publicKey,
     productIdentity: gig._id,
     productName: gig.title,
     productUrl: "http://google.com",

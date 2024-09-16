@@ -85,14 +85,19 @@ const Home = () => {
           </div>
         </div>
       </div>
-
-      {dataStarRecommendations?.recommendations_star_ratings?.length > 0 && (
-        <Slide slidesToShow={3} arrowsScroll={3}>
-          {dataStarRecommendations.recommendations_star_ratings.map((item) => (
-            <CatCard key={item.gigId || item._id} item={item} />
-          ))}
-        </Slide>
-      )}
+      <div className="rated">
+        {" "}
+        <h2>Top Rated Gigs</h2>
+        {dataStarRecommendations?.recommendations_star_ratings?.length > 0 && (
+          <Slide slidesToShow={3} arrowsScroll={3}>
+            {dataStarRecommendations.recommendations_star_ratings.map(
+              (item) => (
+                <CatCard key={item.gigId || item._id} item={item} />
+              )
+            )}
+          </Slide>
+        )}
+      </div>
     </div>
   );
 };

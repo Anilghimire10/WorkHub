@@ -13,25 +13,34 @@ from sklearn.metrics.pairwise import cosine_similarity
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from dotenv import load_dotenv
+import os
 
+# Initialize Flask and enable CORS
 app = Flask(__name__)
 CORS(app)
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Initialize NLTK objects
 nltk.download("punkt")
 nltk.download("wordnet")
 nltk.download("stopwords")
-
 stop_words = set(stopwords.words("english"))
 wordnet_lemmatizer = WordNetLemmatizer()
 
-# Email setup
-EMAIL_ADDRESS = "ghimireaneel50@gmail.com"
-EMAIL_PASSWORD = "rjdc uqxu ycxg swrg"
-SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 465
-SITE_URL = "http://localhost:5173"  
+# Email setup using environment variables
+EMAIL_ADDRESS = os.getenv("EMAIL_ADDRESS")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+SMTP_SERVER = os.getenv("SMTP_SERVER")
+SMTP_PORT = int(os.getenv("SMTP_PORT"))
+SITE_URL = os.getenv("SITE_URL")
 
+# MongoDB connection using environment variable
+MONGO_URI = os.getenv("MONGO_URI")
+client = pymongo.MongoClient(MONGO_URI)
+db = client["WorkHub"]
 
 # Preprocess text by tokenizing, removing punctuation/stopwords, and lemmatizing
 def preprocess_text(text):
@@ -41,7 +50,7 @@ def preprocess_text(text):
     tokens = [wordnet_lemmatizer.lemmatize(token) for token in tokens]
     return " ".join(tokens)
 
-
+# Send an email using the provided email credentials
 def send_email(to_email, subject, body):
     try:
         msg = MIMEMultipart()
@@ -73,15 +82,10 @@ def send_email(to_email, subject, body):
     except Exception as e:
         print(f"Failed to send email to {to_email}. Error: {e}")
 
-
+# Route to get newly added recommendations
 @app.route("/api/recommendations/newly_added", methods=["GET"])
 def get_newly_added_recommendations():
     try:
-        client = pymongo.MongoClient(
-            "mongodb+srv://Anilghimire:sehuLAgU@cluster0.om29z8c.mongodb.net/WorkHub"
-        )
-        db = client["WorkHub"]
-
         search_histories = list(db.searchhistories.find())
         if not search_histories:
             return jsonify({"error": "No search history found"}), 404
@@ -121,11 +125,8 @@ def get_newly_added_recommendations():
                 query_vector, tfidf_gig_categories
             )
 
-            print(f"\nSearch Query: {search_queries[i]}")
-
             for index, similarity in enumerate(category_similarities.flatten()):
                 email = search_histories[i].get("email", "N/A")
-                print(f"Email: {email}, Similarity: {similarity}")
 
                 if similarity > 0.3:  # Adjusted threshold to capture more matches
                     gig_title = newly_added_gigs[index]["title"]
@@ -145,16 +146,10 @@ def get_newly_added_recommendations():
                         sent_emails.add(unique_id)
 
                         if email != "N/A":  # Ensure the email exists before sending
-                            print(
-                                f"Sending email to {email} with subject 'New Gig Match Notification'"
-                            )
                             send_email(
                                 email,
                                 "New Gig Match Notification",
-                                f"Hi, We have found new gigs that match your recent search query '{search_queries[i]}'.\n\nGig Title: {gig_title}\nView it here: {gig_url}\n\nCheck out more on our website!\n\nBest regards,\nWorkHub Team\n\nVisit our site: {SITE_URL}",
-                            )
-                            print(
-                                f"Email sent to: {email} for query '{search_queries[i]}'"
+                                f"Hi, We have found new gigs that match your recent search query '{search_queries[i]}'.\n\nGig Title: {gig_title}\nView it here: {gig_url}\n\nBest regards,\nWorkHub Team\n\nVisit our site: {SITE_URL}",
                             )
 
         return jsonify({"recommendedGigs": recommended_gigs}), 200
@@ -163,15 +158,10 @@ def get_newly_added_recommendations():
         print(f"Error occurred: {e}")
         return jsonify({"error": "Internal server error"}), 500
 
-
+# Route to get gig recommendations based on star ratings
 @app.route("/api/recommendations/stars", methods=["GET"])
 def get_recommendations_stars():
     try:
-        client = pymongo.MongoClient(
-            "mongodb+srv://Anilghimire:sehuLAgU@cluster0.om29z8c.mongodb.net/WorkHub"
-        )
-        db = client["WorkHub"]
-
         gigs = list(db.gigs.find())
         if not gigs:
             return jsonify({"error": "No gigs found"}), 404
@@ -216,7 +206,6 @@ def get_recommendations_stars():
     except Exception as e:
         print(f"Error occurred: {e}")
         return jsonify({"error": "Internal server error"}), 500
-
 
 if __name__ == "__main__":
     app.run(debug=True)

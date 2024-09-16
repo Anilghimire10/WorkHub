@@ -78,9 +78,12 @@ function MyGigs() {
                       <img
                         key={index}
                         src={`${backendURL}/uploads/images/${image}`}
-                        width={70}
-                        height={50}
                         alt=""
+                        style={{
+                          width: "50px",
+                          height: "90px",
+                          objectFit: "cover", // ensures the image scales while maintaining its aspect ratio
+                        }}
                       />
                     ))}
                   </td>

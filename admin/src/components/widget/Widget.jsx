@@ -19,7 +19,7 @@ const Widget = ({ type, count }) => {
         title: "USERS",
         isMoney: false,
         link: "See all users",
-        onClick: "/users",
+        onClick: "/user",
         icon: (
           <PersonOutlinedIcon
             className="icon"

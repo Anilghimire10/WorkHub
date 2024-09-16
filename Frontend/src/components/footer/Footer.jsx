@@ -85,9 +85,9 @@ const Footer = () => {
               <img src="/img/instagram.png" alt="Instagram" />
             </div>
 
-            <div className="link">
+            {/* <div className="link">
               <button>NPR</button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

@@ -19,7 +19,7 @@ const InvoiceTable = ({ payments }) => {
               Receiver
             </th>
             <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-              Reeived From
+              Received From
             </th>
             <th style={{ border: "1px solid #ddd", padding: "8px" }}>
               Phone Number

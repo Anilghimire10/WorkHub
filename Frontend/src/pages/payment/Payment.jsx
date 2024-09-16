@@ -98,12 +98,12 @@ const BillingHistory = () => {
     <div>
       <h2>Billing History</h2>
       <div className="filters">
-        <input
+        {/* <input
           type="text"
           placeholder="Filter by Username"
           value={filterUsername}
           onChange={(e) => setFilterUsername(e.target.value)}
-        />
+        /> */}
         <input
           type="date"
           value={filterDate}
@@ -125,8 +125,8 @@ const BillingHistory = () => {
               </>
             ) : (
               <>
-                <th>Merchant Email</th>
-                <th>Merchant Name</th>
+                <th>Receiver Email</th>
+                <th>Receiver Name</th>
               </>
             )}
           </tr>

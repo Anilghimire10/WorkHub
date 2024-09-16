@@ -1,6 +1,6 @@
 .catCard {
   width: 324px;
-  height: 400px;
+  height: 600px;
   border: 1px solid rgb(228, 228, 228);
   margin-bottom: 40px;
   padding: 10px 20px;
@@ -42,4 +42,20 @@ img {
   padding: 5px;
   border-radius: 4px;
   text-decoration: none;
+}
+.star {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  img {
+      height: 14px;
+      width: 14px;
+  }
+
+  span {
+      font-size: 14px;
+      font-weight: bold;
+      color: #ffc108;
+  }
 }

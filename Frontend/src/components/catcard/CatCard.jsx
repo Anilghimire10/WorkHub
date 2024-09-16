@@ -21,6 +21,14 @@ const CatCard = ({ item }) => {
         <div className="describe">
           <span className="title">{item.title}</span>
           <span className="desc">{item.desc}</span>
+          <div className="star">
+            <img src="./img/star.png" alt="star" />
+            <span>
+              {item.starNumber > 0
+                ? Math.round(item.totalStars / item.starNumber)
+                : "No ratings"}
+            </span>
+          </div>
         </div>
       </div>
     </Link>

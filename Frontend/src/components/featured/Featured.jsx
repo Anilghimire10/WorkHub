@@ -70,7 +70,7 @@ const Featured = () => {
               Search
             </button>
           </div>
-          <div className="popular">
+          {/* <div className="popular">
             <span>Popular:</span>
             <button className="button">
               <Link className="link" to="/Gigs">
@@ -92,7 +92,7 @@ const Featured = () => {
                 AI service
               </Link>
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

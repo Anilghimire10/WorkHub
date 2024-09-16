@@ -5,14 +5,14 @@ export const sendCookie = (user, res, message, statusCode = 200) => {
     const token = jwt.sign(
       { _id: user._id, isSeller: user.isSeller },
       process.env.JWT_SECRET,
-      { expiresIn: "50m" } // Token expires in 50 minutes
+      { expiresIn: "50m" }
     );
 
     // Set the cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Secure in production
-      sameSite: "strict", // Adjust as needed
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       maxAge: 50 * 60 * 1000, // 50 minutes
     });
 

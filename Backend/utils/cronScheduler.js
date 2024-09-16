@@ -6,8 +6,8 @@ const FLASK_API_URL = "http://localhost:5000/api/recommendations/newly_added";
 // Schedule a task to run every day at 10 AM
 const scheduleDailyRecommendationCheck = () => {
   // Define the cron expression for daily execution at 10 AM
-  const cronExpression = "0 10 * * *"; // 0 minutes past 10 AM every day
-  // const cronExpression = "* * * * *";
+  const cronExpression = "43 7 * * *";
+  // const cronExpression = "* * * * *"; //minute hour day month year
 
   // Schedule the task
   cron.schedule(

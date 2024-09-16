@@ -93,13 +93,13 @@ const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button type="submit">Login</button>
-        <button
+        {/* <button
           type="button"
           className="bg-red-600 text-white px-4 py-2 rounded-md mt-4 ml-3 hover:bg-red-700"
           onClick={handleGoogleAuth}
         >
           Sign in with Google
-        </button>
+        </button> */}
         <p className="registerone">
           Don't have an account?{" "}
           <Link style={{ textDecoration: "none" }} to="/register">
